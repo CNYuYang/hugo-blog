@@ -147,6 +147,223 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://blog.yuyang.run/2023/07/10/kafka%E5%8D%95%E6%9C%BA%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="余为民同志">
+      <meta itemprop="description" content="做一个优秀的普通人，在热爱中燃烧！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="余为民同志">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2023/07/10/kafka%E5%8D%95%E6%9C%BA%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" class="post-title-link" itemprop="url">kafka单机环境搭建</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2023-07-10 23:00:40 / 修改时间：23:22:24" itemprop="dateCreated datePublished" datetime="2023-07-10T23:00:40+08:00">2023-07-10</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/kafka/" itemprop="url" rel="index"><span itemprop="name">kafka</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/kafka/zookeeper/" itemprop="url" rel="index"><span itemprop="name">zookeeper</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="软件版本"><a href="#软件版本" class="headerlink" title="软件版本"></a>软件版本</h1><ul>
+<li>jdk-8u271-linux-x64.tar.gz</li>
+<li>apache-zookeeper-3.8.1-bin.tar.gz</li>
+<li>kafka_2.12-3.4.0.tgz</li>
+</ul>
+<blockquote>
+<p>解压添加<code>PATH</code>等步骤忽略，不进行记录。<code>java</code>安装过程跳过</p>
+</blockquote>
+<h1 id="zookeeper安装"><a href="#zookeeper安装" class="headerlink" title="zookeeper安装"></a>zookeeper安装</h1><ol>
+<li><p>先进入<code>conf</code>目录</p>
+</li>
+<li><p>复制一份<code>zoo.cfg</code>:</p>
+</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cp zoo_sample.cfg zoo.cfg</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li><p>修改<code>zoo.cfg</code>，修改数据目录：<code>dataDir=../tmp/zookeeper</code></p>
+</li>
+<li><p>先进入<code>bin</code>目录</p>
+</li>
+<li><p>执行<code>./zkServer.sh start</code></p>
+</li>
+<li><p>使用jps查看是否启动成功，<code>QuorumPeerMain</code>便是<code>zookeeper</code>入口类：</p>
+</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost bin]# jps</span><br><span class="line">8550 QuorumPeerMain</span><br><span class="line">17046 Jps</span><br></pre></td></tr></table></figure>
+
+<h1 id="kafka"><a href="#kafka" class="headerlink" title="kafka"></a>kafka</h1><h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><p>编辑<code>server.properties</code>文件，能够被内网访问：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">listeners=PLAINTEXT://192.168.3.14:9092</span><br></pre></td></tr></table></figure>
+
+<p>关闭防火墙：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">service firewalld stop</span><br></pre></td></tr></table></figure>
+
+<h2 id="Shell命令"><a href="#Shell命令" class="headerlink" title="Shell命令"></a>Shell命令</h2><h3 id="启动"><a href="#启动" class="headerlink" title="启动"></a>启动</h3><ol>
+<li>非后台启动</li>
+</ol>
+<p>当启动失败时，可以看报错：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./kafka-server-start.sh  ../config/server.properties</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>后台启动</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./kafka-server-start.sh -daemon ../config/server.properties</span><br></pre></td></tr></table></figure>
+
+<p>启动成功后，使用jps查看，存在<code>Kafka</code>：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost bin]# jps</span><br><span class="line">17890 Jps</span><br><span class="line">8550 QuorumPeerMain</span><br><span class="line">17818 Kafka</span><br></pre></td></tr></table></figure>
+
+<h3 id="主题"><a href="#主题" class="headerlink" title="主题"></a>主题</h3><ol>
+<li>创建</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kafka-topics.sh --bootstrap-server 192.168.3.14:9092 --create --partitions 1 --replication-factor 1 --topic first</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>查看</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kafka-topics.sh --bootstrap-server 192.168.3.14:9092 --describe --topic first</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>列表</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kafka-topics.sh --bootstrap-server 192.168.3.14:9092 --list</span><br></pre></td></tr></table></figure>
+
+<h3 id="消费者"><a href="#消费者" class="headerlink" title="消费者"></a>消费者</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./kafka-console-consumer.sh --bootstrap-server 192.168.3.14:9092 --topic first</span><br></pre></td></tr></table></figure>
+
+<h3 id="生产者"><a href="#生产者" class="headerlink" title="生产者"></a>生产者</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kafka-console-producer.sh --broker-list 192.168.3.14:9092 --topic first</span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://blog.yuyang.run/2023/07/06/%E4%BD%BF%E7%94%A8react-router%E9%87%8D%E6%9E%84%E5%89%8D%E7%AB%AF%E8%B7%AF%E7%94%B1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="余为民同志">
+      <meta itemprop="description" content="做一个优秀的普通人，在热爱中燃烧！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="余为民同志">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2023/07/06/%E4%BD%BF%E7%94%A8react-router%E9%87%8D%E6%9E%84%E5%89%8D%E7%AB%AF%E8%B7%AF%E7%94%B1/" class="post-title-link" itemprop="url">使用react-router重构前端路由</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-07-06 21:52:52" itemprop="dateCreated datePublished" datetime="2023-07-06T21:52:52+08:00">2023-07-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-07-10 23:13:07" itemprop="dateModified" datetime="2023-07-10T23:13:07+08:00">2023-07-10</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E9%87%8D%E6%9E%84/" itemprop="url" rel="index"><span itemprop="name">重构</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="重构前情况"><a href="#重构前情况" class="headerlink" title="重构前情况"></a>重构前情况</h1><p>因为公司的特点，开发人员没有太多区分，都是称为<strong>通用软件开发工程师</strong>。所以在工作中的看到的很多前端项目，都是有后端人员开发而来。所以在我们的代码中有很多后端程序思维写出的前端代码，而在一个项目中的路由情况尤为糟糕。</p>
+<p>打开项目后看到的<code>router.js</code>代码：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;<span class="title class_">HashRouter</span>&gt;</span><br><span class="line"> <span class="language-xml"><span class="tag">&lt;<span class="name">Route</span> <span class="attr">path</span>=<span class="string">&quot;/&quot;</span> <span class="attr">component</span>=<span class="string">&#123;TempMgrView&#125;/</span>&gt;</span></span></span><br><span class="line"> ...</span><br><span class="line"> &lt;<span class="title class_">Route</span> path=<span class="string">&quot;/settings&quot;</span> component=&#123;<span class="title class_">SettingView</span>&#125;/&gt;</span><br><span class="line">&lt;/<span class="title class_">HashRouter</span>&gt;</span><br></pre></td></tr></table></figure>
+
+<p>看起来是用了路由功能，实际上上面的路由配置都没有任何作用，真正的路由逻辑都在<code>TempMgrView</code>中:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">render</span>(<span class="params"></span>)&#123;</span><br><span class="line">    <span class="keyword">let</span> leftComponent = <span class="literal">null</span>;</span><br><span class="line">    <span class="keyword">switch</span>(<span class="variable language_">this</span>.<span class="property">state</span>.<span class="property">path</span>)&#123;</span><br><span class="line">        <span class="attr">case</span>: <span class="string">&quot;mgrView&quot;</span>:</span><br><span class="line">            left = <span class="language-xml"><span class="tag">&lt;<span class="name">TempMgrView</span> <span class="attr">switchToSetting</span>=<span class="string">&#123;switchToSetting&#125;/</span>&gt;</span></span></span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="attr">case</span>: <span class="string">&quot;setting&quot;</span>:</span><br><span class="line">            left = <span class="language-xml"><span class="tag">&lt;<span class="name">SettingView</span> <span class="attr">switchToTempMgrView</span>=<span class="string">&#123;switchToTempMgrView&#125;/</span>&gt;</span></span></span><br><span class="line">            <span class="keyword">break</span>;    </span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> leftComponent;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://blog.yuyang.run/2023/06/02/%E6%89%8B%E6%90%93zookeeper%E6%A0%B7%E4%BE%8B%E5%AE%9E%E7%8E%B0%E8%AE%B0%E5%BD%95/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -319,12 +536,12 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">1</span>
+          <span class="site-state-item-count">3</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
-        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-count">4</span>
         <span class="site-state-item-name">分类</span>
       </div>
   </nav>
