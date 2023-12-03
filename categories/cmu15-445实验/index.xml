@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>CMU15-445实验 on 余为民同志|做一个优秀的普通人，在热爱中燃烧！</title>
+    
+    
+    
+    <link>https://yuyang.run/categories/cmu15-445%E5%AE%9E%E9%AA%8C/</link>
+    <description>Recent content in CMU15-445实验 on 余为民同志|做一个优秀的普通人，在热爱中燃烧！</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <managingEditor>744727849@qq.com (YuYang)</managingEditor>
+    <webMaster>744727849@qq.com (YuYang)</webMaster>
+    <lastBuildDate>Fri, 08 May 2020 15:29:13 +0800</lastBuildDate>
+    
+	<atom:link href="https://yuyang.run/categories/cmu15-445%E5%AE%9E%E9%AA%8C/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Lab1 Buffer Pool</title>
+      <link>https://yuyang.run/posts/cmu15-445%E5%AE%9E%E9%AA%8C/lab1-buffer-pool/</link>
+      <pubDate>Fri, 08 May 2020 15:29:13 +0800</pubDate>
+      <author>744727849@qq.com (YuYang)</author>
+      <guid>https://yuyang.run/posts/cmu15-445%E5%AE%9E%E9%AA%8C/lab1-buffer-pool/</guid>
+      <description>
+        
+          &lt;img src=&#34;https://yuyang.run/cover/database.png&#34;/&gt;
+          
+        
+        
+        
+          时钟更换策略 # 时钟的组成 # 对于单个frame应当有以下三部分组成：frame_id、Ref、PIN。 frame_id：唯一确定id，与buffer pool相对应。 Ref：该frame最近是否使用过。使挑选的frame尽量是很久之前使用的（类似与LRU） PIN：该frame是否正在使用。 注：该时钟不包
+          
+        
+        </description>
+    </item>
+    
+  </channel>
+</rss>

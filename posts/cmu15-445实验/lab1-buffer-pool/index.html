@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+      <title>
+        Lab1 Buffer Pool ::
+        余为民同志|做一个优秀的普通人，在热爱中燃烧！
+      </title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta
+  name="description"
+  content="时钟更换策略 # 时钟的组成 # 对于单个frame应当有以下三部分组成：frame_id、Ref、PIN。 frame_id：唯一确定id，与buffer pool相对应。 Ref：该frame最近是否使用过。使挑选的frame尽量是很久之前使用的（类似与LRU） PIN：该frame是否正在使用。 注：该时钟不包"
+/>
+<meta
+  name="keywords"
+  content=""
+/>
+<meta name="robots" content="noodp" />
+<link rel="canonical" href="https://yuyang.run/posts/cmu15-445%E5%AE%9E%E9%AA%8C/lab1-buffer-pool/" />
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/style.css" />
+
+<link rel="stylesheet" href="https://yuyang.run/style.css" />
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://yuyang.run/img/apple-touch-icon-144-precomposed.png" />
+<link rel="shortcut icon" href="https://yuyang.run/img/favicon.png" />
+
+
+<link href="/fonts/JetBrainsMono-Italic.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="/fonts/JetBrainsMono-Regular.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="/fonts/JetBrainsMono-Medium.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="/fonts/JetBrainsMono-MediumItalic.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="/fonts/JetBrainsMono-Bold.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="/fonts/JetBrainsMono-BoldItalic.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Lab1 Buffer Pool"/>
+<meta name="twitter:description" content="时钟更换策略 # 时钟的组成 # 对于单个frame应当有以下三部分组成：frame_id、Ref、PIN。 frame_id：唯一确定id，与buffer pool相对应。 Ref：该frame最近是否使用过。使挑选的frame尽量是很久之前使用的（类似与LRU） PIN：该frame是否正在使用。 注：该时钟不包"/>
+
+
+
+<meta property="og:title" content="Lab1 Buffer Pool" />
+<meta property="og:description" content="时钟更换策略 # 时钟的组成 # 对于单个frame应当有以下三部分组成：frame_id、Ref、PIN。 frame_id：唯一确定id，与buffer pool相对应。 Ref：该frame最近是否使用过。使挑选的frame尽量是很久之前使用的（类似与LRU） PIN：该frame是否正在使用。 注：该时钟不包" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yuyang.run/posts/cmu15-445%E5%AE%9E%E9%AA%8C/lab1-buffer-pool/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2020-05-08T15:29:13+08:00" />
+<meta property="article:modified_time" content="2020-05-08T15:29:13+08:00" />
+
+
+
+
+
+
+
+  </head>
+  <body class="light-theme">
+    <div class="container">
+      <header class="header">
+  <span class="header__inner">
+    <a
+  href="https://yuyang.run"
+  class="logo"
+  style="text-decoration: none;"
+>
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367" />
+</svg>
+</span>
+    <span class="logo__text"
+      >余为民同志</span
+    >
+    <span class="logo__cursor"></span>
+  
+</a>
+
+    <span class="header__right">
+      
+        <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/posts/">文章</a></li>
+        
+      
+        
+          <li><a href="/tags/">标签</a></li>
+        
+      
+        
+          <li><a href="/categories/">分类</a></li>
+        
+      
+        
+          <li><a href="https://geekbang.yuyang.run">极客帮</a></li>
+        
+      
+      
+      
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/posts/">文章</a></li>
+      
+    
+      
+        <li><a href="/tags/">标签</a></li>
+      
+    
+      
+        <li><a href="/categories/">分类</a></li>
+      
+    
+      
+        <li><a href="https://geekbang.yuyang.run">极客帮</a></li>
+      
+    
+  </ul>
+</nav>
+
+        <span class="menu-trigger">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none" />
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" />
+          </svg>
+        </span>
+      
+      <span class="theme-toggle">
+        <svg
+  class="theme-toggler"
+  width="24"
+  height="24"
+  viewBox="0 0 48 48"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <path
+    d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"
+  />
+</svg>
+
+      </span>
+    </span>
+  </span>
+</header>
+
+
+      <div class="content">
+        
+  
+  
+
+  <article class="post">
+    <div class="in-article">
+      
+        <figure class="post-cover">
+  
+    <img src="https://yuyang.run/cover/database.png" alt="Lab1 Buffer Pool"/>
+  
+
+  
+</figure>
+
+      
+    </div>
+    <h1 class="post-title">Lab1 Buffer Pool</h1>
+    <div class="post-meta">
+      
+        <time class="post-date">
+          2020-05-08 15:29:13
+        </time>
+
+        
+          
+        
+      
+
+      
+
+
+      
+    </div>
+
+    
+      <span class="post-tags">
+        
+          <a href="https://yuyang.run/tags/cmu15-445/">#CMU15-445</a>&nbsp;
+        
+          <a href="https://yuyang.run/tags/sql/">#SQL</a>&nbsp;
+        
+      </span>
+    
+
+    <div class="post-content">
+      
+        
+        <div style="position: fixed; right:5px; overflow:auto; top: 100px; width: 22%; bottom:50px">
+        <h2>目录</h2>
+        <aside class="table-of-contents"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#时钟更换策略">时钟更换策略</a>
+      <ul>
+        <li><a href="#时钟的组成">时钟的组成</a></li>
+        <li><a href="#时钟的初始化">时钟的初始化</a></li>
+        <li><a href="#victim">Victim</a></li>
+        <li><a href="#pin">PIN</a></li>
+        <li><a href="#unpin">UNPIN</a></li>
+      </ul>
+    </li>
+    <li><a href="#缓冲池管理器">缓冲池管理器</a>
+      <ul>
+        <li><a href="#管理器的组成">管理器的组成</a></li>
+        <li><a href="#fetchpage">FetchPage</a></li>
+        <li><a href="#newpage">NewPage</a></li>
+        <li><a href="#page的结构">Page的结构</a></li>
+        <li><a href="#unpinpage">UnpinPage</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></aside>
+        </div>
+        
+      
+      <h2 id="时钟更换策略">
+  时钟更换策略
+  <a href="#%e6%97%b6%e9%92%9f%e6%9b%b4%e6%8d%a2%e7%ad%96%e7%95%a5" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<h3 id="时钟的组成">
+  时钟的组成
+  <a href="#%e6%97%b6%e9%92%9f%e7%9a%84%e7%bb%84%e6%88%90" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<p><img src="/images/15445/lab1-01.png" alt=""></p>
+<p>对于单个<code>frame</code>应当有以下三部分组成：<code>frame_id</code>、<code>Ref</code>、<code>PIN</code>。</p>
+<p><code>frame_id</code>：唯一确定id，与buffer pool相对应。</p>
+<p><code>Ref</code>：该<code>frame</code>最近是否使用过。使挑选的<code>frame</code>尽量是很久之前使用的（类似与LRU）</p>
+<p><code>PIN</code>：该<code>frame</code>是否正在使用。</p>
+<blockquote>
+<p>注：该时钟不包含任何<code>page</code>信息，真正的<code>page</code>是存储在<code>buffer pool</code>。该时钟只是在<code>buffer pool</code>满了后，<code>buffer pool manager</code>希望加载新的<code>page</code>时，为其提供可以替换的<code>frame_id</code>。</p>
+</blockquote>
+<h3 id="时钟的初始化">
+  时钟的初始化
+  <a href="#%e6%97%b6%e9%92%9f%e7%9a%84%e5%88%9d%e5%a7%8b%e5%8c%96" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<p><code>frame_id</code>：初始化<code>0</code>-<code>X-1</code>,<code>X</code>代表<code>buffer pool</code>中能存储<code>Page</code>的数量。</p>
+<p>接下来两个元素的初始化，我们就要先要知道时钟使用的时机：<strong>所有的buffer pool都加载了Page</strong>，加载一个Page那对应的<code>PIN</code>必然是<code>true</code>，若Page的使用还未结束那么<code>Ref</code>的初始化应当为<code>false</code>。</p>
+<p><code>Ref</code>：上述分析，<code>false</code></p>
+<p><code>PIN</code>：上述分析，<code>true</code></p>
+<p><img src="/images/15445/lab1-02.png" alt=""></p>
+<h3 id="victim">
+  Victim
+  <a href="#victim" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<p>Victim(受害者)，方法名很有意思。就在<code>buffer pool</code>满了时，<code>buffer pool manager</code>希望加载新的<code>page</code>时，为其提供可以替换的<code>frame_id</code>。</p>
+<p>首先我们要知道我们要找什么样的受害者：<code>PIN</code>为<code>false</code>、<code>Ref</code>也为<code>false</code>。代表现在不在使用，且最近未被使用。</p>
+<p><img src="/images/15445/lab1-03.png" alt=""></p>
+<p><code>hand</code>是时钟的指针，它顺时针旋转，便可以发现可以被移除的<code>frame</code>。</p>
+<p>如果<code>hand</code>扫描一圈发现所有的<code>PIN</code>都是<code>true</code>的话，就代表所有的<code>page</code>都在被使用，就无法加载新的<code>page</code>进<code>buffer pool</code>，便返回<code>false</code>。如Clock刚初始化的时候：</p>
+<p><img src="/images/15445/lab1-02.png" alt=""></p>
+<p>还有一个问题，就是我说的在<code>PIN</code>都是<code>true</code>时才找不到，但是我们要找的确是<code>PIN</code>和<code>Ref</code>都为<code>false</code>的情况。那是因为Ref是可以改变的，当时针扫描过一个<code>frame</code>时，若它的<code>PIN</code>是<code>false</code>，且<code>Ref</code>为true，那此时便将<code>Ref</code>变为<code>false</code>。</p>
+<p><img src="/images/15445/lab1-04.png" alt=""></p>
+<h3 id="pin">
+  PIN
+  <a href="#pin" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<p>PIN(固定方法)则是代表，该<code>frame</code>中存储的<code>page</code>正在使用，不能将其移除（<code>PIN</code> = <code>true</code>）。</p>
+<h3 id="unpin">
+  UNPIN
+  <a href="#unpin" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<p>UNPIN(取消固定方法)则是代表，该<code>frame</code>中存储的<code>page</code>正在使用，可以将其移除（<code>PIN</code> = <code>false</code>），同时该<code>frame</code>刚被使用过（<code>Ref</code> = <code>true</code>）。</p>
+<p><img src="/images/15445/lab1-05.png" alt=""></p>
+<h2 id="缓冲池管理器">
+  缓冲池管理器
+  <a href="#%e7%bc%93%e5%86%b2%e6%b1%a0%e7%ae%a1%e7%90%86%e5%99%a8" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<h3 id="管理器的组成">
+  管理器的组成
+  <a href="#%e7%ae%a1%e7%90%86%e5%99%a8%e7%9a%84%e7%bb%84%e6%88%90" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<p><img src="/images/15445/lab1-06.png" alt=""></p>
+<p>由三部分组成<code>Buffer Pool</code> 、<code>Clock</code>、 <code>Free List</code>。他们分别的作用：</p>
+<p><code>Buffer Pool</code>：用来存储<code>Page</code></p>
+<p><code>Free List</code>：目前<code>Buffer Pool</code>中有那几个地方没有加载<code>Page</code></p>
+<p><code>Clock</code>：在<code>Free List</code>为空时（<code>Buffer Pool</code>加载满时），提供可以移除的受害者。</p>
+<h3 id="fetchpage">
+  FetchPage
+  <a href="#fetchpage" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<p>FetchPage(获取page)，若在Buffer Pool中，直接返回对象。若不在，则从磁盘中加载后返回对象。</p>
+<p><img src="/images/15445/lab1-07.png" alt=""></p>
+<h3 id="newpage">
+  NewPage
+  <a href="#newpage" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<p><img src="/images/15445/lab1-08.png" alt=""></p>
+<h3 id="page的结构">
+  Page的结构
+  <a href="#page%e7%9a%84%e7%bb%93%e6%9e%84" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<p><img src="/images/15445/lab1-09.png" alt=""></p>
+<p><code>pageId</code>：<code>Page</code>唯一的唯一标识，决定其存储位置。</p>
+<p><code>pinCount</code>：正在被多少线程使用。</p>
+<p><code>dirty</code>：内容是否修改</p>
+<p><code>Data</code>：存储在磁盘上的数据</p>
+<h3 id="unpinpage">
+  UnpinPage
+  <a href="#unpinpage" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<p><img src="/images/15445/lab1-10.png" alt=""></p>
+
+    </div>
+    
+      
+        <div class="pagination">
+          <div class="pagination__title">
+            <span class="pagination__title-h"
+              >Read other posts</span
+            >
+            <hr />
+          </div>
+          <div class="pagination__buttons">
+            
+              <span class="button previous">
+                <a href="https://yuyang.run/posts/cmu15-445%E8%AF%BE%E7%A8%8B/hash-tables/">
+                  <span class="button__icon">←</span>
+                  <span class="button__text">Lecture#6 Hash Tables</span>
+                </a>
+              </span>
+            
+            
+              <span class="button next">
+                <a href="https://yuyang.run/posts/cmu15-445%E8%AF%BE%E7%A8%8B/buffer-pools/">
+                  <span class="button__text">Lecture#5 Buffer Pools</span>
+                  <span class="button__icon">→</span>
+                </a>
+              </span>
+            
+          </div>
+        </div>
+      
+    
+
+    
+      
+        
+
+      
+    
+  </article>
+
+      </div>
+
+      
+        <footer class="footer">
+  <div class="footer__inner">
+    
+      <a
+  href="https://yuyang.run"
+  class="logo"
+  style="text-decoration: none;"
+>
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367" />
+</svg>
+</span>
+    <span class="logo__text"
+      >余为民同志</span
+    >
+    <span class="logo__cursor"></span>
+  
+</a>
+
+      <div class="copyright">
+        <span>© 2023 Powered by <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a></span>
+        <span><a href="https://github.com/panr/hugo-theme-hello-friend" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+    
+  </div>
+</footer>
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+
+      
+    </div>
+
+    
+  </body>
+</html>

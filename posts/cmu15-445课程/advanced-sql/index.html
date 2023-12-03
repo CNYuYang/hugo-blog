@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+      <title>
+        Lecture#2 Advanced SQL ::
+        余为民同志|做一个优秀的普通人，在热爱中燃烧！
+      </title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta
+  name="description"
+  content="SQL的历史 # 最新的SQL规范：2016 → SQL:2016 → JSON, Polymorphic tables → SQL:2011 → Temporal DBs, Pipelined DML → SQL:2008 → TRUNCATE, Fancy sorting → SQL:2003 → XML, windows, sequences, auto-gen IDs. → SQL:1999 → Regex, triggers, OO 大部分的DBMS都至少遵守SQL-92，因为制定SQL标准的人都来自各大SQL公司，都将自己公司产品的相关特性指定进去，慢慢的就没公司遵守。 各大数据库的详细对比：http://troels.ar"
+/>
+<meta
+  name="keywords"
+  content=""
+/>
+<meta name="robots" content="noodp" />
+<link rel="canonical" href="https://yuyang.run/posts/cmu15-445%E8%AF%BE%E7%A8%8B/advanced-sql/" />
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/style.css" />
+
+<link rel="stylesheet" href="https://yuyang.run/style.css" />
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://yuyang.run/img/apple-touch-icon-144-precomposed.png" />
+<link rel="shortcut icon" href="https://yuyang.run/img/favicon.png" />
+
+
+<link href="/fonts/JetBrainsMono-Italic.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="/fonts/JetBrainsMono-Regular.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="/fonts/JetBrainsMono-Medium.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="/fonts/JetBrainsMono-MediumItalic.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="/fonts/JetBrainsMono-Bold.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="/fonts/JetBrainsMono-BoldItalic.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Lecture#2 Advanced SQL"/>
+<meta name="twitter:description" content="SQL的历史 # 最新的SQL规范：2016 → SQL:2016 → JSON, Polymorphic tables → SQL:2011 → Temporal DBs, Pipelined DML → SQL:2008 → TRUNCATE, Fancy sorting → SQL:2003 → XML, windows, sequences, auto-gen IDs. → SQL:1999 → Regex, triggers, OO 大部分的DBMS都至少遵守SQL-92，因为制定SQL标准的人都来自各大SQL公司，都将自己公司产品的相关特性指定进去，慢慢的就没公司遵守。 各大数据库的详细对比：http://troels.ar"/>
+
+
+
+<meta property="og:title" content="Lecture#2 Advanced SQL" />
+<meta property="og:description" content="SQL的历史 # 最新的SQL规范：2016 → SQL:2016 → JSON, Polymorphic tables → SQL:2011 → Temporal DBs, Pipelined DML → SQL:2008 → TRUNCATE, Fancy sorting → SQL:2003 → XML, windows, sequences, auto-gen IDs. → SQL:1999 → Regex, triggers, OO 大部分的DBMS都至少遵守SQL-92，因为制定SQL标准的人都来自各大SQL公司，都将自己公司产品的相关特性指定进去，慢慢的就没公司遵守。 各大数据库的详细对比：http://troels.ar" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yuyang.run/posts/cmu15-445%E8%AF%BE%E7%A8%8B/advanced-sql/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2020-05-05T15:29:13+08:00" />
+<meta property="article:modified_time" content="2020-05-05T15:29:13+08:00" />
+
+
+
+
+
+
+
+  </head>
+  <body class="light-theme">
+    <div class="container">
+      <header class="header">
+  <span class="header__inner">
+    <a
+  href="https://yuyang.run"
+  class="logo"
+  style="text-decoration: none;"
+>
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367" />
+</svg>
+</span>
+    <span class="logo__text"
+      >余为民同志</span
+    >
+    <span class="logo__cursor"></span>
+  
+</a>
+
+    <span class="header__right">
+      
+        <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/posts/">文章</a></li>
+        
+      
+        
+          <li><a href="/tags/">标签</a></li>
+        
+      
+        
+          <li><a href="/categories/">分类</a></li>
+        
+      
+        
+          <li><a href="https://geekbang.yuyang.run">极客帮</a></li>
+        
+      
+      
+      
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/posts/">文章</a></li>
+      
+    
+      
+        <li><a href="/tags/">标签</a></li>
+      
+    
+      
+        <li><a href="/categories/">分类</a></li>
+      
+    
+      
+        <li><a href="https://geekbang.yuyang.run">极客帮</a></li>
+      
+    
+  </ul>
+</nav>
+
+        <span class="menu-trigger">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none" />
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" />
+          </svg>
+        </span>
+      
+      <span class="theme-toggle">
+        <svg
+  class="theme-toggler"
+  width="24"
+  height="24"
+  viewBox="0 0 48 48"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <path
+    d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"
+  />
+</svg>
+
+      </span>
+    </span>
+  </span>
+</header>
+
+
+      <div class="content">
+        
+  
+  
+
+  <article class="post">
+    <div class="in-article">
+      
+        <figure class="post-cover">
+  
+    <img src="https://yuyang.run/cover/database.png" alt="Lecture#2 Advanced SQL"/>
+  
+
+  
+</figure>
+
+      
+    </div>
+    <h1 class="post-title">Lecture#2 Advanced SQL</h1>
+    <div class="post-meta">
+      
+        <time class="post-date">
+          2020-05-05 15:29:13
+        </time>
+
+        
+          
+        
+      
+
+      
+
+
+      
+    </div>
+
+    
+      <span class="post-tags">
+        
+          <a href="https://yuyang.run/tags/cmu15-445/">#CMU15-445</a>&nbsp;
+        
+          <a href="https://yuyang.run/tags/sql/">#SQL</a>&nbsp;
+        
+      </span>
+    
+
+    <div class="post-content">
+      
+        
+        <div style="position: fixed; right:5px; overflow:auto; top: 100px; width: 22%; bottom:50px">
+        <h2>目录</h2>
+        <aside class="table-of-contents"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#聚合之外的其他列的输出未定义">聚合之外的其他列的输出未定义</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#错误">错误</a></li>
+    <li><a href="#正确">正确</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#字符串匹配">字符串匹配</a></li>
+    <li><a href="#字符串拼接">字符串拼接</a>
+      <ul>
+        <li><a href="#sql-92">SQL-92</a></li>
+        <li><a href="#mssql">MSSQL</a></li>
+        <li><a href="#mysql">MySQL</a></li>
+      </ul>
+    </li>
+  </ul>
+
+  <ul>
+    <li><a href="#sql-92-1">SQL-92</a></li>
+    <li><a href="#mysql-1">MYSQL</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#order-by-column-ascdesc">ORDER BY &lt;column*&gt; [ASC|DESC]</a></li>
+    <li><a href="#limit-count-offset">LIMIT &lt;count&gt; [offset]</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#操作符">操作符</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#汇总功能">汇总功能</a></li>
+    <li><a href="#特殊功能">特殊功能</a></li>
+    <li><a href="#over">OVER</a></li>
+  </ul>
+</nav></aside>
+        </div>
+        
+      
+      <h1 id="sql的历史">
+  SQL的历史
+  <a href="#sql%e7%9a%84%e5%8e%86%e5%8f%b2" class="h-anchor" aria-hidden="true">#</a>
+</h1>
+<p>最新的SQL规范：2016</p>
+<p>→ SQL:2016 → JSON, Polymorphic tables</p>
+<p>→ SQL:2011 → Temporal DBs, Pipelined DML</p>
+<p>→ SQL:2008 → TRUNCATE, Fancy sorting</p>
+<p>→ SQL:2003 → XML, windows, sequences, auto-gen IDs.</p>
+<p>→ SQL:1999 → Regex, triggers, OO</p>
+<p>大部分的DBMS都至少遵守<code>SQL-92</code>，因为制定SQL标准的人都来自各大SQL公司，都将自己公司产品的相关特性指定进去，慢慢的就没公司遵守。</p>
+<p>各大数据库的详细对比：<a href="http://troels.arvin.dk/db/rdbms/">http://troels.arvin.dk/db/rdbms/</a></p>
+<h1 id="该笔记所用到的数据库模型">
+  该笔记所用到的数据库模型
+  <a href="#%e8%af%a5%e7%ac%94%e8%ae%b0%e6%89%80%e7%94%a8%e5%88%b0%e7%9a%84%e6%95%b0%e6%8d%ae%e5%ba%93%e6%a8%a1%e5%9e%8b" class="h-anchor" aria-hidden="true">#</a>
+</h1>
+<p><img src="/images/15445/02-01.png" alt="02-01.png"></p>
+<h1 id="聚合函数">
+  聚合函数
+  <a href="#%e8%81%9a%e5%90%88%e5%87%bd%e6%95%b0" class="h-anchor" aria-hidden="true">#</a>
+</h1>
+<p>从一堆元组返回单个值得函数：</p>
+<p>→ <code>AVG(col)</code>→ 返回所有值得平均值</p>
+<p>→ <code>MIN(col)</code>→ 返回最小得行值</p>
+<p>→ <code>MAX(col)</code>→ 返回最大得行值</p>
+<p>→ <code>SUM(col)</code>→ 返回所有行值得总和</p>
+<p>→ <code>COUNT(col)</code>→ 返回行数</p>
+<p>?&gt;  聚合函数只能在SELECT输出列表中使用</p>
+<p>获取student表中login以&quot;@cs&quot;结尾的行数：</p>
+<p><code>SELECT COUNT(login) AS cnt FROM student WHERE login LIKE '%@cs'</code></p>
+<p>或</p>
+<p><code>SELECT COUNT(*) AS cnt FROM student WHERE login LIKE '%@cs'</code></p>
+<p>或</p>
+<p><code>SELECT COUNT(1) AS cnt FROM student WHERE login LIKE '%@cs'</code></p>
+<p>?&gt;<code>COUNT</code> ,<code>SUM</code>, <code>AVG</code>支持DISTINCT</p>
+<h2 id="聚合之外的其他列的输出未定义">
+  聚合之外的其他列的输出未定义
+  <a href="#%e8%81%9a%e5%90%88%e4%b9%8b%e5%a4%96%e7%9a%84%e5%85%b6%e4%bb%96%e5%88%97%e7%9a%84%e8%be%93%e5%87%ba%e6%9c%aa%e5%ae%9a%e4%b9%89" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p>获取每门课的平均GPA:</p>
+<p>SELECT AVG(s.gpa), <code>e.cid</code> FROM enrolled AS e ,student AS s WHERE e.sid = s.sid</p>
+<p><img src="/images/15445/02-02.png" alt="02-02.png"></p>
+<h1 id="group-by">
+  GROUP BY
+  <a href="#group-by" class="h-anchor" aria-hidden="true">#</a>
+</h1>
+<p>将元组投影到子集中并针对每个子集计算聚合</p>
+<p>SELECT AVG(s.gpa), e.cid FROM enrolled AS e, student AS s WHERE e.sid = s.sid <code>GROUP BY</code> e.cid</p>
+<p><img src="/images/15445/02-03.png" alt="02-03.png"></p>
+<p>?&gt; SELECT输出子句中的非聚合值必须出现在GROUP BY子句中。
+SELECT AVG(s.gpa), e.cid, <code>s.name</code> FROM enrolled AS e, student AS s WHERE e.sid = s.sid GROUP BY e.cid 中s.name为出现在GROUP BY子句中,故错误。</p>
+<h1 id="having">
+  HAVING
+  <a href="#having" class="h-anchor" aria-hidden="true">#</a>
+</h1>
+<p>根据聚合计算过滤结果，就像GROUP BY的WHERE子句。</p>
+<h2 id="错误">
+  错误
+  <a href="#%e9%94%99%e8%af%af" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p>SELECT AVG(s.gpa) AS avg_gpa, e.cid FROM enrolled AS e, student AS s WHERE e.sid = s.sid AND <code>avg_gpa &gt; 3.9</code> GROUP BY e.cid</p>
+<h2 id="正确">
+  正确
+  <a href="#%e6%ad%a3%e7%a1%ae" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p>SELECT AVG(s.gpa) AS avg_gpa, e.cid FROM enrolled AS e, student AS s WHERE e.sid = s.sid GROUP BY e.cid <code>HAVING avg_gpa &gt; 3.9</code>;</p>
+<p><img src="/images/15445/02-04.png" alt="02-04.png"></p>
+<h1 id="字符串操作">
+  字符串操作
+  <a href="#%e5%ad%97%e7%ac%a6%e4%b8%b2%e6%93%8d%e4%bd%9c" class="h-anchor" aria-hidden="true">#</a>
+</h1>
+<table>
+<thead>
+<tr>
+<th style="text-align:center"></th>
+<th style="text-align:center">String  Case</th>
+<th style="text-align:center">String Quotes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><code>SQL-92</code></td>
+<td style="text-align:center"><code>Sensitive</code></td>
+<td style="text-align:center"><code>Single Only</code></td>
+</tr>
+<tr>
+<td style="text-align:center">Postgres</td>
+<td style="text-align:center">Sensitive</td>
+<td style="text-align:center">Single Only</td>
+</tr>
+<tr>
+<td style="text-align:center">MySQL</td>
+<td style="text-align:center">Insensitive</td>
+<td style="text-align:center">Single/Double</td>
+</tr>
+<tr>
+<td style="text-align:center">SQLite</td>
+<td style="text-align:center">Sensitive</td>
+<td style="text-align:center">Single/Double</td>
+</tr>
+<tr>
+<td style="text-align:center">DB2</td>
+<td style="text-align:center">Sensitive</td>
+<td style="text-align:center">Single Only</td>
+</tr>
+<tr>
+<td style="text-align:center">Oracle</td>
+<td style="text-align:center">Sensitive</td>
+<td style="text-align:center">Single Only</td>
+</tr>
+</tbody>
+</table>
+<h2 id="字符串匹配">
+  字符串匹配
+  <a href="#%e5%ad%97%e7%ac%a6%e4%b8%b2%e5%8c%b9%e9%85%8d" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p><code>LIKE</code>用于字符串匹配。</p>
+<p>字符串匹配运算符:</p>
+<p><code>→ '%'</code> 匹配任意长度的字符串（包括空字符串）</p>
+<p><code>→ '_'</code> 仅仅匹配一个字符</p>
+<h2 id="字符串拼接">
+  字符串拼接
+  <a href="#%e5%ad%97%e7%ac%a6%e4%b8%b2%e6%8b%bc%e6%8e%a5" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p>SQL标准说要使用 <code>||</code> 将两个或多个字符串连接在一起</p>
+<h3 id="sql-92">
+  SQL-92
+  <a href="#sql-92" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<p>SELECT name FROM student WHERE login = LOWER(name) <code>||</code> &lsquo;@cs&rsquo;</p>
+<h3 id="mssql">
+  MSSQL
+  <a href="#mssql" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<p>SELECT name FROM student WHERE login = LOWER(name)  <code>+</code>  &lsquo;@cs&rsquo;</p>
+<h3 id="mysql">
+  MySQL
+  <a href="#mysql" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<p>SELECT name FROM student  WHERE login = <code>CONCAT</code>(LOWER(name), &lsquo;@cs&rsquo;)</p>
+<h1 id="输出重定向">
+  输出重定向
+  <a href="#%e8%be%93%e5%87%ba%e9%87%8d%e5%ae%9a%e5%90%91" class="h-anchor" aria-hidden="true">#</a>
+</h1>
+<p>将查询结果存储在另一个表中：</p>
+<p>→尚未定义表</p>
+<p>→已存在的表格，且具有相同的列数</p>
+<h2 id="sql-92-1">
+  SQL-92
+  <a href="#sql-92-1" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p>SELECT DISTINCT cid <code>INTO</code> CourseIds FROM enrolled;</p>
+<h2 id="mysql-1">
+  MYSQL
+  <a href="#mysql-1" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p>CREATE TABLE CourseIds ( SELECT DISTINCT cid FROM enrolled);</p>
+<h1 id="输出控制">
+  输出控制
+  <a href="#%e8%be%93%e5%87%ba%e6%8e%a7%e5%88%b6" class="h-anchor" aria-hidden="true">#</a>
+</h1>
+<h2 id="order-by-column-ascdesc">
+  ORDER BY &lt;column*&gt; [ASC|DESC]
+  <a href="#order-by-column-ascdesc" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p>通过一个或多个列中的值对输出元组进行排序。</p>
+<p>SELECT sid, grade FROM enrolled WHERE cid = &lsquo;15-721&rsquo; <code>ORDER BY grade</code></p>
+<p>SELECT sid FROM enrolled WHERE cid = &lsquo;15-721&rsquo; <code>ORDER BY grade DESC, sid ASC</code></p>
+<h2 id="limit-count-offset">
+  LIMIT &lt;count&gt; [offset]
+  <a href="#limit-count-offset" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p>→ 限制输出元组的数量
+→ 可以设置一个偏移</p>
+<p>SELECT sid, name FROM student WHERE login LIKE &lsquo;%@cs&rsquo; <code>LIMIT 10  </code></p>
+<p>SELECT sid, name FROM student WHERE login LIKE &lsquo;%@cs&rsquo; <code>LIMIT 20 OFFSET 10  </code></p>
+<h1 id="嵌套查询">
+  嵌套查询
+  <a href="#%e5%b5%8c%e5%a5%97%e6%9f%a5%e8%af%a2" class="h-anchor" aria-hidden="true">#</a>
+</h1>
+<p>包含其他查询的查询通常难以优化，内部查询可以（几乎）出现在查询中的任何位置。</p>
+<p><img src="/images/15445/02-05.png" alt="02-05.png"></p>
+<p>获取14-445中所有学生的名字：</p>
+<p><code>STEP1</code> SELECT name FROM student WHERE &hellip;  <em>&hellip;为选择14-445这门课学生的sid的集合</em></p>
+<p><code>STEP2</code> &hellip; → SELECT sid FROM enrolled WHERE cid = &lsquo;15-445&rsquo;</p>
+<p><code>STEP3</code> SELECT name FROM student WHERE <code>sid IN ( SELECT sid FROM enrolled WHERE cid )</code></p>
+<h2 id="操作符">
+  操作符
+  <a href="#%e6%93%8d%e4%bd%9c%e7%ac%a6" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p><code>ALL</code>→ 必须满足子查询中所有行的表达式</p>
+<p><code>ANY</code>→ 在子查询中必须满足至少一行的表达式。</p>
+<p><code>IN</code>→ 类似于 &lsquo;=ANY()&rsquo; .</p>
+<p><code>EXISTS</code>→ 至少返回一行</p>
+<h1 id="窗口函数">
+  窗口函数
+  <a href="#%e7%aa%97%e5%8f%a3%e5%87%bd%e6%95%b0" class="h-anchor" aria-hidden="true">#</a>
+</h1>
+<p>对一组相关的元组执行“滑动”计算。</p>
+<p>像聚合一样，但元组不会分组为单个输出元组。</p>
+<blockquote>
+<p>SELECT &hellip; <code>FUNC-NAME(...) OVER (...)</code> FROM tableName</p>
+<p><code>FUNC-NAME</code> : 汇总功能 、特殊功能</p>
+<p><code>OVER </code>: 切分数据</p>
+</blockquote>
+<h2 id="汇总功能">
+  汇总功能
+  <a href="#%e6%b1%87%e6%80%bb%e5%8a%9f%e8%83%bd" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p>我们之前讨论的任何内容</p>
+<h2 id="特殊功能">
+  特殊功能
+  <a href="#%e7%89%b9%e6%ae%8a%e5%8a%9f%e8%83%bd" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p><code>→ ROW_NUMBER()</code>→ ROW_NUMBER()函数作用就是将select查询到的数据进行排序，每一条数据加一个序号，它不能用做于学生成绩的排名，一般多用于分页查询， 比如查询前10个 查询10-100个学生。</p>
+<p><code>→ RANK()</code>→ RANK()函数，顾名思义排名函数，可以对某一个字段进行排名，这里为什么和ROW_NUMBER()不一样那，ROW_NUMBER()是排序，当存在相同成绩的学生时，ROW_NUMBER()会依次进行排序，他们序号不同，而Rank()则不一样出现相同的，他们的排名是一样的。</p>
+<h2 id="over">
+  OVER
+  <a href="#over" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p>OVER关键字指定在计算窗口函数时如何将元组组合在一起。 使用PARTITION BY指定组</p>
+<p>SELECT cid, sid, <code>ROW_NUMBER() OVER (PARTITION BY cid) </code>FROM enrolled ORDER BY cid</p>
+<p><img src="/images/15445/02-06.png" alt="02-06.png"></p>
+<h1 id="common-table-expressions">
+  COMMON TABLE EXPRESSIONS
+  <a href="#common-table-expressions" class="h-anchor" aria-hidden="true">#</a>
+</h1>
+<p>提供一种编写用于较大查询的辅助语句的方法。</p>
+<p>→可以将其视为仅用于一个查询的临时表。 嵌套查询和视图的替代方法。</p>
+<p><code>WITH</code> cteName<code> AS</code> ( SELECT 1 ) SELECT * FROM cteName</p>
+<p>您可以将输出列绑定到AS关键字之前的名称。</p>
+<p>WITH cteName (<code>col1</code>, <code>col2</code>) <code>AS</code> ( SELECT 1, 2 ) SELECT <code>col1</code> + <code>col2</code> FROM cteName</p>
+
+    </div>
+    
+      
+        <div class="pagination">
+          <div class="pagination__title">
+            <span class="pagination__title-h"
+              >Read other posts</span
+            >
+            <hr />
+          </div>
+          <div class="pagination__buttons">
+            
+              <span class="button previous">
+                <a href="https://yuyang.run/posts/cmu15-445%E8%AF%BE%E7%A8%8B/database-storage-i/">
+                  <span class="button__icon">←</span>
+                  <span class="button__text">Lecture#3 Database Storage I</span>
+                </a>
+              </span>
+            
+            
+              <span class="button next">
+                <a href="https://yuyang.run/posts/cmu15-445%E8%AF%BE%E7%A8%8B/course-introduction-and-the-relational-model/">
+                  <span class="button__text">Lecture#1 Course Introduction and the Relational Model</span>
+                  <span class="button__icon">→</span>
+                </a>
+              </span>
+            
+          </div>
+        </div>
+      
+    
+
+    
+      
+        
+
+      
+    
+  </article>
+
+      </div>
+
+      
+        <footer class="footer">
+  <div class="footer__inner">
+    
+      <a
+  href="https://yuyang.run"
+  class="logo"
+  style="text-decoration: none;"
+>
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367" />
+</svg>
+</span>
+    <span class="logo__text"
+      >余为民同志</span
+    >
+    <span class="logo__cursor"></span>
+  
+</a>
+
+      <div class="copyright">
+        <span>© 2023 Powered by <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a></span>
+        <span><a href="https://github.com/panr/hugo-theme-hello-friend" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+    
+  </div>
+</footer>
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+
+      
+    </div>
+
+    
+  </body>
+</html>

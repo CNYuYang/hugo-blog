@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+      <title>
+        Lecture#13 Query Execution II ::
+        余为民同志|做一个优秀的普通人，在热爱中燃烧！
+      </title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta
+  name="description"
+  content="我们在 Lec12 中已经讨论了怎么将 operators 组织为一个 query plan。当时我们是假设 query 是由一个 worker (是 DBMS 的组件，负责代表客户机执行任务并返回结果，可能是一个线程或进程) 执行。然而在实践中，query 往往是由多个 workers 并发执行。并发执行为 DBMS 提供了很多好处： 提高吞吐量 (每秒能执行多少 query)，降低延迟 (执行一条 query 需要多久)。"
+/>
+<meta
+  name="keywords"
+  content=""
+/>
+<meta name="robots" content="noodp" />
+<link rel="canonical" href="https://yuyang.run/posts/cmu15-445%E8%AF%BE%E7%A8%8B/query-execution-ii/" />
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/style.css" />
+
+<link rel="stylesheet" href="https://yuyang.run/style.css" />
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://yuyang.run/img/apple-touch-icon-144-precomposed.png" />
+<link rel="shortcut icon" href="https://yuyang.run/img/favicon.png" />
+
+
+<link href="/fonts/JetBrainsMono-Italic.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="/fonts/JetBrainsMono-Regular.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="/fonts/JetBrainsMono-Medium.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="/fonts/JetBrainsMono-MediumItalic.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="/fonts/JetBrainsMono-Bold.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="/fonts/JetBrainsMono-BoldItalic.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Lecture#13 Query Execution II"/>
+<meta name="twitter:description" content="我们在 Lec12 中已经讨论了怎么将 operators 组织为一个 query plan。当时我们是假设 query 是由一个 worker (是 DBMS 的组件，负责代表客户机执行任务并返回结果，可能是一个线程或进程) 执行。然而在实践中，query 往往是由多个 workers 并发执行。并发执行为 DBMS 提供了很多好处： 提高吞吐量 (每秒能执行多少 query)，降低延迟 (执行一条 query 需要多久)。"/>
+
+
+
+<meta property="og:title" content="Lecture#13 Query Execution II" />
+<meta property="og:description" content="我们在 Lec12 中已经讨论了怎么将 operators 组织为一个 query plan。当时我们是假设 query 是由一个 worker (是 DBMS 的组件，负责代表客户机执行任务并返回结果，可能是一个线程或进程) 执行。然而在实践中，query 往往是由多个 workers 并发执行。并发执行为 DBMS 提供了很多好处： 提高吞吐量 (每秒能执行多少 query)，降低延迟 (执行一条 query 需要多久)。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yuyang.run/posts/cmu15-445%E8%AF%BE%E7%A8%8B/query-execution-ii/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-11-23T15:29:13+08:00" />
+<meta property="article:modified_time" content="2023-11-23T15:29:13+08:00" />
+
+
+
+
+
+
+
+  </head>
+  <body class="light-theme">
+    <div class="container">
+      <header class="header">
+  <span class="header__inner">
+    <a
+  href="https://yuyang.run"
+  class="logo"
+  style="text-decoration: none;"
+>
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367" />
+</svg>
+</span>
+    <span class="logo__text"
+      >余为民同志</span
+    >
+    <span class="logo__cursor"></span>
+  
+</a>
+
+    <span class="header__right">
+      
+        <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/posts/">文章</a></li>
+        
+      
+        
+          <li><a href="/tags/">标签</a></li>
+        
+      
+        
+          <li><a href="/categories/">分类</a></li>
+        
+      
+        
+          <li><a href="https://geekbang.yuyang.run">极客帮</a></li>
+        
+      
+      
+      
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/posts/">文章</a></li>
+      
+    
+      
+        <li><a href="/tags/">标签</a></li>
+      
+    
+      
+        <li><a href="/categories/">分类</a></li>
+      
+    
+      
+        <li><a href="https://geekbang.yuyang.run">极客帮</a></li>
+      
+    
+  </ul>
+</nav>
+
+        <span class="menu-trigger">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none" />
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" />
+          </svg>
+        </span>
+      
+      <span class="theme-toggle">
+        <svg
+  class="theme-toggler"
+  width="24"
+  height="24"
+  viewBox="0 0 48 48"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <path
+    d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"
+  />
+</svg>
+
+      </span>
+    </span>
+  </span>
+</header>
+
+
+      <div class="content">
+        
+  
+  
+
+  <article class="post">
+    <div class="in-article">
+      
+        <figure class="post-cover">
+  
+    <img src="https://yuyang.run/cover/database.png" alt="Lecture#13 Query Execution II"/>
+  
+
+  
+</figure>
+
+      
+    </div>
+    <h1 class="post-title">Lecture#13 Query Execution II</h1>
+    <div class="post-meta">
+      
+        <time class="post-date">
+          2023-11-23 15:29:13
+        </time>
+
+        
+          
+        
+      
+
+      
+
+
+      
+    </div>
+
+    
+      <span class="post-tags">
+        
+          <a href="https://yuyang.run/tags/cmu15-445/">#CMU15-445</a>&nbsp;
+        
+          <a href="https://yuyang.run/tags/sql/">#SQL</a>&nbsp;
+        
+      </span>
+    
+
+    <div class="post-content">
+      
+        
+        <div style="position: fixed; right:5px; overflow:auto; top: 100px; width: 22%; bottom:50px">
+        <h2>目录</h2>
+        <aside class="table-of-contents"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#每个dbms-worker一个进程">每个DBMS Worker一个进程</a></li>
+    <li><a href="#进程池">进程池</a></li>
+    <li><a href="#每个dbms-worker一个线程">每个DBMS Worker一个线程</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#查询间并发">查询间并发</a></li>
+    <li><a href="#查询内并发">查询内并发</a>
+      <ul>
+        <li><a href="#intra-operatorhorizontal">Intra-Operator(Horizontal)</a></li>
+        <li><a href="#inter-operator-parallelism-vertical">Inter-operator Parallelism (Vertical)</a></li>
+        <li><a href="#bushy-parallelism">Bushy Parallelism</a></li>
+      </ul>
+    </li>
+  </ul>
+
+  <ul>
+    <li><a href="#多数据库并行">多数据库并行</a></li>
+    <li><a href="#数据库分区">数据库分区</a>
+      <ul>
+        <li><a href="#垂直分区">垂直分区</a></li>
+        <li><a href="#水平分区">水平分区</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></aside>
+        </div>
+        
+      
+      <p>我们在 Lec12 中已经讨论了怎么将 operators 组织为一个 query plan。当时我们是假设 query 是由一个 worker (是 DBMS 的组件，负责代表客户机执行任务并返回结果，可能是一个线程或进程) 执行。然而在实践中，query 往往是由多个 workers 并发执行。并发执行为 DBMS 提供了很多好处：</p>
+<ul>
+<li>提高吞吐量 (每秒能执行多少 query)，降低延迟 (执行一条 query 需要多久)。</li>
+<li>从 DBMS 用户的角度看，提高了响应性和可用性。</li>
+<li>减低总体拥有成本 (TCO)，这个成本包括硬件采购和软件许可，以及部署DBMS的劳动力开销和运行机器所需的能源。</li>
+</ul>
+<p>BMS支持两种类型的并发：inter-query parallelism, intra-query parallelism。</p>
+<p><strong>Inter-query VS Intra-query Parallelism</strong></p>
+<ul>
+<li>Inter-query Parallelism：查询间并发，即不同查询间并行执行
+<ul>
+<li>增加吞吐量，减少延迟</li>
+</ul>
+</li>
+<li>Intra-query Parallelism：查询内并发，即查询内不同 operators 并行执行
+<ul>
+<li>减少长时查询的延迟，主要用于 Streaming</li>
+</ul>
+</li>
+</ul>
+<p><strong>Parallel VS Distributed DBMS</strong></p>
+<ul>
+<li>Parallel DBMSs：如运行在多核 CPU 上
+<ul>
+<li>每个 DB 节点物理上非常接近，通过高速 LAN 相连接</li>
+<li>通信成本极小</li>
+</ul>
+</li>
+<li>Distributed DBMSs：如分布式数据库
+<ul>
+<li>节点之间距离可能很远，通过公网相连接</li>
+<li>通信成本和通信可能出现的问题不可忽略</li>
+</ul>
+</li>
+</ul>
+<h1 id="处理模型">
+  处理模型
+  <a href="#%e5%a4%84%e7%90%86%e6%a8%a1%e5%9e%8b" class="h-anchor" aria-hidden="true">#</a>
+</h1>
+<p>DBMS 的 process model 定义了多用户数据库系统处理并发请求的架构。在下文中， DBMS 的组件，负责代表客户机执行任务并返回结果，它可能是 Process(es)，也可能是 Thread(s)。几乎所有 DBMS 都想实现并发执行，但要将这件事做对很难，其难度包括这几个方面：协同工作的开销，调度，并发问题处理，资源冲突。</p>
+<ul>
+<li>Approach #1: 每个DBMS Worker一个进程</li>
+<li>Approach #2: 进程池</li>
+<li>Approach #3: 每个DBMS Worker一个线程</li>
+</ul>
+<h2 id="每个dbms-worker一个进程">
+  每个DBMS Worker一个进程
+  <a href="#%e6%af%8f%e4%b8%aadbms-worker%e4%b8%80%e4%b8%aa%e8%bf%9b%e7%a8%8b" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p><img src="/images/15445/13-01.png" alt=""></p>
+<p>用户请求经过 Dispatcher 后，由 Dispatcher 分配相应的 Worker 完成查询并返回结果。每个 worker 都是一个单独的操作系统进程：</p>
+<ul>
+<li>依赖操作系统的调度器来调度</li>
+<li>使用共享内存来存储全局数据结构</li>
+<li>单个 worker 崩溃不会引起整个系统崩溃</li>
+</ul>
+<p>这种 Process Model 出现在线程跨平台支持很不稳定的时代，主要是为了解决系统的可移植性问题。使用这种 Process Model 的数据库有历史版本的 DB2、ORACLE 和 PostgreSQL 等。</p>
+<h2 id="进程池">
+  进程池
+  <a href="#%e8%bf%9b%e7%a8%8b%e6%b1%a0" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p><img src="/images/15445/13-02.png" alt=""></p>
+<p>用户请求经过 Dispatcher 后，由 Dispatcher 分配相应的 Worker 完成查询，将结果返回 Dispatcher，后者再返回给用户。每个 Worker 可以使用 Worker Pool 中任意空闲的 Process(es)：</p>
+<ul>
+<li>仍依赖操作系统的调度器来调度</li>
+<li>也使用共享内存来存储全局数据结构</li>
+<li>不利于使用 CPU 缓存</li>
+</ul>
+<p>使用这种 Process Model 的数据库有 DB2、PostgreSQL(2015)。</p>
+<h2 id="每个dbms-worker一个线程">
+  每个DBMS Worker一个线程
+  <a href="#%e6%af%8f%e4%b8%aadbms-worker%e4%b8%80%e4%b8%aa%e7%ba%bf%e7%a8%8b" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p><img src="/images/15445/13-03.png" alt=""></p>
+<p>整个 DBMS 由一个 Process 和多个 Worker Threads 构成：</p>
+<ul>
+<li>DBMS 自己控制调度策略：每个查询拆成多少个任务、使用多少个 CPU cores、将任务分配到哪个 core 上，每个 task 的输出存储在哪里。自己控制调度策略的理由与自己构建 Buffer Pools 的理由是一样的：DBMS 比 OS 有更多的领域知识。</li>
+<li>dispatcher 不一定存在</li>
+<li>thread 崩溃可能导致整个系统崩溃</li>
+<li>使用多线程架构的优势：上下文切换成本更低；天然地可以在所有线程之间共享全局信息，而无需使用共享内存</li>
+</ul>
+<p>使用这种 Process Model 的数据库有 DB2、MSSQL、MySQL、Oracle (2014) 及其它近 10 年出现的 DBMS 等。</p>
+<h1 id="并行执行">
+  并行执行
+  <a href="#%e5%b9%b6%e8%a1%8c%e6%89%a7%e8%a1%8c" class="h-anchor" aria-hidden="true">#</a>
+</h1>
+<p><code>并发执行</code>包括：查询间并发 (inter-query parallelism), 查询内并发 (intra-query parallelism)。</p>
+<h2 id="查询间并发">
+  查询间并发
+  <a href="#%e6%9f%a5%e8%af%a2%e9%97%b4%e5%b9%b6%e5%8f%91" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p><code>查询间并发</code>，通过并行执行多个查询来提高 DBMS 性能 (增加吞吐量，减少延迟)。</p>
+<p>若这些查询都是只读查询，那么处理不同查询之间的关系无需额外的工作；若查询存在更新操作，那么处理好不同查询之间的关系将变得很难。相关内容将在后续 (Lect16) 中介绍。</p>
+<h2 id="查询内并发">
+  查询内并发
+  <a href="#%e6%9f%a5%e8%af%a2%e5%86%85%e5%b9%b6%e5%8f%91" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p>查询内并发，通过并行执行单个查询的多个 operators 来提高 DBMS 性能 (减少长时查询的延迟，主要用于 Streaming)：</p>
+<ul>
+<li>Approach #1：Intra-Operator(Horizontal)</li>
+<li>Approach #2：Inter-Operator(Vertical)</li>
+<li>Approach #3：Bushy</li>
+</ul>
+<p>这些方法并不相互排斥。在给定的工作负载上，以一种优化性能的方式组合这些技术是 DBMS 的责任。</p>
+<h3 id="intra-operatorhorizontal">
+  Intra-Operator(Horizontal)
+  <a href="#intra-operatorhorizontal" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<p>operator 内的并发。</p>
+<p>将 data 拆解成多个独立子集，然后对这些子集并行地执行相应的 operator，DBMS 通过将 exchange operator 引入查询计划，来合并子集处理的结果，过程类似 MapReduce。exchange operator 会阻止 DBMS 在计划中执行它上面的 operator，直到它从 child operator 接收到所有的数据。</p>
+<p>一般情况下有三种类型的 exchange operator：</p>
+<ul>
+<li>Gather：将来自多个 worker 的结果合并到一个输出流中</li>
+<li>Repartition：跨多个输出流重新组织多个输入流。</li>
+<li>Distribute：将一个输入流分割成多个输出流。</li>
+</ul>
+<p><img src="/images/15445/13-07.png" alt=""></p>
+<h3 id="inter-operator-parallelism-vertical">
+  Inter-operator Parallelism (Vertical)
+  <a href="#inter-operator-parallelism-vertical" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<p><code>operator 间的并发</code>，也称为 <code>pipelined parallelism</code>。</p>
+<p>将 operators 串成 pipeline，数据从上游流向下游，一般无需等待前一步操作执行完毕。</p>
+<p>这种方式在传统 DBMSs 中并不常用，因为许多 operators，如 join，必须扫描所有 tuples 之后才能得到结果。它更多地被用在流处理系统，如 Spark、Nifi、Kafka,、Storm、Flink、Heron。</p>
+<p><img src="/images/15445/13-08.png" alt=""></p>
+<h3 id="bushy-parallelism">
+  Bushy Parallelism
+  <a href="#bushy-parallelism" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<p>Inter-operator Parallelism 的扩展，worker 同时执行来自 query plan 的不同 segment 的多个 operator，仍需要 exchange operator 来结合多个 segment 的中间结果。</p>
+<p><img src="/images/15445/13-09.png" alt=""></p>
+<h1 id="io并行">
+  IO并行
+  <a href="#io%e5%b9%b6%e8%a1%8c" class="h-anchor" aria-hidden="true">#</a>
+</h1>
+<p>值得注意的是，使用额外的 processes/threads 来并行地执行查询可以通过提高 CPU 利用率来提高 DBMS 效率；但如果 DBMS 效率瓶颈出现在 disk 数据存取上，这种优化带来的效果就非常有限，甚至有可能因为 disk I/O 的提高导致整体性能下降，如 cache miss rate 提高等等。将 DBMS 安装在多个存储设备上来实现 I/O 并行可以从一定程度上缓解这个问题。</p>
+<h2 id="多数据库并行">
+  多数据库并行
+  <a href="#%e5%a4%9a%e6%95%b0%e6%8d%ae%e5%ba%93%e5%b9%b6%e8%a1%8c" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p><code>多磁盘存储</code>：通过 OS 或硬件配置将 DBMS 的数据文件存储到多个存储设备上，整个过程对 DBMS 透明 (所以上面提到的worker并不知道这里发生了什么)，如使用 RAID。</p>
+<p><img src="/images/15445/13-04.png" alt=""></p>
+<p>一些 DBMS 甚至允许用户为单个数据库指定磁盘存储位置，并由缓存池负责将页映射到磁盘位置。</p>
+<h2 id="数据库分区">
+  数据库分区
+  <a href="#%e6%95%b0%e6%8d%ae%e5%ba%93%e5%88%86%e5%8c%ba" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p><code>分区</code>：将一个逻辑上的表拆开，在不同的物理内存片段 (physical segments) 上进行存储。理想情况下该方法应该对应用透明，但这并不一定能实现。</p>
+<h3 id="垂直分区">
+  垂直分区
+  <a href="#%e5%9e%82%e7%9b%b4%e5%88%86%e5%8c%ba" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<p><code>垂直分区</code>：原理上类似列存储数据库，将表中的部分属性存储到不同的地方，并且需要存储一些元组信息来帮助重建原始记录。如：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">TABLE</span> foo (
+</span></span><span style="display:flex;"><span>  attr1 INT,
+</span></span><span style="display:flex;"><span>  attr2 INT,
+</span></span><span style="display:flex;"><span>  attr3 INT,
+</span></span><span style="display:flex;"><span>  attr4 TEXT  <span style="color:#75715e">-- attr4 数据非常大、且不经常访问 --
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>);
+</span></span></code></pre></div><p><img src="/images/15445/13-05.png" alt=""></p>
+<h3 id="水平分区">
+  水平分区
+  <a href="#%e6%b0%b4%e5%b9%b3%e5%88%86%e5%8c%ba" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<p><code>水平分区</code>：基于某个可定制的 partitioning key 将 table 的不同 segments 分开存储：</p>
+<p><img src="/images/15445/13-06.png" alt=""></p>
+
+    </div>
+    
+      
+        <div class="pagination">
+          <div class="pagination__title">
+            <span class="pagination__title-h"
+              >Read other posts</span
+            >
+            <hr />
+          </div>
+          <div class="pagination__buttons">
+            
+              <span class="button previous">
+                <a href="https://yuyang.run/posts/cmu15-445%E8%AF%BE%E7%A8%8B/query-planning-optimization-i/">
+                  <span class="button__icon">←</span>
+                  <span class="button__text">Lecture#14 Query Planning &amp; Optimization I</span>
+                </a>
+              </span>
+            
+            
+              <span class="button next">
+                <a href="https://yuyang.run/posts/cmu15-445%E8%AF%BE%E7%A8%8B/query-execution-i/">
+                  <span class="button__text">Lecture#12 Query Execution I</span>
+                  <span class="button__icon">→</span>
+                </a>
+              </span>
+            
+          </div>
+        </div>
+      
+    
+
+    
+      
+        
+
+      
+    
+  </article>
+
+      </div>
+
+      
+        <footer class="footer">
+  <div class="footer__inner">
+    
+      <a
+  href="https://yuyang.run"
+  class="logo"
+  style="text-decoration: none;"
+>
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367" />
+</svg>
+</span>
+    <span class="logo__text"
+      >余为民同志</span
+    >
+    <span class="logo__cursor"></span>
+  
+</a>
+
+      <div class="copyright">
+        <span>© 2023 Powered by <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a></span>
+        <span><a href="https://github.com/panr/hugo-theme-hello-friend" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+    
+  </div>
+</footer>
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+
+      
+    </div>
+
+    
+  </body>
+</html>

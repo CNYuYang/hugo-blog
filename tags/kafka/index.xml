@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>kafka on 余为民同志|做一个优秀的普通人，在热爱中燃烧！</title>
+    
+    
+    
+    <link>https://yuyang.run/tags/kafka/</link>
+    <description>Recent content in kafka on 余为民同志|做一个优秀的普通人，在热爱中燃烧！</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <managingEditor>744727849@qq.com (YuYang)</managingEditor>
+    <webMaster>744727849@qq.com (YuYang)</webMaster>
+    <lastBuildDate>Mon, 10 Jul 2023 15:29:13 +0800</lastBuildDate>
+    
+	<atom:link href="https://yuyang.run/tags/kafka/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>kafka单机环境搭建</title>
+      <link>https://yuyang.run/posts/%E4%B8%AD%E9%97%B4%E4%BB%B6/kafka%E5%8D%95%E6%9C%BA%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</link>
+      <pubDate>Mon, 10 Jul 2023 15:29:13 +0800</pubDate>
+      <author>744727849@qq.com (YuYang)</author>
+      <guid>https://yuyang.run/posts/%E4%B8%AD%E9%97%B4%E4%BB%B6/kafka%E5%8D%95%E6%9C%BA%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          软件版本 # jdk-8u271-linux-x64.tar.gz apache-zookeeper-3.8.1-bin.tar.gz kafka_2.12-3.4.0.tgz 解压添加PATH等步骤忽略，不进行记录。java安装过程跳过 zookeeper安装 # 先进入conf目录 复制一份zoo.cfg: cp zoo_sample.cfg zoo.cfg 修改zoo.cfg，修改数据目录：dataDir=../tmp/zookeeper 先进入bin目录 执行./zkServer.sh start 使用jps查看是否启动
+          
+        
+        </description>
+    </item>
+    
+  </channel>
+</rss>

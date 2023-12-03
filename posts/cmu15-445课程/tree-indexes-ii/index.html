@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+      <title>
+        Lecture#8 Tree Indexes II ::
+        余为民同志|做一个优秀的普通人，在热爱中燃烧！
+      </title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta
+  name="description"
+  content="B&#43;树更多的细节 # 重复的key # 方案1:追加 Record Id # 将元组的唯一Record ID作为键的一部分，确保所有键都是唯一的。 DBMS仍然可以使用部分键来查找元组。 方案2:Overflow Leaf Nodes # 允许叶节点溢出到包含重复key的溢出节点中。维护和修改起来比较复杂。 且查找时不能采用二分查找，应该为顺序查找。 隐式索"
+/>
+<meta
+  name="keywords"
+  content=""
+/>
+<meta name="robots" content="noodp" />
+<link rel="canonical" href="https://yuyang.run/posts/cmu15-445%E8%AF%BE%E7%A8%8B/tree-indexes-ii/" />
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/style.css" />
+
+<link rel="stylesheet" href="https://yuyang.run/style.css" />
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://yuyang.run/img/apple-touch-icon-144-precomposed.png" />
+<link rel="shortcut icon" href="https://yuyang.run/img/favicon.png" />
+
+
+<link href="/fonts/JetBrainsMono-Italic.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="/fonts/JetBrainsMono-Regular.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="/fonts/JetBrainsMono-Medium.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="/fonts/JetBrainsMono-MediumItalic.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="/fonts/JetBrainsMono-Bold.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="/fonts/JetBrainsMono-BoldItalic.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Lecture#8 Tree Indexes II"/>
+<meta name="twitter:description" content="B&#43;树更多的细节 # 重复的key # 方案1:追加 Record Id # 将元组的唯一Record ID作为键的一部分，确保所有键都是唯一的。 DBMS仍然可以使用部分键来查找元组。 方案2:Overflow Leaf Nodes # 允许叶节点溢出到包含重复key的溢出节点中。维护和修改起来比较复杂。 且查找时不能采用二分查找，应该为顺序查找。 隐式索"/>
+
+
+
+<meta property="og:title" content="Lecture#8 Tree Indexes II" />
+<meta property="og:description" content="B&#43;树更多的细节 # 重复的key # 方案1:追加 Record Id # 将元组的唯一Record ID作为键的一部分，确保所有键都是唯一的。 DBMS仍然可以使用部分键来查找元组。 方案2:Overflow Leaf Nodes # 允许叶节点溢出到包含重复key的溢出节点中。维护和修改起来比较复杂。 且查找时不能采用二分查找，应该为顺序查找。 隐式索" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yuyang.run/posts/cmu15-445%E8%AF%BE%E7%A8%8B/tree-indexes-ii/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-11-18T15:29:13+08:00" />
+<meta property="article:modified_time" content="2023-11-18T15:29:13+08:00" />
+
+
+
+
+
+
+
+  </head>
+  <body class="light-theme">
+    <div class="container">
+      <header class="header">
+  <span class="header__inner">
+    <a
+  href="https://yuyang.run"
+  class="logo"
+  style="text-decoration: none;"
+>
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367" />
+</svg>
+</span>
+    <span class="logo__text"
+      >余为民同志</span
+    >
+    <span class="logo__cursor"></span>
+  
+</a>
+
+    <span class="header__right">
+      
+        <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/posts/">文章</a></li>
+        
+      
+        
+          <li><a href="/tags/">标签</a></li>
+        
+      
+        
+          <li><a href="/categories/">分类</a></li>
+        
+      
+        
+          <li><a href="https://geekbang.yuyang.run">极客帮</a></li>
+        
+      
+      
+      
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/posts/">文章</a></li>
+      
+    
+      
+        <li><a href="/tags/">标签</a></li>
+      
+    
+      
+        <li><a href="/categories/">分类</a></li>
+      
+    
+      
+        <li><a href="https://geekbang.yuyang.run">极客帮</a></li>
+      
+    
+  </ul>
+</nav>
+
+        <span class="menu-trigger">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none" />
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" />
+          </svg>
+        </span>
+      
+      <span class="theme-toggle">
+        <svg
+  class="theme-toggler"
+  width="24"
+  height="24"
+  viewBox="0 0 48 48"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <path
+    d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"
+  />
+</svg>
+
+      </span>
+    </span>
+  </span>
+</header>
+
+
+      <div class="content">
+        
+  
+  
+
+  <article class="post">
+    <div class="in-article">
+      
+        <figure class="post-cover">
+  
+    <img src="https://yuyang.run/cover/database.png" alt="Lecture#8 Tree Indexes II"/>
+  
+
+  
+</figure>
+
+      
+    </div>
+    <h1 class="post-title">Lecture#8 Tree Indexes II</h1>
+    <div class="post-meta">
+      
+        <time class="post-date">
+          2023-11-18 15:29:13
+        </time>
+
+        
+          
+        
+      
+
+      
+
+
+      
+    </div>
+
+    
+      <span class="post-tags">
+        
+          <a href="https://yuyang.run/tags/cmu15-445/">#CMU15-445</a>&nbsp;
+        
+          <a href="https://yuyang.run/tags/sql/">#SQL</a>&nbsp;
+        
+      </span>
+    
+
+    <div class="post-content">
+      
+        
+        <div style="position: fixed; right:5px; overflow:auto; top: 100px; width: 22%; bottom:50px">
+        <h2>目录</h2>
+        <aside class="table-of-contents"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#重复的key">重复的key</a>
+      <ul>
+        <li><a href="#方案1追加-record-id">方案1:追加 Record Id</a></li>
+        <li><a href="#方案2overflow-leaf-nodes">方案2:Overflow Leaf Nodes</a></li>
+      </ul>
+    </li>
+    <li><a href="#隐式索引">隐式索引</a></li>
+    <li><a href="#部分索引">部分索引</a></li>
+    <li><a href="#覆盖索引">覆盖索引</a></li>
+    <li><a href="#索引包含列">索引包含列</a></li>
+    <li><a href="#函数表达式索引">函数/表达式索引</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#1-bit-span-trie">1-bit Span Trie</a>
+      <ul>
+        <li><a href="#横向压缩">横向压缩</a></li>
+        <li><a href="#纵向压缩-radix树">纵向压缩-Radix树</a></li>
+      </ul>
+    </li>
+  </ul>
+
+  <ul>
+    <li><a href="#查询类别">查询类别</a></li>
+  </ul>
+</nav></aside>
+        </div>
+        
+      
+      <h1 id="b树更多的细节">
+  B+树更多的细节
+  <a href="#b%e6%a0%91%e6%9b%b4%e5%a4%9a%e7%9a%84%e7%bb%86%e8%8a%82" class="h-anchor" aria-hidden="true">#</a>
+</h1>
+<h2 id="重复的key">
+  重复的key
+  <a href="#%e9%87%8d%e5%a4%8d%e7%9a%84key" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<h3 id="方案1追加-record-id">
+  方案1:追加 Record Id
+  <a href="#%e6%96%b9%e6%a1%881%e8%bf%bd%e5%8a%a0-record-id" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<p>将元组的唯一Record ID作为键的一部分，确保所有键都是唯一的。</p>
+<p>DBMS仍然可以使用部分键来查找元组。</p>
+<p><img src="/images/15445/08-01.png" alt=""></p>
+<h3 id="方案2overflow-leaf-nodes">
+  方案2:Overflow Leaf Nodes
+  <a href="#%e6%96%b9%e6%a1%882overflow-leaf-nodes" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<p>允许叶节点溢出到包含重复key的溢出节点中。维护和修改起来比较复杂。</p>
+<p>且查找时不能采用二分查找，应该为顺序查找。</p>
+<p><img src="/images/15445/08-02.png" alt=""></p>
+<h2 id="隐式索引">
+  隐式索引
+  <a href="#%e9%9a%90%e5%bc%8f%e7%b4%a2%e5%bc%95" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p>大多数DBMS会自动创建一个索引来强制执行完整性约束。</p>
+<p>→ Primary Keys</p>
+<p>→Unique Constraints</p>
+<p><img src="/images/15445/08-03.png" alt=""></p>
+<p>但是引用约束（外键）没有。</p>
+<p><img src="/images/15445/08-04.png" alt=""></p>
+<p>正确做法：</p>
+<p><img src="/images/15445/08-05.png" alt=""></p>
+<h2 id="部分索引">
+  部分索引
+  <a href="#%e9%83%a8%e5%88%86%e7%b4%a2%e5%bc%95" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p>在整个表的子集上创建索引。 这可能会减少其大小和维护它的开销。</p>
+<p>一种常见的用例是按日期范围对索引进行分区。</p>
+<p>→ 每月，每年创建一个单独的索引</p>
+<p><img src="/images/15445/08-06.png" alt=""></p>
+<h2 id="覆盖索引">
+  覆盖索引
+  <a href="#%e8%a6%86%e7%9b%96%e7%b4%a2%e5%bc%95" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p>如果处理查询所需的所有字段都在索引中可用，则DBMS不需要检索元组。</p>
+<p>这样可以减少对DBMS缓冲池资源的争用。</p>
+<p><img src="/images/15445/08-07.png" alt=""></p>
+<h2 id="索引包含列">
+  索引包含列
+  <a href="#%e7%b4%a2%e5%bc%95%e5%8c%85%e5%90%ab%e5%88%97" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p>在索引中嵌入其他列以支持仅索引查询。</p>
+<p>这些额外的列仅存储在叶节点中，而不是搜索键的一部分</p>
+<p><img src="/images/15445/08-08.png" alt=""></p>
+<h2 id="函数表达式索引">
+  函数/表达式索引
+  <a href="#%e5%87%bd%e6%95%b0%e8%a1%a8%e8%be%be%e5%bc%8f%e7%b4%a2%e5%bc%95" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p>列上进行了函数运算，添加常规索引是查询的时候是扫描不到的，因此需要将函数参数运算建立索引。</p>
+<p>参考资料：<a href="https://www.cnblogs.com/lynn919/p/10875081.html">https://www.cnblogs.com/lynn919/p/10875081.html</a></p>
+<h1 id="trie索引">
+  TRIE索引
+  <a href="#trie%e7%b4%a2%e5%bc%95" class="h-anchor" aria-hidden="true">#</a>
+</h1>
+<p>使用key的逐个检查前缀，而不是比较整个key。</p>
+<p>存在key值：<code>HELLO, HAT, HAVE</code>构建出来的TRIE数：</p>
+<p><img src="/images/15445/08-09.png" alt=""></p>
+<h2 id="1-bit-span-trie">
+  1-bit Span Trie
+  <a href="#1-bit-span-trie" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p>K10 -&gt; 00000000 00001010</p>
+<p>K25 -&gt; 00000000 00011001</p>
+<p>K31 -&gt; 00000000 00011111</p>
+<p>构建出来的树的形状：</p>
+<p><img src="/images/15445/08-12.png" alt=""></p>
+<h3 id="横向压缩">
+  横向压缩
+  <a href="#%e6%a8%aa%e5%90%91%e5%8e%8b%e7%bc%a9" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<p><strong>横向压缩</strong>，因为只有0和1两个值，可以省略只保留指针：</p>
+<p><img src="/images/15445/08-10.png" alt=""></p>
+<h3 id="纵向压缩-radix树">
+  纵向压缩-Radix树
+  <a href="#%e7%ba%b5%e5%90%91%e5%8e%8b%e7%bc%a9-radix%e6%a0%91" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<p><img src="/images/15445/08-11.png" alt=""></p>
+<h1 id="倒排索引inverted-index">
+  倒排索引(inverted index)
+  <a href="#%e5%80%92%e6%8e%92%e7%b4%a2%e5%bc%95inverted-index" class="h-anchor" aria-hidden="true">#</a>
+</h1>
+<p>倒排索引存储单词到在目标属性中包含这些单词的记录的映射。</p>
+<p>→ 有时也称为<code>full-text search index</code>。
+→ 有时也称为<code>concordance</code>。</p>
+<p>主要的DBMS本身支持这些索引。还有一些专门支持该索引的DBMS，如<code>elasticsearch</code>。</p>
+<h2 id="查询类别">
+  查询类别
+  <a href="#%e6%9f%a5%e8%af%a2%e7%b1%bb%e5%88%ab" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p>单词搜索</p>
+<p>→ 查找包含按给定顺序排列的单词列表的记录。</p>
+<p>邻近搜索(近义词搜索)</p>
+<p>→ 查找两个单词相距不超过 n 个单词的记录。</p>
+<p>通配符搜索</p>
+<p>→ 查找包含与某种模式（如正则表达式）匹配的单词（例如，正则表达式）。</p>
+
+    </div>
+    
+      
+        <div class="pagination">
+          <div class="pagination__title">
+            <span class="pagination__title-h"
+              >Read other posts</span
+            >
+            <hr />
+          </div>
+          <div class="pagination__buttons">
+            
+              <span class="button previous">
+                <a href="https://yuyang.run/posts/cmu15-445%E8%AF%BE%E7%A8%8B/index-concurrency-control/">
+                  <span class="button__icon">←</span>
+                  <span class="button__text">Lecture#9 Index Concurrency Control</span>
+                </a>
+              </span>
+            
+            
+              <span class="button next">
+                <a href="https://yuyang.run/posts/%E4%B8%AD%E9%97%B4%E4%BB%B6/%E4%BD%BF%E7%94%A8idea%E8%BF%90%E8%A1%8Ctomcat9%E9%A1%B9%E7%9B%AE/">
+                  <span class="button__text">使用Idea2023运行tomcat9项目</span>
+                  <span class="button__icon">→</span>
+                </a>
+              </span>
+            
+          </div>
+        </div>
+      
+    
+
+    
+      
+        
+
+      
+    
+  </article>
+
+      </div>
+
+      
+        <footer class="footer">
+  <div class="footer__inner">
+    
+      <a
+  href="https://yuyang.run"
+  class="logo"
+  style="text-decoration: none;"
+>
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367" />
+</svg>
+</span>
+    <span class="logo__text"
+      >余为民同志</span
+    >
+    <span class="logo__cursor"></span>
+  
+</a>
+
+      <div class="copyright">
+        <span>© 2023 Powered by <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a></span>
+        <span><a href="https://github.com/panr/hugo-theme-hello-friend" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+    
+  </div>
+</footer>
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+
+      
+    </div>
+
+    
+  </body>
+</html>

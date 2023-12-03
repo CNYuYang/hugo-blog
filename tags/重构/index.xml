@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>重构 on 余为民同志|做一个优秀的普通人，在热爱中燃烧！</title>
+    
+    
+    
+    <link>https://yuyang.run/tags/%E9%87%8D%E6%9E%84/</link>
+    <description>Recent content in 重构 on 余为民同志|做一个优秀的普通人，在热爱中燃烧！</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <managingEditor>744727849@qq.com (YuYang)</managingEditor>
+    <webMaster>744727849@qq.com (YuYang)</webMaster>
+    <lastBuildDate>Thu, 12 Oct 2023 15:29:13 +0800</lastBuildDate>
+    
+	<atom:link href="https://yuyang.run/tags/%E9%87%8D%E6%9E%84/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>使用react-router重构前端路由</title>
+      <link>https://yuyang.run/posts/%E9%87%8D%E6%9E%84/%E4%BD%BF%E7%94%A8react-router%E9%87%8D%E6%9E%84%E5%89%8D%E7%AB%AF%E8%B7%AF%E7%94%B1/</link>
+      <pubDate>Thu, 12 Oct 2023 15:29:13 +0800</pubDate>
+      <author>744727849@qq.com (YuYang)</author>
+      <guid>https://yuyang.run/posts/%E9%87%8D%E6%9E%84/%E4%BD%BF%E7%94%A8react-router%E9%87%8D%E6%9E%84%E5%89%8D%E7%AB%AF%E8%B7%AF%E7%94%B1/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          重构前情况 # 因为公司的特点，开发人员没有太多区分，都是称为通用软件开发工程师。所以在工作中的看到的很多前端项目，都是有后端人员开发而来。所以在我们的代码中有很多后端程序思维写出的前端代码，而在一个项目中的路由情况尤为糟糕。 打开项目后看到的router.js代码： &amp;lt;HashRouter&amp;gt; &amp;lt;Route path=&amp;#34;/&amp;#34; component={TempMgrView}/&amp;gt; ... &amp;lt;Route path=&amp;#34;/settings&amp;#34; component={SettingView}/&amp;gt; &amp;lt;/HashRouter&amp;gt; 看起来是用了路由功能
+          
+        
+        </description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+      <title>
+        Lecture#7 Tree Indexes I ::
+        余为民同志|做一个优秀的普通人，在热爱中燃烧！
+      </title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta
+  name="description"
+  content="构建索引的另一种方式就是通过Tree。 B&#43; Tree # 有一个称为B树的特定数据结构。 人们还使用该术语来泛指一类平衡树数据结构： → B-Tree (1971) → B&#43;Tree (1973) → B*Tree (1977?) → B^link-Tree (1981) 相关资料 # 关于B树及B&#43;树可以通过以下两篇文章了解： 漫画：什么是B-树？https://juejin.im/post/5c31f64c6fb9a049ac794"
+/>
+<meta
+  name="keywords"
+  content=""
+/>
+<meta name="robots" content="noodp" />
+<link rel="canonical" href="https://yuyang.run/posts/cmu15-445%E8%AF%BE%E7%A8%8B/tree-indexes-i/" />
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/style.css" />
+
+<link rel="stylesheet" href="https://yuyang.run/style.css" />
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://yuyang.run/img/apple-touch-icon-144-precomposed.png" />
+<link rel="shortcut icon" href="https://yuyang.run/img/favicon.png" />
+
+
+<link href="/fonts/JetBrainsMono-Italic.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="/fonts/JetBrainsMono-Regular.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="/fonts/JetBrainsMono-Medium.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="/fonts/JetBrainsMono-MediumItalic.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="/fonts/JetBrainsMono-Bold.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="/fonts/JetBrainsMono-BoldItalic.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Lecture#7 Tree Indexes I"/>
+<meta name="twitter:description" content="构建索引的另一种方式就是通过Tree。 B&#43; Tree # 有一个称为B树的特定数据结构。 人们还使用该术语来泛指一类平衡树数据结构： → B-Tree (1971) → B&#43;Tree (1973) → B*Tree (1977?) → B^link-Tree (1981) 相关资料 # 关于B树及B&#43;树可以通过以下两篇文章了解： 漫画：什么是B-树？https://juejin.im/post/5c31f64c6fb9a049ac794"/>
+
+
+
+<meta property="og:title" content="Lecture#7 Tree Indexes I" />
+<meta property="og:description" content="构建索引的另一种方式就是通过Tree。 B&#43; Tree # 有一个称为B树的特定数据结构。 人们还使用该术语来泛指一类平衡树数据结构： → B-Tree (1971) → B&#43;Tree (1973) → B*Tree (1977?) → B^link-Tree (1981) 相关资料 # 关于B树及B&#43;树可以通过以下两篇文章了解： 漫画：什么是B-树？https://juejin.im/post/5c31f64c6fb9a049ac794" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yuyang.run/posts/cmu15-445%E8%AF%BE%E7%A8%8B/tree-indexes-i/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2020-06-06T15:29:13+08:00" />
+<meta property="article:modified_time" content="2020-06-06T15:29:13+08:00" />
+
+
+
+
+
+
+
+  </head>
+  <body class="light-theme">
+    <div class="container">
+      <header class="header">
+  <span class="header__inner">
+    <a
+  href="https://yuyang.run"
+  class="logo"
+  style="text-decoration: none;"
+>
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367" />
+</svg>
+</span>
+    <span class="logo__text"
+      >余为民同志</span
+    >
+    <span class="logo__cursor"></span>
+  
+</a>
+
+    <span class="header__right">
+      
+        <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/posts/">文章</a></li>
+        
+      
+        
+          <li><a href="/tags/">标签</a></li>
+        
+      
+        
+          <li><a href="/categories/">分类</a></li>
+        
+      
+        
+          <li><a href="https://geekbang.yuyang.run">极客帮</a></li>
+        
+      
+      
+      
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/posts/">文章</a></li>
+      
+    
+      
+        <li><a href="/tags/">标签</a></li>
+      
+    
+      
+        <li><a href="/categories/">分类</a></li>
+      
+    
+      
+        <li><a href="https://geekbang.yuyang.run">极客帮</a></li>
+      
+    
+  </ul>
+</nav>
+
+        <span class="menu-trigger">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none" />
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" />
+          </svg>
+        </span>
+      
+      <span class="theme-toggle">
+        <svg
+  class="theme-toggler"
+  width="24"
+  height="24"
+  viewBox="0 0 48 48"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <path
+    d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"
+  />
+</svg>
+
+      </span>
+    </span>
+  </span>
+</header>
+
+
+      <div class="content">
+        
+  
+  
+
+  <article class="post">
+    <div class="in-article">
+      
+        <figure class="post-cover">
+  
+    <img src="https://yuyang.run/cover/database.png" alt="Lecture#7 Tree Indexes I"/>
+  
+
+  
+</figure>
+
+      
+    </div>
+    <h1 class="post-title">Lecture#7 Tree Indexes I</h1>
+    <div class="post-meta">
+      
+        <time class="post-date">
+          2020-06-06 15:29:13
+        </time>
+
+        
+          
+        
+      
+
+      
+
+
+      
+    </div>
+
+    
+      <span class="post-tags">
+        
+          <a href="https://yuyang.run/tags/cmu15-445/">#CMU15-445</a>&nbsp;
+        
+          <a href="https://yuyang.run/tags/sql/">#SQL</a>&nbsp;
+        
+      </span>
+    
+
+    <div class="post-content">
+      
+        
+        <div style="position: fixed; right:5px; overflow:auto; top: 100px; width: 22%; bottom:50px">
+        <h2>目录</h2>
+        <aside class="table-of-contents"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#相关资料">相关资料</a></li>
+    <li><a href="#举例b-tree">举例：B+ Tree</a></li>
+    <li><a href="#节点">节点</a>
+      <ul>
+        <li><a href="#叶子节点">叶子节点</a></li>
+        <li><a href="#节点值">节点值</a></li>
+      </ul>
+    </li>
+    <li><a href="#b树-vs-b树">B+树 vs B树</a></li>
+    <li><a href="#聚集索引">聚集索引</a></li>
+    <li><a href="#查询条件">查询条件</a>
+      <ul>
+        <li><a href="#查找keyab">查找Key=(A,B)</a></li>
+        <li><a href="#查找keya">查找Key=(A,*)</a></li>
+        <li><a href="#查找keyb">查找Key=(*,B)</a></li>
+      </ul>
+    </li>
+  </ul>
+
+  <ul>
+    <li><a href="#节点大小">节点大小</a></li>
+    <li><a href="#合并阈值">合并阈值</a></li>
+    <li><a href="#可变长度的key">可变长度的Key</a></li>
+    <li><a href="#非唯一索引">非唯一索引</a></li>
+    <li><a href="#搜索">搜索</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#前缀压缩">前缀压缩</a></li>
+    <li><a href="#后缀截断">后缀截断</a></li>
+    <li><a href="#批量插入">批量插入</a></li>
+    <li><a href="#指针旋转">指针旋转</a></li>
+  </ul>
+</nav></aside>
+        </div>
+        
+      
+      <p>构建索引的另一种方式就是通过Tree。</p>
+<h1 id="b-tree">
+  B+ Tree
+  <a href="#b-tree" class="h-anchor" aria-hidden="true">#</a>
+</h1>
+<p>有一个称为B树的特定数据结构。</p>
+<p>人们还使用该术语来泛指一类平衡树数据结构：</p>
+<p>→ <strong>B-Tree</strong> (1971)</p>
+<p>→ <strong>B+Tree</strong> (1973)</p>
+<p>→ <strong>B*Tree</strong> (1977?)</p>
+<p>→ <strong>B^link-Tree</strong> (1981)</p>
+<h2 id="相关资料">
+  相关资料
+  <a href="#%e7%9b%b8%e5%85%b3%e8%b5%84%e6%96%99" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p><strong>关于B树及B+树可以通过以下两篇文章了解：</strong></p>
+<p>漫画：什么是B-树？<a href="https://juejin.im/post/5c31f64c6fb9a049ac794ffc">https://juejin.im/post/5c31f64c6fb9a049ac794ffc</a></p>
+<p>漫画：什么是B+树？<a href="https://mp.weixin.qq.com/s/jRZMMONW3QP43dsDKIV9VQ">https://mp.weixin.qq.com/s/jRZMMONW3QP43dsDKIV9VQ</a></p>
+<p><strong>同时可以借助以下两个可视化工具帮助你理解：</strong></p>
+<p>B-树可视化工具：<a href="https://www.cs.usfca.edu/~galles/visualization/BTree.html">https://www.cs.usfca.edu/~galles/visualization/BTree.html</a></p>
+<p>B+树可视化工具：<a href="https://www.cs.usfca.edu/~galles/visualization/BPlusTree.html">https://www.cs.usfca.edu/~galles/visualization/BPlusTree.html</a></p>
+<p><strong>关于他们的实现代码可以查看：</strong></p>
+<p>B-Tree/BTree 的Java实现：<a href="https://www.jianshu.com/p/d2d1181aa93d">https://www.jianshu.com/p/d2d1181aa93d</a></p>
+<p>B+Tree的Java实现：<a href="https://github.com/linli2016/BPlusTree">https://github.com/linli2016/BPlusTree</a></p>
+<h2 id="举例b-tree">
+  举例：B+ Tree
+  <a href="#%e4%b8%be%e4%be%8bb-tree" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p>构成1：</p>
+<p><img src="/images/15445/07-01.png" alt=""></p>
+<p>构成2：</p>
+<p><img src="/images/15445/07-02.png" alt=""></p>
+<h2 id="节点">
+  节点
+  <a href="#%e8%8a%82%e7%82%b9" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p>每个B + Tree节点都由一组键/值对组成。</p>
+<p>→键是从索引所基于的属性派生的。</p>
+<p>→根据节点是内部节点还是叶节点，值将有所不同。</p>
+<p>数组通常按排序的键顺序保存</p>
+<h3 id="叶子节点">
+  叶子节点
+  <a href="#%e5%8f%b6%e5%ad%90%e8%8a%82%e7%82%b9" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<p><code>Key</code>与<code>Value</code>连续存储：</p>
+<p><img src="/images/15445/07-03.png" alt=""></p>
+<p>但是节点的长度不是固定的，所以可以采用以下布局：</p>
+<p><img src="/images/15445/07-04.png" alt=""></p>
+<blockquote>
+<p><code>level</code>代表树的层级，<code>slots</code>代表还有几个空位。同时将key放在一起，可以方便进行二分查找。</p>
+</blockquote>
+<h3 id="节点值">
+  节点值
+  <a href="#%e8%8a%82%e7%82%b9%e5%80%bc" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<ul>
+<li>Record ID(对于postgreSQL就是pageId和soltid)</li>
+</ul>
+<p>指向索引条目对应的Tuple位置的指针。</p>
+<p>采用该方案的厂商有：<code>PostgreSQL</code>、<code>SQL Server</code>、<code>DB2</code>、<code>ORACLE</code>等</p>
+<ul>
+<li>Tuple数据</li>
+</ul>
+<p>元组的实际内容存储在叶节点中，二级索引必须将记录id作为其值存储。</p>
+<p>采用该方案的厂商有：<code>SQLite</code>、<code>SQL Server</code>、<code>MySQL</code>、<code>ORACLE</code>等</p>
+<h2 id="b树-vs-b树">
+  B+树 vs B树
+  <a href="#b%e6%a0%91-vs-b%e6%a0%91" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p>B+树与B树的区别：B树在叶子节点和非叶子节点都存储数据。能保证key的唯一。B+树只在叶子节点保存数据，所以树中存在重复的key。</p>
+<h2 id="聚集索引">
+  聚集索引
+  <a href="#%e8%81%9a%e9%9b%86%e7%b4%a2%e5%bc%95" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p>表以主键指定的排序顺序存储。主键指定的排序顺序存储。</p>
+<p>→ 可以是堆组织存储，也可以是索引组织存储。</p>
+<p>有些 DBMS 始终使用聚类索引。</p>
+<p>→ 如果表不包含主键，DBMS将会自动将隐藏行作为主键。 其他 DBMS 完全不能使用它们。</p>
+<h2 id="查询条件">
+  查询条件
+  <a href="#%e6%9f%a5%e8%af%a2%e6%9d%a1%e4%bb%b6" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p>例如建立<code>&lt;a,b,c&gt;</code>索引</p>
+<p>→ 支持查询条件： <code>(a=5 AND b=3)</code>
+→ 支持查询条件： <code>(b=3)</code>.</p>
+<p>并非所有 DBMS 都支持这一点。</p>
+<p>对于哈希索引，我们必须在搜索键中包含所有属性。</p>
+<p>如下有两个字段组成的索引：</p>
+<p><img src="/images/15445/07-12.png" alt=""></p>
+<h3 id="查找keyab">
+  查找Key=(A,B)
+  <a href="#%e6%9f%a5%e6%89%bekeyab" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<p><img src="/images/15445/07-13.png" alt=""></p>
+<h3 id="查找keya">
+  查找Key=(A,*)
+  <a href="#%e6%9f%a5%e6%89%bekeya" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<p><img src="/images/15445/07-14.png" alt=""></p>
+<h3 id="查找keyb">
+  查找Key=(*,B)
+  <a href="#%e6%9f%a5%e6%89%bekeyb" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<p><img src="/images/15445/07-15.png" alt=""></p>
+<h1 id="b树的设计">
+  B树的设计
+  <a href="#b%e6%a0%91%e7%9a%84%e8%ae%be%e8%ae%a1" class="h-anchor" aria-hidden="true">#</a>
+</h1>
+<h2 id="节点大小">
+  节点大小
+  <a href="#%e8%8a%82%e7%82%b9%e5%a4%a7%e5%b0%8f" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p>存储设备的速度越慢，B + Tree的最佳节点大小就越大。</p>
+<p>→ HDD ~1MB</p>
+<p>→ SSD: ~10KB</p>
+<p>→ In-Memory: ~512B</p>
+<h2 id="合并阈值">
+  合并阈值
+  <a href="#%e5%90%88%e5%b9%b6%e9%98%88%e5%80%bc" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p>一些DBMS并不总是在半满时进行节点的合并操作。</p>
+<p>延迟合并操作可能会减少重组量。</p>
+<p>对于DBMS来说，最好的办法是让数据出现下溢，然后定期重建整个B+树。</p>
+<h2 id="可变长度的key">
+  可变长度的Key
+  <a href="#%e5%8f%af%e5%8f%98%e9%95%bf%e5%ba%a6%e7%9a%84key" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<ul>
+<li>
+<p>方案1：<code>Pointer</code></p>
+<p>将键存储为元组属性的指针</p>
+</li>
+<li>
+<p>方案2：<code>Variable Length Nodes</code></p>
+<p>索引中每个节点的大小可能会有所不同。需要仔细的内存管理。</p>
+</li>
+<li>
+<p>方案3：<code>Padding</code></p>
+<p>始终将密钥填充为密钥类型的最大长度。</p>
+</li>
+<li>
+<p>方案4：<code> Key Map / Indirection</code></p>
+</li>
+</ul>
+<p><img src="/images/15445/07-05.png" alt=""></p>
+<p>可以保存Key的首字母，加快匹配速度：</p>
+<p><img src="/images/15445/07-06.png" alt=""></p>
+<h2 id="非唯一索引">
+  非唯一索引
+  <a href="#%e9%9d%9e%e5%94%af%e4%b8%80%e7%b4%a2%e5%bc%95" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p>方法1：重复的Key</p>
+<p>→使用相同的叶节点布局，但多次存储重复的密钥。</p>
+<p>方法2：值列表</p>
+<p>→每个Key仅存储一次，并维护唯一值的链接列表</p>
+<h2 id="搜索">
+  搜索
+  <a href="#%e6%90%9c%e7%b4%a2" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p>方法1：线性</p>
+<p>→从头到尾扫描Key</p>
+<p>方法2：二分查找</p>
+<p>→跳至中间Key，向左/向右调整根据比较</p>
+<p>方法3：插值</p>
+<p>→基于已知的Key分布，推断所需Key的大概位置。</p>
+<h1 id="b树的优化">
+  B+树的优化
+  <a href="#b%e6%a0%91%e7%9a%84%e4%bc%98%e5%8c%96" class="h-anchor" aria-hidden="true">#</a>
+</h1>
+<h2 id="前缀压缩">
+  前缀压缩
+  <a href="#%e5%89%8d%e7%bc%80%e5%8e%8b%e7%bc%a9" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p>同一叶节点中的已排序键可能具有相同的前缀。</p>
+<p>不必每次都存储整个密钥，而是提取公共前缀并为每个密钥仅存储唯一的后缀。</p>
+<p><img src="/images/15445/07-07.png" alt=""></p>
+<h2 id="后缀截断">
+  后缀截断
+  <a href="#%e5%90%8e%e7%bc%80%e6%88%aa%e6%96%ad" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p>内部节点(非叶子节点)中的Key仅用于“识别方向”。</p>
+<p>→我们不需要整个key。</p>
+<p>存储将探针正确路由到索引所需的最小前缀。</p>
+<p><img src="/images/15445/07-08.png" alt=""></p>
+<h2 id="批量插入">
+  批量插入
+  <a href="#%e6%89%b9%e9%87%8f%e6%8f%92%e5%85%a5" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p>建立B + Tree的最快/最佳方法是首先对键进行排序，然后从下至上建立索引。</p>
+<p>有以下key值：<strong>3, 7, 9, 13, 6, 1</strong></p>
+<p>1、先将其进行排序：<strong>1, 3, 6, 7, 9, 13</strong></p>
+<p>2、构建叶子节点：</p>
+<p><img src="/images/15445/07-09.png" alt=""></p>
+<p>3、构建整棵树</p>
+<p><img src="/images/15445/07-10.png" alt=""></p>
+<h2 id="指针旋转">
+  指针旋转
+  <a href="#%e6%8c%87%e9%92%88%e6%97%8b%e8%bd%ac" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p>在遍历期间如下图，DBMS必须从Buffer Pool中获取Page页。如果page不存在则需要从磁盘加载。</p>
+<p><img src="/images/15445/07-11.png" alt=""></p>
+<p>如果将页面固定在缓冲池中，那么我们可以直接在B+树中存储原始指针而不是页面ID。 这样可以避免从Buffer Pool中查找地址。</p>
+
+    </div>
+    
+      
+        <div class="pagination">
+          <div class="pagination__title">
+            <span class="pagination__title-h"
+              >Read other posts</span
+            >
+            <hr />
+          </div>
+          <div class="pagination__buttons">
+            
+              <span class="button previous">
+                <a href="https://yuyang.run/posts/%E4%B8%AD%E9%97%B4%E4%BB%B6/%E6%89%8B%E6%90%93zookeeper%E6%A0%B7%E4%BE%8B%E5%AE%9E%E7%8E%B0%E8%AE%B0%E5%BD%95/">
+                  <span class="button__icon">←</span>
+                  <span class="button__text">手搓zookeeper样例实现记录</span>
+                </a>
+              </span>
+            
+            
+              <span class="button next">
+                <a href="https://yuyang.run/posts/cmu15-445%E8%AF%BE%E7%A8%8B/hash-tables/">
+                  <span class="button__text">Lecture#6 Hash Tables</span>
+                  <span class="button__icon">→</span>
+                </a>
+              </span>
+            
+          </div>
+        </div>
+      
+    
+
+    
+      
+        
+
+      
+    
+  </article>
+
+      </div>
+
+      
+        <footer class="footer">
+  <div class="footer__inner">
+    
+      <a
+  href="https://yuyang.run"
+  class="logo"
+  style="text-decoration: none;"
+>
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367" />
+</svg>
+</span>
+    <span class="logo__text"
+      >余为民同志</span
+    >
+    <span class="logo__cursor"></span>
+  
+</a>
+
+      <div class="copyright">
+        <span>© 2023 Powered by <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a></span>
+        <span><a href="https://github.com/panr/hugo-theme-hello-friend" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+    
+  </div>
+</footer>
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+
+      
+    </div>
+
+    
+  </body>
+</html>

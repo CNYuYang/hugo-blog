@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>zookeeper on 余为民同志|做一个优秀的普通人，在热爱中燃烧！</title>
+    
+    
+    
+    <link>https://yuyang.run/tags/zookeeper/</link>
+    <description>Recent content in zookeeper on 余为民同志|做一个优秀的普通人，在热爱中燃烧！</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <managingEditor>744727849@qq.com (YuYang)</managingEditor>
+    <webMaster>744727849@qq.com (YuYang)</webMaster>
+    <lastBuildDate>Fri, 02 Jun 2023 15:29:13 +0800</lastBuildDate>
+    
+	<atom:link href="https://yuyang.run/tags/zookeeper/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>手搓zookeeper样例实现记录</title>
+      <link>https://yuyang.run/posts/%E4%B8%AD%E9%97%B4%E4%BB%B6/%E6%89%8B%E6%90%93zookeeper%E6%A0%B7%E4%BE%8B%E5%AE%9E%E7%8E%B0%E8%AE%B0%E5%BD%95/</link>
+      <pubDate>Fri, 02 Jun 2023 15:29:13 +0800</pubDate>
+      <author>744727849@qq.com (YuYang)</author>
+      <guid>https://yuyang.run/posts/%E4%B8%AD%E9%97%B4%E4%BB%B6/%E6%89%8B%E6%90%93zookeeper%E6%A0%B7%E4%BE%8B%E5%AE%9E%E7%8E%B0%E8%AE%B0%E5%BD%95/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          在学习zookeeper过程中，学习了一个监听节点状态变化，而开始、停止计数的案例。看懂了不代表就会了，于是想自己实现一个简单的版本。在自己实现的过程中也遇到了一些问题，在这里记录一下。 实现代码内容 在zookeeper中创建/YuYang节点开始计数 在zookeeper中删除/YuYang节点停止计
+          
+        
+        </description>
+    </item>
+    
+  </channel>
+</rss>

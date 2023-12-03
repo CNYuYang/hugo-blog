@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+      <title>
+        使用Idea2023运行tomcat9项目 ::
+        余为民同志|做一个优秀的普通人，在热爱中燃烧！
+      </title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta
+  name="description"
+  content="源码获取 # 使用git clone命令获取9.0.x源码：git clone -b 9.0.x git@github.com:apache/tomcat.git Idea运行 # 添加pom.xml # tomcat9项目是使用ant编译的，需要先将其使用maven管理。 新建pom.xml文件： &amp;lt;?xml version=&amp;#34;1.0&amp;#34; encoding=&amp;#34;UTF-8&amp;#34;?&amp;gt; &amp;lt;project xmlns=&amp;#34;http://maven.apache.org/POM/4.0.0&amp;#34; xmlns:xsi=&amp;#34;http://www.w3.org/2001/XMLSchema-instance&amp;#34; xsi:schemaLocation=&amp;#34;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&amp;#34;&amp;gt; &amp;lt;modelVersion&amp;gt;4.0.0&amp;lt;/modelVersion&amp;gt; &amp;lt;groupId&amp;gt;org.apache.tomcat&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;tomcat&amp;lt;/artifactId&amp;gt; &amp;lt;name&amp;gt;tomcat&amp;lt;/name&amp;gt; &amp;lt;version&amp;gt;9.0.19&amp;lt;/version&amp;gt; &amp;lt;dependencies&amp;gt; &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;junit&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;junit&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;4.12&amp;lt;/version&amp;gt; &amp;lt;scope&amp;gt;test&amp;lt;/scope&amp;gt; &amp;lt;/dependency&amp;gt; &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.apache.ant&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;ant&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;1.10.5&amp;lt;/version&amp;gt; &amp;lt;/dependency&amp;gt; &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;wsdl4j&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;wsdl4j&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;1.6.3&amp;lt;/version&amp;gt; &amp;lt;/dependency&amp;gt; &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;biz.aQute.bnd&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;biz.aQute.bndlib&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;5.2.0&amp;lt;/version&amp;gt; &amp;lt;scope&amp;gt;provided&amp;lt;/scope&amp;gt; &amp;lt;/dependency&amp;gt; &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.apache.geronimo.specs&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;geronimo-jaxrpc_1.1_spec&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;2.1&amp;lt;/version&amp;gt; &amp;lt;/dependency&amp;gt; &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.eclipse.jdt&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;ecj&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;3.17.0&amp;lt;/version&amp;gt; &amp;lt;/dependency&amp;gt; &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.easymock&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;easymock&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;4.0.2&amp;lt;/version&amp;gt; &amp;lt;scope&amp;gt;test&amp;lt;/scope&amp;gt; &amp;lt;/dependency&amp;gt; &amp;lt;/dependencies&amp;gt;"
+/>
+<meta
+  name="keywords"
+  content=""
+/>
+<meta name="robots" content="noodp" />
+<link rel="canonical" href="https://yuyang.run/posts/%E4%B8%AD%E9%97%B4%E4%BB%B6/%E4%BD%BF%E7%94%A8idea%E8%BF%90%E8%A1%8Ctomcat9%E9%A1%B9%E7%9B%AE/" />
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/style.css" />
+
+<link rel="stylesheet" href="https://yuyang.run/style.css" />
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://yuyang.run/img/apple-touch-icon-144-precomposed.png" />
+<link rel="shortcut icon" href="https://yuyang.run/img/favicon.png" />
+
+
+<link href="/fonts/JetBrainsMono-Italic.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="/fonts/JetBrainsMono-Regular.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="/fonts/JetBrainsMono-Medium.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="/fonts/JetBrainsMono-MediumItalic.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="/fonts/JetBrainsMono-Bold.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="/fonts/JetBrainsMono-BoldItalic.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="使用Idea2023运行tomcat9项目"/>
+<meta name="twitter:description" content="源码获取 # 使用git clone命令获取9.0.x源码：git clone -b 9.0.x git@github.com:apache/tomcat.git Idea运行 # 添加pom.xml # tomcat9项目是使用ant编译的，需要先将其使用maven管理。 新建pom.xml文件： &lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&gt; &lt;project xmlns=&#34;http://maven.apache.org/POM/4.0.0&#34; xmlns:xsi=&#34;http://www.w3.org/2001/XMLSchema-instance&#34; xsi:schemaLocation=&#34;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&#34;&gt; &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt; &lt;groupId&gt;org.apache.tomcat&lt;/groupId&gt; &lt;artifactId&gt;tomcat&lt;/artifactId&gt; &lt;name&gt;tomcat&lt;/name&gt; &lt;version&gt;9.0.19&lt;/version&gt; &lt;dependencies&gt; &lt;dependency&gt; &lt;groupId&gt;junit&lt;/groupId&gt; &lt;artifactId&gt;junit&lt;/artifactId&gt; &lt;version&gt;4.12&lt;/version&gt; &lt;scope&gt;test&lt;/scope&gt; &lt;/dependency&gt; &lt;dependency&gt; &lt;groupId&gt;org.apache.ant&lt;/groupId&gt; &lt;artifactId&gt;ant&lt;/artifactId&gt; &lt;version&gt;1.10.5&lt;/version&gt; &lt;/dependency&gt; &lt;dependency&gt; &lt;groupId&gt;wsdl4j&lt;/groupId&gt; &lt;artifactId&gt;wsdl4j&lt;/artifactId&gt; &lt;version&gt;1.6.3&lt;/version&gt; &lt;/dependency&gt; &lt;dependency&gt; &lt;groupId&gt;biz.aQute.bnd&lt;/groupId&gt; &lt;artifactId&gt;biz.aQute.bndlib&lt;/artifactId&gt; &lt;version&gt;5.2.0&lt;/version&gt; &lt;scope&gt;provided&lt;/scope&gt; &lt;/dependency&gt; &lt;dependency&gt; &lt;groupId&gt;org.apache.geronimo.specs&lt;/groupId&gt; &lt;artifactId&gt;geronimo-jaxrpc_1.1_spec&lt;/artifactId&gt; &lt;version&gt;2.1&lt;/version&gt; &lt;/dependency&gt; &lt;dependency&gt; &lt;groupId&gt;org.eclipse.jdt&lt;/groupId&gt; &lt;artifactId&gt;ecj&lt;/artifactId&gt; &lt;version&gt;3.17.0&lt;/version&gt; &lt;/dependency&gt; &lt;dependency&gt; &lt;groupId&gt;org.easymock&lt;/groupId&gt; &lt;artifactId&gt;easymock&lt;/artifactId&gt; &lt;version&gt;4.0.2&lt;/version&gt; &lt;scope&gt;test&lt;/scope&gt; &lt;/dependency&gt; &lt;/dependencies&gt;"/>
+
+
+
+<meta property="og:title" content="使用Idea2023运行tomcat9项目" />
+<meta property="og:description" content="源码获取 # 使用git clone命令获取9.0.x源码：git clone -b 9.0.x git@github.com:apache/tomcat.git Idea运行 # 添加pom.xml # tomcat9项目是使用ant编译的，需要先将其使用maven管理。 新建pom.xml文件： &lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&gt; &lt;project xmlns=&#34;http://maven.apache.org/POM/4.0.0&#34; xmlns:xsi=&#34;http://www.w3.org/2001/XMLSchema-instance&#34; xsi:schemaLocation=&#34;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&#34;&gt; &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt; &lt;groupId&gt;org.apache.tomcat&lt;/groupId&gt; &lt;artifactId&gt;tomcat&lt;/artifactId&gt; &lt;name&gt;tomcat&lt;/name&gt; &lt;version&gt;9.0.19&lt;/version&gt; &lt;dependencies&gt; &lt;dependency&gt; &lt;groupId&gt;junit&lt;/groupId&gt; &lt;artifactId&gt;junit&lt;/artifactId&gt; &lt;version&gt;4.12&lt;/version&gt; &lt;scope&gt;test&lt;/scope&gt; &lt;/dependency&gt; &lt;dependency&gt; &lt;groupId&gt;org.apache.ant&lt;/groupId&gt; &lt;artifactId&gt;ant&lt;/artifactId&gt; &lt;version&gt;1.10.5&lt;/version&gt; &lt;/dependency&gt; &lt;dependency&gt; &lt;groupId&gt;wsdl4j&lt;/groupId&gt; &lt;artifactId&gt;wsdl4j&lt;/artifactId&gt; &lt;version&gt;1.6.3&lt;/version&gt; &lt;/dependency&gt; &lt;dependency&gt; &lt;groupId&gt;biz.aQute.bnd&lt;/groupId&gt; &lt;artifactId&gt;biz.aQute.bndlib&lt;/artifactId&gt; &lt;version&gt;5.2.0&lt;/version&gt; &lt;scope&gt;provided&lt;/scope&gt; &lt;/dependency&gt; &lt;dependency&gt; &lt;groupId&gt;org.apache.geronimo.specs&lt;/groupId&gt; &lt;artifactId&gt;geronimo-jaxrpc_1.1_spec&lt;/artifactId&gt; &lt;version&gt;2.1&lt;/version&gt; &lt;/dependency&gt; &lt;dependency&gt; &lt;groupId&gt;org.eclipse.jdt&lt;/groupId&gt; &lt;artifactId&gt;ecj&lt;/artifactId&gt; &lt;version&gt;3.17.0&lt;/version&gt; &lt;/dependency&gt; &lt;dependency&gt; &lt;groupId&gt;org.easymock&lt;/groupId&gt; &lt;artifactId&gt;easymock&lt;/artifactId&gt; &lt;version&gt;4.0.2&lt;/version&gt; &lt;scope&gt;test&lt;/scope&gt; &lt;/dependency&gt; &lt;/dependencies&gt;" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yuyang.run/posts/%E4%B8%AD%E9%97%B4%E4%BB%B6/%E4%BD%BF%E7%94%A8idea%E8%BF%90%E8%A1%8Ctomcat9%E9%A1%B9%E7%9B%AE/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-10-12T15:29:13+08:00" />
+<meta property="article:modified_time" content="2023-10-12T15:29:13+08:00" />
+
+
+
+
+
+
+
+  </head>
+  <body class="light-theme">
+    <div class="container">
+      <header class="header">
+  <span class="header__inner">
+    <a
+  href="https://yuyang.run"
+  class="logo"
+  style="text-decoration: none;"
+>
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367" />
+</svg>
+</span>
+    <span class="logo__text"
+      >余为民同志</span
+    >
+    <span class="logo__cursor"></span>
+  
+</a>
+
+    <span class="header__right">
+      
+        <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/posts/">文章</a></li>
+        
+      
+        
+          <li><a href="/tags/">标签</a></li>
+        
+      
+        
+          <li><a href="/categories/">分类</a></li>
+        
+      
+        
+          <li><a href="https://geekbang.yuyang.run">极客帮</a></li>
+        
+      
+      
+      
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/posts/">文章</a></li>
+      
+    
+      
+        <li><a href="/tags/">标签</a></li>
+      
+    
+      
+        <li><a href="/categories/">分类</a></li>
+      
+    
+      
+        <li><a href="https://geekbang.yuyang.run">极客帮</a></li>
+      
+    
+  </ul>
+</nav>
+
+        <span class="menu-trigger">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none" />
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" />
+          </svg>
+        </span>
+      
+      <span class="theme-toggle">
+        <svg
+  class="theme-toggler"
+  width="24"
+  height="24"
+  viewBox="0 0 48 48"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <path
+    d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"
+  />
+</svg>
+
+      </span>
+    </span>
+  </span>
+</header>
+
+
+      <div class="content">
+        
+  
+  
+
+  <article class="post">
+    <div class="in-article">
+      
+    </div>
+    <h1 class="post-title">使用Idea2023运行tomcat9项目</h1>
+    <div class="post-meta">
+      
+        <time class="post-date">
+          2023-10-12 15:29:13
+        </time>
+
+        
+          
+        
+      
+
+      
+
+
+      
+    </div>
+
+    
+      <span class="post-tags">
+        
+          <a href="https://yuyang.run/tags/tomcat/">#tomcat</a>&nbsp;
+        
+          <a href="https://yuyang.run/tags/%E4%B8%AD%E9%97%B4%E4%BB%B6/">#中间件</a>&nbsp;
+        
+      </span>
+    
+
+    <div class="post-content">
+      
+        
+        <div style="position: fixed; right:5px; overflow:auto; top: 100px; width: 22%; bottom:50px">
+        <h2>目录</h2>
+        <aside class="table-of-contents"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#源码获取">源码获取</a></li>
+    <li><a href="#idea运行">Idea运行</a>
+      <ul>
+        <li><a href="#添加pomxml">添加pom.xml</a></li>
+        <li><a href="#设置目录">设置目录</a></li>
+        <li><a href="#lib目录">lib目录</a></li>
+        <li><a href="#移除不用的文件夹">移除不用的文件夹</a></li>
+      </ul>
+    </li>
+    <li><a href="#启动项目">启动项目</a></li>
+  </ul>
+</nav></aside>
+        </div>
+        
+      
+      <h2 id="源码获取">
+  源码获取
+  <a href="#%e6%ba%90%e7%a0%81%e8%8e%b7%e5%8f%96" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p>使用<code>git clone</code>命令获取<code>9.0.x</code>源码：<code>git clone -b 9.0.x git@github.com:apache/tomcat.git</code></p>
+<h2 id="idea运行">
+  Idea运行
+  <a href="#idea%e8%bf%90%e8%a1%8c" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<h3 id="添加pomxml">
+  添加pom.xml
+  <a href="#%e6%b7%bb%e5%8a%a0pomxml" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<p>tomcat9项目是使用ant编译的，需要先将其使用maven管理。</p>
+<p>新建pom.xml文件：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#75715e">&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;project</span> <span style="color:#a6e22e">xmlns=</span><span style="color:#e6db74">&#34;http://maven.apache.org/POM/4.0.0&#34;</span>
+</span></span><span style="display:flex;"><span>         <span style="color:#a6e22e">xmlns:xsi=</span><span style="color:#e6db74">&#34;http://www.w3.org/2001/XMLSchema-instance&#34;</span>
+</span></span><span style="display:flex;"><span>         <span style="color:#a6e22e">xsi:schemaLocation=</span><span style="color:#e6db74">&#34;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;modelVersion&gt;</span>4.0.0<span style="color:#f92672">&lt;/modelVersion&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;groupId&gt;</span>org.apache.tomcat<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;artifactId&gt;</span>tomcat<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;name&gt;</span>tomcat<span style="color:#f92672">&lt;/name&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;version&gt;</span>9.0.19<span style="color:#f92672">&lt;/version&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;dependencies&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;groupId&gt;</span>junit<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;artifactId&gt;</span>junit<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;version&gt;</span>4.12<span style="color:#f92672">&lt;/version&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;scope&gt;</span>test<span style="color:#f92672">&lt;/scope&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;groupId&gt;</span>org.apache.ant<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;artifactId&gt;</span>ant<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;version&gt;</span>1.10.5<span style="color:#f92672">&lt;/version&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;groupId&gt;</span>wsdl4j<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;artifactId&gt;</span>wsdl4j<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;version&gt;</span>1.6.3<span style="color:#f92672">&lt;/version&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;groupId&gt;</span>biz.aQute.bnd<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;artifactId&gt;</span>biz.aQute.bndlib<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;version&gt;</span>5.2.0<span style="color:#f92672">&lt;/version&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;scope&gt;</span>provided<span style="color:#f92672">&lt;/scope&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;groupId&gt;</span>org.apache.geronimo.specs<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;artifactId&gt;</span>geronimo-jaxrpc_1.1_spec<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;version&gt;</span>2.1<span style="color:#f92672">&lt;/version&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;groupId&gt;</span>org.eclipse.jdt<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;artifactId&gt;</span>ecj<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;version&gt;</span>3.17.0<span style="color:#f92672">&lt;/version&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;groupId&gt;</span>org.easymock<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;artifactId&gt;</span>easymock<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;version&gt;</span>4.0.2<span style="color:#f92672">&lt;/version&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;scope&gt;</span>test<span style="color:#f92672">&lt;/scope&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;/dependencies&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;build&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;plugins&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;plugin&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;groupId&gt;</span>org.apache.maven.plugins<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;artifactId&gt;</span>maven-compiler-plugin<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;configuration&gt;</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">&lt;source&gt;</span>1.8<span style="color:#f92672">&lt;/source&gt;</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">&lt;target&gt;</span>1.8<span style="color:#f92672">&lt;/target&gt;</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">&lt;encoding&gt;</span>UTF-8<span style="color:#f92672">&lt;/encoding&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;/configuration&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;/plugin&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;plugin&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;groupId&gt;</span>org.apache.maven.plugins<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;artifactId&gt;</span>maven-resources-plugin<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;configuration&gt;</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">&lt;encoding&gt;</span>UTF-8<span style="color:#f92672">&lt;/encoding&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;/configuration&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;/plugin&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/plugins&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;/build&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/project&gt;</span>
+</span></span></code></pre></div><p>点击pom.xml文件，右键<code>Add as Maven Project</code>。点击右侧maven工具箱，下载依赖并同步项目。</p>
+<h3 id="设置目录">
+  设置目录
+  <a href="#%e8%ae%be%e7%bd%ae%e7%9b%ae%e5%bd%95" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<p>将java设置为<code>Sources Root</code>目录，test设置为<code>Test Sources Root</code>目录：</p>
+<p><img src="/images/04.png" alt=""></p>
+<h3 id="lib目录">
+  lib目录
+  <a href="#lib%e7%9b%ae%e5%bd%95" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<p>官网下载一个可运行的tomcat包，将其中的lib包复制到项目中：</p>
+<p><img src="/images/05.png" alt=""></p>
+<h3 id="移除不用的文件夹">
+  移除不用的文件夹
+  <a href="#%e7%a7%bb%e9%99%a4%e4%b8%8d%e7%94%a8%e7%9a%84%e6%96%87%e4%bb%b6%e5%a4%b9" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<p>仅保留webapps下面的ROOT文件夹</p>
+<p><img src="/images/06.png" alt=""></p>
+<h2 id="启动项目">
+  启动项目
+  <a href="#%e5%90%af%e5%8a%a8%e9%a1%b9%e7%9b%ae" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p>找到<code>Bootstrap</code>类，点击运行：</p>
+<p><img src="/images/07.png" alt=""></p>
+<p>报错：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>C:\Users\YuYang\Documents\code\opensource\tomcat\java\org\apache\jasper\compiler\JDTCompiler.java:305:76
+</span></span><span style="display:flex;"><span>java: 找不到符号
+</span></span><span style="display:flex;"><span>  符号:   变量 VERSION_12
+</span></span><span style="display:flex;"><span>  位置: 类 org.eclipse.jdt.internal.compiler.impl.CompilerOptions
+</span></span></code></pre></div><p>将报错找不到的常量注释掉后再次运行：</p>
+<p><img src="/images/08.png" alt=""></p>
+<p><img src="/images/09.png" alt=""></p>
+
+    </div>
+    
+      
+        <div class="pagination">
+          <div class="pagination__title">
+            <span class="pagination__title-h"
+              >Read other posts</span
+            >
+            <hr />
+          </div>
+          <div class="pagination__buttons">
+            
+              <span class="button previous">
+                <a href="https://yuyang.run/posts/cmu15-445%E8%AF%BE%E7%A8%8B/tree-indexes-ii/">
+                  <span class="button__icon">←</span>
+                  <span class="button__text">Lecture#8 Tree Indexes II</span>
+                </a>
+              </span>
+            
+            
+              <span class="button next">
+                <a href="https://yuyang.run/posts/%E9%87%8D%E6%9E%84/%E4%BD%BF%E7%94%A8react-router%E9%87%8D%E6%9E%84%E5%89%8D%E7%AB%AF%E8%B7%AF%E7%94%B1/">
+                  <span class="button__text">使用react-router重构前端路由</span>
+                  <span class="button__icon">→</span>
+                </a>
+              </span>
+            
+          </div>
+        </div>
+      
+    
+
+    
+      
+        
+
+      
+    
+  </article>
+
+      </div>
+
+      
+        <footer class="footer">
+  <div class="footer__inner">
+    
+      <a
+  href="https://yuyang.run"
+  class="logo"
+  style="text-decoration: none;"
+>
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367" />
+</svg>
+</span>
+    <span class="logo__text"
+      >余为民同志</span
+    >
+    <span class="logo__cursor"></span>
+  
+</a>
+
+      <div class="copyright">
+        <span>© 2023 Powered by <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a></span>
+        <span><a href="https://github.com/panr/hugo-theme-hello-friend" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+    
+  </div>
+</footer>
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+
+      
+    </div>
+
+    
+  </body>
+</html>

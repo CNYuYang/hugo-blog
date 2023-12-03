@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>tomcat on 余为民同志|做一个优秀的普通人，在热爱中燃烧！</title>
+    
+    
+    
+    <link>https://yuyang.run/tags/tomcat/</link>
+    <description>Recent content in tomcat on 余为民同志|做一个优秀的普通人，在热爱中燃烧！</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <managingEditor>744727849@qq.com (YuYang)</managingEditor>
+    <webMaster>744727849@qq.com (YuYang)</webMaster>
+    <lastBuildDate>Thu, 12 Oct 2023 15:29:13 +0800</lastBuildDate>
+    
+	<atom:link href="https://yuyang.run/tags/tomcat/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>使用Idea2023运行tomcat9项目</title>
+      <link>https://yuyang.run/posts/%E4%B8%AD%E9%97%B4%E4%BB%B6/%E4%BD%BF%E7%94%A8idea%E8%BF%90%E8%A1%8Ctomcat9%E9%A1%B9%E7%9B%AE/</link>
+      <pubDate>Thu, 12 Oct 2023 15:29:13 +0800</pubDate>
+      <author>744727849@qq.com (YuYang)</author>
+      <guid>https://yuyang.run/posts/%E4%B8%AD%E9%97%B4%E4%BB%B6/%E4%BD%BF%E7%94%A8idea%E8%BF%90%E8%A1%8Ctomcat9%E9%A1%B9%E7%9B%AE/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          源码获取 # 使用git clone命令获取9.0.x源码：git clone -b 9.0.x git@github.com:apache/tomcat.git Idea运行 # 添加pom.xml # tomcat9项目是使用ant编译的，需要先将其使用maven管理。 新建pom.xml文件： &amp;lt;?xml version=&amp;#34;1.0&amp;#34; encoding=&amp;#34;UTF-8&amp;#34;?&amp;gt; &amp;lt;project xmlns=&amp;#34;http://maven.apache.org/POM/4.0.0&amp;#34; xmlns:xsi=&amp;#34;http://www.w3.org/2001/XMLSchema-instance&amp;#34; xsi:schemaLocation=&amp;#34;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&amp;#34;&amp;gt; &amp;lt;modelVersion&amp;gt;4.0.0&amp;lt;/modelVersion&amp;gt; &amp;lt;groupId&amp;gt;org.apache.tomcat&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;tomcat&amp;lt;/artifactId&amp;gt; &amp;lt;name&amp;gt;tomcat&amp;lt;/name&amp;gt; &amp;lt;version&amp;gt;9.0.19&amp;lt;/version&amp;gt; &amp;lt;dependencies&amp;gt; &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;junit&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;junit&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;4.12&amp;lt;/version&amp;gt; &amp;lt;scope&amp;gt;test&amp;lt;/scope&amp;gt; &amp;lt;/dependency&amp;gt; &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.apache.ant&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;ant&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;1.10.5&amp;lt;/version&amp;gt; &amp;lt;/dependency&amp;gt; &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;wsdl4j&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;wsdl4j&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;1.6.3&amp;lt;/version&amp;gt; &amp;lt;/dependency&amp;gt; &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;biz.aQute.bnd&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;biz.aQute.bndlib&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;5.2.0&amp;lt;/version&amp;gt; &amp;lt;scope&amp;gt;provided&amp;lt;/scope&amp;gt; &amp;lt;/dependency&amp;gt; &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.apache.geronimo.specs&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;geronimo-jaxrpc_1.1_spec&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;2.1&amp;lt;/version&amp;gt; &amp;lt;/dependency&amp;gt; &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.eclipse.jdt&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;ecj&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;3.17.0&amp;lt;/version&amp;gt; &amp;lt;/dependency&amp;gt; &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.easymock&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;easymock&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;4.0.2&amp;lt;/version&amp;gt; &amp;lt;scope&amp;gt;test&amp;lt;/scope&amp;gt; &amp;lt;/dependency&amp;gt; &amp;lt;/dependencies&amp;gt;
+          
+        
+        </description>
+    </item>
+    
+  </channel>
+</rss>

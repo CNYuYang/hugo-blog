@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+      <title>
+        kafka单机环境搭建 ::
+        余为民同志|做一个优秀的普通人，在热爱中燃烧！
+      </title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta
+  name="description"
+  content="软件版本 # jdk-8u271-linux-x64.tar.gz apache-zookeeper-3.8.1-bin.tar.gz kafka_2.12-3.4.0.tgz 解压添加PATH等步骤忽略，不进行记录。java安装过程跳过 zookeeper安装 # 先进入conf目录 复制一份zoo.cfg: cp zoo_sample.cfg zoo.cfg 修改zoo.cfg，修改数据目录：dataDir=../tmp/zookeeper 先进入bin目录 执行./zkServer.sh start 使用jps查看是否启动"
+/>
+<meta
+  name="keywords"
+  content=""
+/>
+<meta name="robots" content="noodp" />
+<link rel="canonical" href="https://yuyang.run/posts/%E4%B8%AD%E9%97%B4%E4%BB%B6/kafka%E5%8D%95%E6%9C%BA%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" />
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/style.css" />
+
+<link rel="stylesheet" href="https://yuyang.run/style.css" />
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://yuyang.run/img/apple-touch-icon-144-precomposed.png" />
+<link rel="shortcut icon" href="https://yuyang.run/img/favicon.png" />
+
+
+<link href="/fonts/JetBrainsMono-Italic.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="/fonts/JetBrainsMono-Regular.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="/fonts/JetBrainsMono-Medium.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="/fonts/JetBrainsMono-MediumItalic.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="/fonts/JetBrainsMono-Bold.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="/fonts/JetBrainsMono-BoldItalic.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="kafka单机环境搭建"/>
+<meta name="twitter:description" content="软件版本 # jdk-8u271-linux-x64.tar.gz apache-zookeeper-3.8.1-bin.tar.gz kafka_2.12-3.4.0.tgz 解压添加PATH等步骤忽略，不进行记录。java安装过程跳过 zookeeper安装 # 先进入conf目录 复制一份zoo.cfg: cp zoo_sample.cfg zoo.cfg 修改zoo.cfg，修改数据目录：dataDir=../tmp/zookeeper 先进入bin目录 执行./zkServer.sh start 使用jps查看是否启动"/>
+
+
+
+<meta property="og:title" content="kafka单机环境搭建" />
+<meta property="og:description" content="软件版本 # jdk-8u271-linux-x64.tar.gz apache-zookeeper-3.8.1-bin.tar.gz kafka_2.12-3.4.0.tgz 解压添加PATH等步骤忽略，不进行记录。java安装过程跳过 zookeeper安装 # 先进入conf目录 复制一份zoo.cfg: cp zoo_sample.cfg zoo.cfg 修改zoo.cfg，修改数据目录：dataDir=../tmp/zookeeper 先进入bin目录 执行./zkServer.sh start 使用jps查看是否启动" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yuyang.run/posts/%E4%B8%AD%E9%97%B4%E4%BB%B6/kafka%E5%8D%95%E6%9C%BA%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-07-10T15:29:13+08:00" />
+<meta property="article:modified_time" content="2023-07-10T15:29:13+08:00" />
+
+
+
+
+
+
+
+  </head>
+  <body class="light-theme">
+    <div class="container">
+      <header class="header">
+  <span class="header__inner">
+    <a
+  href="https://yuyang.run"
+  class="logo"
+  style="text-decoration: none;"
+>
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367" />
+</svg>
+</span>
+    <span class="logo__text"
+      >余为民同志</span
+    >
+    <span class="logo__cursor"></span>
+  
+</a>
+
+    <span class="header__right">
+      
+        <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/posts/">文章</a></li>
+        
+      
+        
+          <li><a href="/tags/">标签</a></li>
+        
+      
+        
+          <li><a href="/categories/">分类</a></li>
+        
+      
+        
+          <li><a href="https://geekbang.yuyang.run">极客帮</a></li>
+        
+      
+      
+      
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/posts/">文章</a></li>
+      
+    
+      
+        <li><a href="/tags/">标签</a></li>
+      
+    
+      
+        <li><a href="/categories/">分类</a></li>
+      
+    
+      
+        <li><a href="https://geekbang.yuyang.run">极客帮</a></li>
+      
+    
+  </ul>
+</nav>
+
+        <span class="menu-trigger">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none" />
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" />
+          </svg>
+        </span>
+      
+      <span class="theme-toggle">
+        <svg
+  class="theme-toggler"
+  width="24"
+  height="24"
+  viewBox="0 0 48 48"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <path
+    d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"
+  />
+</svg>
+
+      </span>
+    </span>
+  </span>
+</header>
+
+
+      <div class="content">
+        
+  
+  
+
+  <article class="post">
+    <div class="in-article">
+      
+    </div>
+    <h1 class="post-title">kafka单机环境搭建</h1>
+    <div class="post-meta">
+      
+        <time class="post-date">
+          2023-07-10 15:29:13
+        </time>
+
+        
+          
+        
+      
+
+      
+
+
+      
+    </div>
+
+    
+      <span class="post-tags">
+        
+          <a href="https://yuyang.run/tags/kafka/">#kafka</a>&nbsp;
+        
+          <a href="https://yuyang.run/tags/%E4%B8%AD%E9%97%B4%E4%BB%B6/">#中间件</a>&nbsp;
+        
+      </span>
+    
+
+    <div class="post-content">
+      
+        
+        <div style="position: fixed; right:5px; overflow:auto; top: 100px; width: 22%; bottom:50px">
+        <h2>目录</h2>
+        <aside class="table-of-contents"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#配置">配置</a></li>
+    <li><a href="#shell命令">Shell命令</a>
+      <ul>
+        <li><a href="#启动">启动</a></li>
+        <li><a href="#主题">主题</a></li>
+        <li><a href="#消费者">消费者</a></li>
+        <li><a href="#生产者">生产者</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></aside>
+        </div>
+        
+      
+      <h1 id="软件版本">
+  软件版本
+  <a href="#%e8%bd%af%e4%bb%b6%e7%89%88%e6%9c%ac" class="h-anchor" aria-hidden="true">#</a>
+</h1>
+<ul>
+<li>jdk-8u271-linux-x64.tar.gz</li>
+<li>apache-zookeeper-3.8.1-bin.tar.gz</li>
+<li>kafka_2.12-3.4.0.tgz</li>
+</ul>
+<blockquote>
+<p>解压添加<code>PATH</code>等步骤忽略，不进行记录。<code>java</code>安装过程跳过</p>
+</blockquote>
+<h1 id="zookeeper安装">
+  zookeeper安装
+  <a href="#zookeeper%e5%ae%89%e8%a3%85" class="h-anchor" aria-hidden="true">#</a>
+</h1>
+<ol>
+<li>
+<p>先进入<code>conf</code>目录</p>
+</li>
+<li>
+<p>复制一份<code>zoo.cfg</code>:</p>
+</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>cp zoo_sample.cfg zoo.cfg
+</span></span></code></pre></div><ol start="3">
+<li>
+<p>修改<code>zoo.cfg</code>，修改数据目录：<code>dataDir=../tmp/zookeeper</code></p>
+</li>
+<li>
+<p>先进入<code>bin</code>目录</p>
+</li>
+<li>
+<p>执行<code>./zkServer.sh start</code></p>
+</li>
+<li>
+<p>使用jps查看是否启动成功，<code>QuorumPeerMain</code>便是<code>zookeeper</code>入口类：</p>
+</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@localhost bin<span style="color:#f92672">]</span><span style="color:#75715e"># jps</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">8550</span> QuorumPeerMain
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">17046</span> Jps
+</span></span></code></pre></div><h1 id="kafka">
+  kafka
+  <a href="#kafka" class="h-anchor" aria-hidden="true">#</a>
+</h1>
+<h2 id="配置">
+  配置
+  <a href="#%e9%85%8d%e7%bd%ae" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p>编辑<code>server.properties</code>文件，能够被内网访问：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-properties" data-lang="properties"><span style="display:flex;"><span><span style="color:#a6e22e">listeners</span><span style="color:#f92672">=</span><span style="color:#e6db74">PLAINTEXT://192.168.3.14:9092</span>
+</span></span></code></pre></div><p>关闭防火墙：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>service firewalld stop
+</span></span></code></pre></div><h2 id="shell命令">
+  Shell命令
+  <a href="#shell%e5%91%bd%e4%bb%a4" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<h3 id="启动">
+  启动
+  <a href="#%e5%90%af%e5%8a%a8" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<ol>
+<li>非后台启动</li>
+</ol>
+<p>当启动失败时，可以看报错：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>./kafka-server-start.sh  ../config/server.properties
+</span></span></code></pre></div><ol start="2">
+<li>后台启动</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>./kafka-server-start.sh -daemon ../config/server.properties
+</span></span></code></pre></div><p>启动成功后，使用jps查看，存在<code>Kafka</code>：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@localhost bin<span style="color:#f92672">]</span><span style="color:#75715e"># jps</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">17890</span> Jps
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">8550</span> QuorumPeerMain
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">17818</span> Kafka
+</span></span></code></pre></div><h3 id="主题">
+  主题
+  <a href="#%e4%b8%bb%e9%a2%98" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<ol>
+<li>创建</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>kafka-topics.sh --bootstrap-server 192.168.3.14:9092 --create --partitions <span style="color:#ae81ff">1</span> --replication-factor <span style="color:#ae81ff">1</span> --topic first
+</span></span></code></pre></div><ol start="2">
+<li>查看</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>kafka-topics.sh --bootstrap-server 192.168.3.14:9092 --describe --topic first
+</span></span></code></pre></div><ol start="3">
+<li>列表</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>kafka-topics.sh --bootstrap-server 192.168.3.14:9092 --list
+</span></span></code></pre></div><ol start="4">
+<li>修改</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>kafka-topics.sh --bootstrap-server 192.168.3.14:9092 --alter --topic first --partitions <span style="color:#ae81ff">4</span>
+</span></span></code></pre></div><h3 id="消费者">
+  消费者
+  <a href="#%e6%b6%88%e8%b4%b9%e8%80%85" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>./kafka-console-consumer.sh --bootstrap-server 192.168.3.14:9092 --topic first
+</span></span></code></pre></div><h3 id="生产者">
+  生产者
+  <a href="#%e7%94%9f%e4%ba%a7%e8%80%85" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>kafka-console-producer.sh --broker-list 192.168.3.14:9092 --topic first
+</span></span></code></pre></div>
+    </div>
+    
+      
+        <div class="pagination">
+          <div class="pagination__title">
+            <span class="pagination__title-h"
+              >Read other posts</span
+            >
+            <hr />
+          </div>
+          <div class="pagination__buttons">
+            
+              <span class="button previous">
+                <a href="https://yuyang.run/posts/%E9%87%8D%E6%9E%84/%E4%BD%BF%E7%94%A8react-router%E9%87%8D%E6%9E%84%E5%89%8D%E7%AB%AF%E8%B7%AF%E7%94%B1/">
+                  <span class="button__icon">←</span>
+                  <span class="button__text">使用react-router重构前端路由</span>
+                </a>
+              </span>
+            
+            
+              <span class="button next">
+                <a href="https://yuyang.run/posts/%E4%B8%AD%E9%97%B4%E4%BB%B6/%E6%89%8B%E6%90%93zookeeper%E6%A0%B7%E4%BE%8B%E5%AE%9E%E7%8E%B0%E8%AE%B0%E5%BD%95/">
+                  <span class="button__text">手搓zookeeper样例实现记录</span>
+                  <span class="button__icon">→</span>
+                </a>
+              </span>
+            
+          </div>
+        </div>
+      
+    
+
+    
+      
+        
+
+      
+    
+  </article>
+
+      </div>
+
+      
+        <footer class="footer">
+  <div class="footer__inner">
+    
+      <a
+  href="https://yuyang.run"
+  class="logo"
+  style="text-decoration: none;"
+>
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367" />
+</svg>
+</span>
+    <span class="logo__text"
+      >余为民同志</span
+    >
+    <span class="logo__cursor"></span>
+  
+</a>
+
+      <div class="copyright">
+        <span>© 2023 Powered by <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a></span>
+        <span><a href="https://github.com/panr/hugo-theme-hello-friend" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+    
+  </div>
+</footer>
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+
+      
+    </div>
+
+    
+  </body>
+</html>

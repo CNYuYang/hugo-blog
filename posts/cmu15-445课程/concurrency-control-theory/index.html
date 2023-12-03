@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+      <title>
+        Lecture#16 Concurrency Control Theory ::
+        余为民同志|做一个优秀的普通人，在热爱中燃烧！
+      </title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta
+  name="description"
+  content="回顾本课程的路线图： 在前面的课程中介绍了 DBMS 的主要模块及架构，自底向上依次是 Disk Manager、Buffer Pool Manager、Access Methods、Operator Execution 及 Query Planning。但数据库要解决的问题并不仅仅停留在功能的实现上，它还需要具备： 满足多个用户同时读写数据，即 Concurrency Control。如"
+/>
+<meta
+  name="keywords"
+  content=""
+/>
+<meta name="robots" content="noodp" />
+<link rel="canonical" href="https://yuyang.run/posts/cmu15-445%E8%AF%BE%E7%A8%8B/concurrency-control-theory/" />
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/style.css" />
+
+<link rel="stylesheet" href="https://yuyang.run/style.css" />
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://yuyang.run/img/apple-touch-icon-144-precomposed.png" />
+<link rel="shortcut icon" href="https://yuyang.run/img/favicon.png" />
+
+
+<link href="/fonts/JetBrainsMono-Italic.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="/fonts/JetBrainsMono-Regular.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="/fonts/JetBrainsMono-Medium.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="/fonts/JetBrainsMono-MediumItalic.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="/fonts/JetBrainsMono-Bold.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="/fonts/JetBrainsMono-BoldItalic.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Lecture#16 Concurrency Control Theory"/>
+<meta name="twitter:description" content="回顾本课程的路线图： 在前面的课程中介绍了 DBMS 的主要模块及架构，自底向上依次是 Disk Manager、Buffer Pool Manager、Access Methods、Operator Execution 及 Query Planning。但数据库要解决的问题并不仅仅停留在功能的实现上，它还需要具备： 满足多个用户同时读写数据，即 Concurrency Control。如"/>
+
+
+
+<meta property="og:title" content="Lecture#16 Concurrency Control Theory" />
+<meta property="og:description" content="回顾本课程的路线图： 在前面的课程中介绍了 DBMS 的主要模块及架构，自底向上依次是 Disk Manager、Buffer Pool Manager、Access Methods、Operator Execution 及 Query Planning。但数据库要解决的问题并不仅仅停留在功能的实现上，它还需要具备： 满足多个用户同时读写数据，即 Concurrency Control。如" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yuyang.run/posts/cmu15-445%E8%AF%BE%E7%A8%8B/concurrency-control-theory/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-12-04T00:06:13+08:00" />
+<meta property="article:modified_time" content="2023-12-04T00:06:13+08:00" />
+
+
+
+
+
+
+
+  </head>
+  <body class="light-theme">
+    <div class="container">
+      <header class="header">
+  <span class="header__inner">
+    <a
+  href="https://yuyang.run"
+  class="logo"
+  style="text-decoration: none;"
+>
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367" />
+</svg>
+</span>
+    <span class="logo__text"
+      >余为民同志</span
+    >
+    <span class="logo__cursor"></span>
+  
+</a>
+
+    <span class="header__right">
+      
+        <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/posts/">文章</a></li>
+        
+      
+        
+          <li><a href="/tags/">标签</a></li>
+        
+      
+        
+          <li><a href="/categories/">分类</a></li>
+        
+      
+        
+          <li><a href="https://geekbang.yuyang.run">极客帮</a></li>
+        
+      
+      
+      
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/posts/">文章</a></li>
+      
+    
+      
+        <li><a href="/tags/">标签</a></li>
+      
+    
+      
+        <li><a href="/categories/">分类</a></li>
+      
+    
+      
+        <li><a href="https://geekbang.yuyang.run">极客帮</a></li>
+      
+    
+  </ul>
+</nav>
+
+        <span class="menu-trigger">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none" />
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" />
+          </svg>
+        </span>
+      
+      <span class="theme-toggle">
+        <svg
+  class="theme-toggler"
+  width="24"
+  height="24"
+  viewBox="0 0 48 48"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <path
+    d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"
+  />
+</svg>
+
+      </span>
+    </span>
+  </span>
+</header>
+
+
+      <div class="content">
+        
+  
+  
+
+  <article class="post">
+    <div class="in-article">
+      
+        <figure class="post-cover">
+  
+    <img src="https://yuyang.run/cover/database.png" alt="Lecture#16 Concurrency Control Theory"/>
+  
+
+  
+</figure>
+
+      
+    </div>
+    <h1 class="post-title">Lecture#16 Concurrency Control Theory</h1>
+    <div class="post-meta">
+      
+        <time class="post-date">
+          2023-12-04 00:06:13
+        </time>
+
+        
+          
+        
+      
+
+      
+
+
+      
+    </div>
+
+    
+      <span class="post-tags">
+        
+          <a href="https://yuyang.run/tags/cmu15-445/">#CMU15-445</a>&nbsp;
+        
+          <a href="https://yuyang.run/tags/sql/">#SQL</a>&nbsp;
+        
+      </span>
+    
+
+    <div class="post-content">
+      
+        
+        <div style="position: fixed; right:5px; overflow:auto; top: 100px; width: 22%; bottom:50px">
+        <h2>目录</h2>
+        <aside class="table-of-contents"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#strawmansimple-system">Strawman/Simple System</a></li>
+    <li><a href="#定义">定义</a></li>
+  </ul>
+</nav></aside>
+        </div>
+        
+      
+      <p>回顾本课程的路线图：</p>
+<p><img src="/images/15445/16-01.png" alt=""></p>
+<p>在前面的课程中介绍了 DBMS 的主要模块及架构，自底向上依次是 Disk Manager、Buffer Pool Manager、Access Methods、Operator Execution 及 Query Planning。但数据库要解决的问题并不仅仅停留在功能的实现上，它还需要具备：</p>
+<ul>
+<li>
+<p>满足多个用户同时读写数据，即 Concurrency Control。如：两个用户同时写入同一条记录</p>
+</li>
+<li>
+<p>面对故障，如宕机，能恢复到之前的状态，即 Recovery。如：你在银行系统转账时，转到一半忽然停电</p>
+</li>
+</ul>
+<p>Concurrency Control 与 Recovery 都是 DBMSs 的重要特性，它们渗透在 DBMS 的每个主要模块中。而二者的基础都是具备 ACID 特性的 Transactions，因此本节的讨论从 Transactions 开始。</p>
+<h1 id="事务">
+  事务
+  <a href="#%e4%ba%8b%e5%8a%a1" class="h-anchor" aria-hidden="true">#</a>
+</h1>
+<p>transaction 是在数据库上执行一个或多个操作 (例如 SQL 查询) 的序列，是 DBMS 状态变化的基本单位。</p>
+<p>一个 transaction 只能有执行和未执行两个状态，不存在部分执行的状态。</p>
+<blockquote>
+<p>一个典型的 transaction 实例就是：从 A 账户转账 100 元至 B 账户：</p>
+<ul>
+<li>检查 A 的账户余额是否超过 100 元</li>
+<li>从 A 账户中扣除 100 元</li>
+<li>往 B 账户中增加 100 元</li>
+</ul>
+</blockquote>
+<h2 id="strawmansimple-system">
+  Strawman/Simple System
+  <a href="#strawmansimple-system" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p>系统中只存在一个线程负责执行 transaction：</p>
+<ul>
+<li>任何时刻只能有一个 transaction 被执行且每个 transaction 开始执行就必须执行完毕才轮到下一个</li>
+<li>在 transaction 开始前，将整个 database 数据复制到新文件中，并在新文件上执行改动
+<ul>
+<li>如果 transaction 执行成功，就用新文件覆盖原文件</li>
+<li>如果 transaction 执行失败，则删除新文件即可</li>
+</ul>
+</li>
+</ul>
+<p>Strawman System 的缺点很明显，无法利用多核计算能力并行地执行相互独立的多个 transactions，从而提高 CPU 利用率、吞吐量，减少用户的响应时间。但要利用 CPU 的多核计算能力，这难度也是显而易见的，获得种种好处的同时必须保证数据库的正确性和 transactions 之间的公平性。 显然我们无法让 transactions 的执行过程在时间线上任意重叠，因为这可能导致数据的永久不一致。于是我们需要一套标准来定义数据的正确性。</p>
+<h2 id="定义">
+  定义
+  <a href="#%e5%ae%9a%e4%b9%89" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p>Database: 一组固定的数据对象 (e.g., A, B, C, &hellip;)</p>
+<p>Transaction: 一序列读写操作 (e.g., R(A), W(B), &hellip;)</p>
+<p>事务的结果是 <code>COMMIT`` 或 </code>ABORT`。</p>
+<p>若是 COMMIT，事务的所有修改都被保存到数据库中。
+若是 ABORT，事务的所有修改都会被撤销，就像从未发生过一样。Abort 可以是自己造成的，也可以是由DBMS造成的。</p>
+<p>transaction 的正确性标准称为 <code>ACID</code>：</p>
+<ul>
+<li>原子性（<code>A</code>tomicity）：事务中的所有动作都发生，或者不发生。</li>
+<li>一致性（<code>C</code>onsistency）: 如果每个事务是一致的，DB开始时也是一致的，那么它结束时也是一致的。</li>
+<li>隔离性（<code>I</code>solation）: 一个事务的执行与其他事务的执行是隔离的。</li>
+<li>持久性（<code>D</code>urability）:如果一个事务被 <code>commit</code>，则它的效果将保持不变。</li>
+</ul>
+<blockquote>
+<p>实际上各家数据库所实现的ACID并不尽相同。例如围绕着“隔离性”就存在很多含糊不清的争议。所以当听到一个系统声称自己“兼容ACID”时，其实你无法确信它究竟能提供了什么样的保证，现在的ACID更像是一个市场营销用语。</p>
+</blockquote>
+<h1 id="原子性atomicity">
+  原子性（Atomicity）
+  <a href="#%e5%8e%9f%e5%ad%90%e6%80%a7atomicity" class="h-anchor" aria-hidden="true">#</a>
+</h1>
+<h1 id="一致性consistency">
+  一致性（Consistency）
+  <a href="#%e4%b8%80%e8%87%b4%e6%80%a7consistency" class="h-anchor" aria-hidden="true">#</a>
+</h1>
+<h1 id="隔离性isolation">
+  隔离性（Isolation）
+  <a href="#%e9%9a%94%e7%a6%bb%e6%80%a7isolation" class="h-anchor" aria-hidden="true">#</a>
+</h1>
+<h1 id="持久性durability">
+  持久性（Durability）
+  <a href="#%e6%8c%81%e4%b9%85%e6%80%a7durability" class="h-anchor" aria-hidden="true">#</a>
+</h1>
+
+    </div>
+    
+      
+        <div class="pagination">
+          <div class="pagination__title">
+            <span class="pagination__title-h"
+              >Read other posts</span
+            >
+            <hr />
+          </div>
+          <div class="pagination__buttons">
+            
+            
+              <span class="button next">
+                <a href="https://yuyang.run/posts/cmu15-445%E8%AF%BE%E7%A8%8B/query-planning-optimization-ii/">
+                  <span class="button__text">[WIP]Lecture#15 Query Planning &amp; Optimization II</span>
+                  <span class="button__icon">→</span>
+                </a>
+              </span>
+            
+          </div>
+        </div>
+      
+    
+
+    
+      
+        
+
+      
+    
+  </article>
+
+      </div>
+
+      
+        <footer class="footer">
+  <div class="footer__inner">
+    
+      <a
+  href="https://yuyang.run"
+  class="logo"
+  style="text-decoration: none;"
+>
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367" />
+</svg>
+</span>
+    <span class="logo__text"
+      >余为民同志</span
+    >
+    <span class="logo__cursor"></span>
+  
+</a>
+
+      <div class="copyright">
+        <span>© 2023 Powered by <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a></span>
+        <span><a href="https://github.com/panr/hugo-theme-hello-friend" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+    
+  </div>
+</footer>
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+
+      
+    </div>
+
+    
+  </body>
+</html>

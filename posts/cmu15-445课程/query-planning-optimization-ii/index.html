@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+      <title>
+        [WIP]Lecture#15 Query Planning &amp; Optimization II ::
+        余为民同志|做一个优秀的普通人，在热爱中燃烧！
+      </title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta
+  name="description"
+  content="许多操作没有通用的规则，如 Join：Join 操作既符合交换律又符合结合律，等价关系代数表达式数量庞大，这时候就需要一些成本估算技术，将过滤性大的表作为 Outer Table，小的作为 Inner Table，从而达到查询优化的目的。 花销估算 # 一个查询需要花费多长时间，取决于许多因素： CPU: Small cost; tough to estimate Disk: #block transfers Memory: Amount of DRAM used Network: #messages 但本质"
+/>
+<meta
+  name="keywords"
+  content=""
+/>
+<meta name="robots" content="noodp" />
+<link rel="canonical" href="https://yuyang.run/posts/cmu15-445%E8%AF%BE%E7%A8%8B/query-planning-optimization-ii/" />
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/style.css" />
+
+<link rel="stylesheet" href="https://yuyang.run/style.css" />
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://yuyang.run/img/apple-touch-icon-144-precomposed.png" />
+<link rel="shortcut icon" href="https://yuyang.run/img/favicon.png" />
+
+
+<link href="/fonts/JetBrainsMono-Italic.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="/fonts/JetBrainsMono-Regular.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="/fonts/JetBrainsMono-Medium.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="/fonts/JetBrainsMono-MediumItalic.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="/fonts/JetBrainsMono-Bold.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="/fonts/JetBrainsMono-BoldItalic.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="[WIP]Lecture#15 Query Planning &amp; Optimization II"/>
+<meta name="twitter:description" content="许多操作没有通用的规则，如 Join：Join 操作既符合交换律又符合结合律，等价关系代数表达式数量庞大，这时候就需要一些成本估算技术，将过滤性大的表作为 Outer Table，小的作为 Inner Table，从而达到查询优化的目的。 花销估算 # 一个查询需要花费多长时间，取决于许多因素： CPU: Small cost; tough to estimate Disk: #block transfers Memory: Amount of DRAM used Network: #messages 但本质"/>
+
+
+
+<meta property="og:title" content="[WIP]Lecture#15 Query Planning &amp; Optimization II" />
+<meta property="og:description" content="许多操作没有通用的规则，如 Join：Join 操作既符合交换律又符合结合律，等价关系代数表达式数量庞大，这时候就需要一些成本估算技术，将过滤性大的表作为 Outer Table，小的作为 Inner Table，从而达到查询优化的目的。 花销估算 # 一个查询需要花费多长时间，取决于许多因素： CPU: Small cost; tough to estimate Disk: #block transfers Memory: Amount of DRAM used Network: #messages 但本质" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yuyang.run/posts/cmu15-445%E8%AF%BE%E7%A8%8B/query-planning-optimization-ii/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-12-03T00:36:23+08:00" />
+<meta property="article:modified_time" content="2023-12-03T00:36:23+08:00" />
+
+
+
+
+
+
+
+  </head>
+  <body class="light-theme">
+    <div class="container">
+      <header class="header">
+  <span class="header__inner">
+    <a
+  href="https://yuyang.run"
+  class="logo"
+  style="text-decoration: none;"
+>
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367" />
+</svg>
+</span>
+    <span class="logo__text"
+      >余为民同志</span
+    >
+    <span class="logo__cursor"></span>
+  
+</a>
+
+    <span class="header__right">
+      
+        <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/posts/">文章</a></li>
+        
+      
+        
+          <li><a href="/tags/">标签</a></li>
+        
+      
+        
+          <li><a href="/categories/">分类</a></li>
+        
+      
+        
+          <li><a href="https://geekbang.yuyang.run">极客帮</a></li>
+        
+      
+      
+      
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/posts/">文章</a></li>
+      
+    
+      
+        <li><a href="/tags/">标签</a></li>
+      
+    
+      
+        <li><a href="/categories/">分类</a></li>
+      
+    
+      
+        <li><a href="https://geekbang.yuyang.run">极客帮</a></li>
+      
+    
+  </ul>
+</nav>
+
+        <span class="menu-trigger">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none" />
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" />
+          </svg>
+        </span>
+      
+      <span class="theme-toggle">
+        <svg
+  class="theme-toggler"
+  width="24"
+  height="24"
+  viewBox="0 0 48 48"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <path
+    d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"
+  />
+</svg>
+
+      </span>
+    </span>
+  </span>
+</header>
+
+
+      <div class="content">
+        
+  
+  
+
+  <article class="post">
+    <div class="in-article">
+      
+        <figure class="post-cover">
+  
+    <img src="https://yuyang.run/cover/database.png" alt="[WIP]Lecture#15 Query Planning &amp; Optimization II"/>
+  
+
+  
+</figure>
+
+      
+    </div>
+    <h1 class="post-title">[WIP]Lecture#15 Query Planning &amp; Optimization II</h1>
+    <div class="post-meta">
+      
+        <time class="post-date">
+          2023-12-03 00:36:23
+        </time>
+
+        
+          
+        
+      
+
+      
+
+
+      
+    </div>
+
+    
+      <span class="post-tags">
+        
+          <a href="https://yuyang.run/tags/cmu15-445/">#CMU15-445</a>&nbsp;
+        
+          <a href="https://yuyang.run/tags/sql/">#SQL</a>&nbsp;
+        
+      </span>
+    
+
+    <div class="post-content">
+      
+        
+        <div style="position: fixed; right:5px; overflow:auto; top: 100px; width: 22%; bottom:50px">
+        <h2>目录</h2>
+        <aside class="table-of-contents"><nav id="TableOfContents"></nav></aside>
+        </div>
+        
+      
+      <p>许多操作没有通用的规则，如 Join：Join 操作既符合交换律又符合结合律，等价关系代数表达式数量庞大，这时候就需要一些成本估算技术，将过滤性大的表作为 Outer Table，小的作为 Inner Table，从而达到查询优化的目的。</p>
+<h1 id="花销估算">
+  花销估算
+  <a href="#%e8%8a%b1%e9%94%80%e4%bc%b0%e7%ae%97" class="h-anchor" aria-hidden="true">#</a>
+</h1>
+<p>一个查询需要花费多长时间，取决于许多因素：</p>
+<ul>
+<li>CPU: Small cost; tough to estimate</li>
+<li>Disk: #block transfers</li>
+<li>Memory: Amount of DRAM used</li>
+<li>Network: #messages</li>
+</ul>
+<p>但本质上取决于：<strong>整个查询过程需要读入和写出多少<code>tuples</code></strong></p>
+<p>因此 DBMS 需要保存每个 table 的一些统计信息，如 attributes、indexes 等信息，有助于估计查询成本。值得一提的是，不同的 DBMS 的搜集、更新统计信息的策略不同，获取到这些元信息的语法也不同：</p>
+<ul>
+<li>Postgres/SQLite: <code>ANALYZE</code></li>
+<li>Oracle/MySQL: <code>ANALYZE TABLE</code></li>
+<li>SQL Server: <code>UPDATE STATISTICS</code></li>
+<li>DB2: <code>RUNSTATS</code></li>
+</ul>
+<p>// TODO <a href="https://www.cnblogs.com/angelia-wang/p/17328165.html">https://www.cnblogs.com/angelia-wang/p/17328165.html</a></p>
+
+    </div>
+    
+      
+        <div class="pagination">
+          <div class="pagination__title">
+            <span class="pagination__title-h"
+              >Read other posts</span
+            >
+            <hr />
+          </div>
+          <div class="pagination__buttons">
+            
+              <span class="button previous">
+                <a href="https://yuyang.run/posts/cmu15-445%E8%AF%BE%E7%A8%8B/concurrency-control-theory/">
+                  <span class="button__icon">←</span>
+                  <span class="button__text">Lecture#16 Concurrency Control Theory</span>
+                </a>
+              </span>
+            
+            
+              <span class="button next">
+                <a href="https://yuyang.run/posts/cmu15-445%E8%AF%BE%E7%A8%8B/query-planning-optimization-i/">
+                  <span class="button__text">Lecture#14 Query Planning &amp; Optimization I</span>
+                  <span class="button__icon">→</span>
+                </a>
+              </span>
+            
+          </div>
+        </div>
+      
+    
+
+    
+      
+        
+
+      
+    
+  </article>
+
+      </div>
+
+      
+        <footer class="footer">
+  <div class="footer__inner">
+    
+      <a
+  href="https://yuyang.run"
+  class="logo"
+  style="text-decoration: none;"
+>
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367" />
+</svg>
+</span>
+    <span class="logo__text"
+      >余为民同志</span
+    >
+    <span class="logo__cursor"></span>
+  
+</a>
+
+      <div class="copyright">
+        <span>© 2023 Powered by <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a></span>
+        <span><a href="https://github.com/panr/hugo-theme-hello-friend" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+    
+  </div>
+</footer>
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+
+      
+    </div>
+
+    
+  </body>
+</html>

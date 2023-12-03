@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+      <title>
+        Lecture#14 Query Planning &amp; Optimization I ::
+        余为民同志|做一个优秀的普通人，在热爱中燃烧！
+      </title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta
+  name="description"
+  content="SQL是声明性的，这意味着用户告诉 DBMS 他们想要什么答案，而不是如何得到答案。因此，DBMS 需要将 SQL 语句转换为可执行的查询计划。 但不同的查询计划的效率可能出现多个数量级的差别，如 Join Algorithms 一节中的 Simple Nested Loop Join 与 Hash Join 的时间对比 (1.3 hours vs. 0.45 seconds)。因此，DBMS 需要一种方法来为给定查询选择“最佳”计划。 这是 Query Optimizer"
+/>
+<meta
+  name="keywords"
+  content=""
+/>
+<meta name="robots" content="noodp" />
+<link rel="canonical" href="https://yuyang.run/posts/cmu15-445%E8%AF%BE%E7%A8%8B/query-planning-optimization-i/" />
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/style.css" />
+
+<link rel="stylesheet" href="https://yuyang.run/style.css" />
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://yuyang.run/img/apple-touch-icon-144-precomposed.png" />
+<link rel="shortcut icon" href="https://yuyang.run/img/favicon.png" />
+
+
+<link href="/fonts/JetBrainsMono-Italic.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="/fonts/JetBrainsMono-Regular.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="/fonts/JetBrainsMono-Medium.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="/fonts/JetBrainsMono-MediumItalic.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="/fonts/JetBrainsMono-Bold.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="/fonts/JetBrainsMono-BoldItalic.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Lecture#14 Query Planning &amp; Optimization I"/>
+<meta name="twitter:description" content="SQL是声明性的，这意味着用户告诉 DBMS 他们想要什么答案，而不是如何得到答案。因此，DBMS 需要将 SQL 语句转换为可执行的查询计划。 但不同的查询计划的效率可能出现多个数量级的差别，如 Join Algorithms 一节中的 Simple Nested Loop Join 与 Hash Join 的时间对比 (1.3 hours vs. 0.45 seconds)。因此，DBMS 需要一种方法来为给定查询选择“最佳”计划。 这是 Query Optimizer"/>
+
+
+
+<meta property="og:title" content="Lecture#14 Query Planning &amp; Optimization I" />
+<meta property="og:description" content="SQL是声明性的，这意味着用户告诉 DBMS 他们想要什么答案，而不是如何得到答案。因此，DBMS 需要将 SQL 语句转换为可执行的查询计划。 但不同的查询计划的效率可能出现多个数量级的差别，如 Join Algorithms 一节中的 Simple Nested Loop Join 与 Hash Join 的时间对比 (1.3 hours vs. 0.45 seconds)。因此，DBMS 需要一种方法来为给定查询选择“最佳”计划。 这是 Query Optimizer" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yuyang.run/posts/cmu15-445%E8%AF%BE%E7%A8%8B/query-planning-optimization-i/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-12-03T00:07:34+08:00" />
+<meta property="article:modified_time" content="2023-12-03T00:07:34+08:00" />
+
+
+
+
+
+
+
+  </head>
+  <body class="light-theme">
+    <div class="container">
+      <header class="header">
+  <span class="header__inner">
+    <a
+  href="https://yuyang.run"
+  class="logo"
+  style="text-decoration: none;"
+>
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367" />
+</svg>
+</span>
+    <span class="logo__text"
+      >余为民同志</span
+    >
+    <span class="logo__cursor"></span>
+  
+</a>
+
+    <span class="header__right">
+      
+        <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/posts/">文章</a></li>
+        
+      
+        
+          <li><a href="/tags/">标签</a></li>
+        
+      
+        
+          <li><a href="/categories/">分类</a></li>
+        
+      
+        
+          <li><a href="https://geekbang.yuyang.run">极客帮</a></li>
+        
+      
+      
+      
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/posts/">文章</a></li>
+      
+    
+      
+        <li><a href="/tags/">标签</a></li>
+      
+    
+      
+        <li><a href="/categories/">分类</a></li>
+      
+    
+      
+        <li><a href="https://geekbang.yuyang.run">极客帮</a></li>
+      
+    
+  </ul>
+</nav>
+
+        <span class="menu-trigger">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none" />
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" />
+          </svg>
+        </span>
+      
+      <span class="theme-toggle">
+        <svg
+  class="theme-toggler"
+  width="24"
+  height="24"
+  viewBox="0 0 48 48"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <path
+    d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"
+  />
+</svg>
+
+      </span>
+    </span>
+  </span>
+</header>
+
+
+      <div class="content">
+        
+  
+  
+
+  <article class="post">
+    <div class="in-article">
+      
+        <figure class="post-cover">
+  
+    <img src="https://yuyang.run/cover/database.png" alt="Lecture#14 Query Planning &amp; Optimization I"/>
+  
+
+  
+</figure>
+
+      
+    </div>
+    <h1 class="post-title">Lecture#14 Query Planning &amp; Optimization I</h1>
+    <div class="post-meta">
+      
+        <time class="post-date">
+          2023-12-03 00:07:34
+        </time>
+
+        
+          
+        
+      
+
+      
+
+
+      
+    </div>
+
+    
+      <span class="post-tags">
+        
+          <a href="https://yuyang.run/tags/cmu15-445/">#CMU15-445</a>&nbsp;
+        
+          <a href="https://yuyang.run/tags/sql/">#SQL</a>&nbsp;
+        
+      </span>
+    
+
+    <div class="post-content">
+      
+        
+        <div style="position: fixed; right:5px; overflow:auto; top: 100px; width: 22%; bottom:50px">
+        <h2>目录</h2>
+        <aside class="table-of-contents"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#谓词下推">谓词下推</a></li>
+    <li><a href="#投影下推">投影下推</a></li>
+    <li><a href="#优化-sub-queries">优化 sub-queries</a></li>
+    <li><a href="#其他规则">其他规则</a></li>
+  </ul>
+</nav></aside>
+        </div>
+        
+      
+      <p>SQL是声明性的，这意味着用户告诉 DBMS 他们想要什么答案，而不是如何得到答案。因此，DBMS 需要将 SQL 语句转换为可执行的查询计划。 但不同的查询计划的效率可能出现多个数量级的差别，如 Join Algorithms 一节中的 Simple Nested Loop Join 与 Hash Join 的时间对比 (1.3 hours vs. 0.45 seconds)。因此，DBMS 需要一种方法来为给定查询选择“最佳”计划。 这是 Query Optimizer 的工作。</p>
+<blockquote>
+<p>Query Optimizer 第一次出现在 IBM System R，那时人们认为 DBMS 指定的查询计划永远无法比人类指定的更好。System R 的 optimizer 中的一些理念至今仍在使用。</p>
+</blockquote>
+<p>我们先来看下一条 sql 语句在 BusTub 中的运行流程：</p>
+<p><img src="/images/15445/14-01.png" alt=""></p>
+<p>一条 sql 语句会经过 Parser -&gt; Binder -&gt; Planner -&gt; Optimizer -&gt; Executors 几个阶段。SQL 语句 parse 后，通过 binder 绑定 identifier 到各个实体，使用 planner 生成查询计划，而后使用 optimizer 优化成最终的查询计划，最终通过 executor 生成一颗算子执行树。</p>
+<p>SQL 在被 parse 前，可经由 SQL Rewriter 通过某种转换规则来对 SQL 进行重写 (比如用一些额外的信息对数据库里面某些表进行标记，表示可以在这个节点或者磁盘上找到这些表)，这个是可选的。</p>
+<p><strong>1. Parser：根据 sql 语句生成一颗抽象语法树 (Abstract Syntax Tree)</strong></p>
+<p>具体如何生成，请参考编译原理。Parser 不是数据库的核心部分，也不是性能瓶颈，因此除非热爱编译原理，或者想通过实现一个 sql Parser 对编译原理进行实践，否则一般都会采用第三方库。Bustub 中采用了 libpg_query 库将 sql 语句 parse 为 AST。</p>
+<p><strong>2️. Binder：结合数据库的元信息，将抽象语法树转成一个具有库表信息的语义语法树</strong></p>
+<p>得到 AST 后，Binder 将遍历这棵树，将所有 identifier 解析成没有歧义的实体。实体是 Bustub 可以理解的各种 c++ 类。绑定完成后，得到的结果是一棵 Bustub 可以直接理解的树。这里把它叫做 Binder AST。</p>
+<p>下面这条 sql 语句中<code>SELECT</code>和<code>FROM</code>是关键字，<code>*</code>和<code>__mock_table_1</code>是标识符。</p>
+<p>Binder 会在 catalog 中查<code>__mock_table_1</code>的信息，将<code>__mock_table_1</code>绑定到具体的实体表上 (table_oid=0)。与此同时，将 * 展开成可以查到的所有列。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span>bustub<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">explain</span> (binder) <span style="color:#66d9ef">select</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">from</span> __mock_table_1;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">===</span> BINDER <span style="color:#f92672">===</span>
+</span></span><span style="display:flex;"><span>BoundSelect <span style="color:#960050;background-color:#1e0010">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">table</span><span style="color:#f92672">=</span>BoundBaseTableRef <span style="color:#960050;background-color:#1e0010">{</span> <span style="color:#66d9ef">table</span><span style="color:#f92672">=</span>__mock_table_1, oid<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span> <span style="color:#960050;background-color:#1e0010">}</span>,
+</span></span><span style="display:flex;"><span>  columns<span style="color:#f92672">=</span>[__mock_table_1.colA, __mock_table_1.colB],
+</span></span><span style="display:flex;"><span>  groupBy<span style="color:#f92672">=</span>[],
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">having</span><span style="color:#f92672">=</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">where</span><span style="color:#f92672">=</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">limit</span><span style="color:#f92672">=</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">offset</span><span style="color:#f92672">=</span>,
+</span></span><span style="display:flex;"><span>  order_by<span style="color:#f92672">=</span>[],
+</span></span><span style="display:flex;"><span>  is_distinct<span style="color:#f92672">=</span><span style="color:#66d9ef">false</span>,
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">}</span>
+</span></span></code></pre></div><p><strong>3. Planner：根据语义语法树生成逻辑执行计划树，也叫查询计划</strong></p>
+<p>得到 Binder AST 后，Planner 将遍历这棵树，生成初步的查询计划。</p>
+<p>有很多种子查询计划 (Scan、Join、Projection&hellip;&hellip;)，每个子查询计划 plan node 都是这棵树上的一个节点。查询计划规定了数据的流向。数据从树叶流向树根，自底向上地流动，在根节点输出结果。</p>
+<p>下面这条 sql 语句对应的原始查询计划</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> t1.y, t2.x <span style="color:#66d9ef">FROM</span> t1 <span style="color:#66d9ef">INNER</span> <span style="color:#66d9ef">JOIN</span> t2 <span style="color:#66d9ef">ON</span> t1.x <span style="color:#f92672">=</span> t2.y;
+</span></span></code></pre></div><p><img src="/images/15445/14-02.png" alt=""></p>
+<p><strong>4. Optimizer：优化查询计划，生成最终的物理执行计划</strong></p>
+<p>由 Planner 得到初步的查询计划后，再将查询计划交给 Optimizer 进行修改优化，生成优化过后的最终查询计划。Optimizer 主要有两种实现方式：</p>
+<ol>
+<li>基于规则 (Rule-based)：Optimizer 遍历初步查询计划，仅按硬编码在数据库中的一系列规则优化 Plan。例如：将 Limit + Sort 合并为TopN、谓词下推 (Predicate Pushdown)、投影下推 (Projection Pushdown)、列裁剪等。
+<ul>
+<li>这种 Optimizer 不需要知道数据的具体内容，仅是根据预先定义好的规则修改 Plan Node。</li>
+</ul>
+</li>
+<li>基于代价 (Cost-based)：估计并比较多个查询计划的代价，最终选择代价最小的为最终查询计划。
+<ul>
+<li>这种 Optimizer 首先需要读取数据，利用统计学模型来预测不同形式但结果等价的查询计划的 cost。</li>
+</ul>
+</li>
+</ol>
+<p>BusTub optimizer 是一个 Rule-based 优化器。我们将不同的规则按顺序应用到当前的查询计划上，产生最终的查询计划。</p>
+<blockquote>
+<p>❗️一般来说，Planner 生成的是 Logical Plan Node，代表抽象的 Plan。Optimizer 则生成 Physical Plan Node，代表具体执行的 Plan。一个比较典型的例子是 Join：在 Planner 生成的查询计划中，Join 就是 Join。在 Optimizer 生成的查询计划中，Join 会被优化成具体的 HashJoin 或 NestedIndexJoin 等等。</p>
+</blockquote>
+<p><strong>5. Executor：根据查询计划，生成具体的算子执行树</strong></p>
+<p>Optimizer 生成的具体的查询计划后，就可以生成真正执行查询计划的一系列算子。生成算子的步骤：遍历查询计划树，将树上的 PlanNode 替换成对应的 Executor。</p>
+<p>总结，查询优化是个 NP-Hard 问题，有两种查询优化策略：</p>
+<ol>
+<li>
+<p>基于规则 (Rule-based)：通过 rewrite query 来消除不高效的部分，不需要成本模型。</p>
+</li>
+<li>
+<p>基于代价 (Cost-based)：使用成本模型来评估多种等价计划然后选择成本最小的。</p>
+</li>
+</ol>
+<h1 id="关系代数等价">
+  关系代数等价
+  <a href="#%e5%85%b3%e7%b3%bb%e4%bb%a3%e6%95%b0%e7%ad%89%e4%bb%b7" class="h-anchor" aria-hidden="true">#</a>
+</h1>
+<p>如果两个关系代数表达式 (Relational Algebra Expressions) 如果能产生相同的 tuple 集合，我们就称二者 等价。DBMS 可以通过一些 Heuristics/Rules 来将关系几何表达式转化为成本更低的等价表达式，从而达到查询优化的目的。这些规则通常试用于所有查询，如：</p>
+<p><img src="/images/15445/14-03.png" alt=""></p>
+<ul>
+<li>
+<p>谓词下推 (Predicate Pushdown)</p>
+</li>
+<li>
+<p>投影下推 (Projection Pushdown)</p>
+</li>
+</ul>
+<h2 id="谓词下推">
+  谓词下推
+  <a href="#%e8%b0%93%e8%af%8d%e4%b8%8b%e6%8e%a8" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p>Predicate 通常有很高的选择性，可以过滤掉许多无用的数据。将 Predicate 推到查询计划的底部，可以在查询开始时就更多地过滤数据，Predicate 通常有很高的选择性，可以过滤掉许多无用的数据。</p>
+<p><img src="/images/15445/14-04.png" alt=""></p>
+<p>核心思想：</p>
+<ul>
+<li>越早过滤越多数据越好</li>
+<li>重排 predicates，使得选择性大的排前面</li>
+<li>将复杂的 predicate 拆分，然后往下压，如 <code>X=Y AND Y=3</code> 可以修改成 <code>X=3 AND Y=3</code></li>
+</ul>
+<h2 id="投影下推">
+  投影下推
+  <a href="#%e6%8a%95%e5%bd%b1%e4%b8%8b%e6%8e%a8" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p>投影下推方案对列存储数据库不适用。在行存储数据库中，越早过滤掉不用的字段越好，因此将 Projections 操作往查询计划底部推也能够缩小中间结果占用的空间大小。</p>
+<p><img src="/images/15445/14-05.png" alt=""></p>
+<h2 id="优化-sub-queries">
+  优化 sub-queries
+  <a href="#%e4%bc%98%e5%8c%96-sub-queries" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p>DBMS将where子句中的嵌套子查询 (nested sub-queries) 视为接受参数并返回单个值或一组值的函数。</p>
+<p>对于嵌套子查询，有两种优化方法：</p>
+<ol>
+<li>通过去相关性/扁平化嵌套子查询，来重写查询。</li>
+</ol>
+<p><img src="/images/15445/14-06.png" alt=""></p>
+<ol start="2">
+<li>对于较难的查询，将查询分解为块，然后每次集中处理一个块。将子查询写入临时表，在查询完成后丢弃。</li>
+</ol>
+<p><img src="/images/15445/14-07.png" alt=""></p>
+<h2 id="其他规则">
+  其他规则
+  <a href="#%e5%85%b6%e4%bb%96%e8%a7%84%e5%88%99" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<ol>
+<li>分割连接谓词、用 join 替代笛卡尔积。</li>
+</ol>
+<p><img src="/images/15445/14-08.png" alt=""></p>
+<ol start="2">
+<li>删除不可能 or 不必要的谓词。</li>
+</ol>
+<p><img src="/images/15445/14-09.png" alt=""></p>
+<ol start="3">
+<li>合并谓词。</li>
+</ol>
+<p><img src="/images/15445/14-10.png" alt=""></p>
+<ol start="4">
+<li>去除不必要的 Join：</li>
+</ol>
+<p>Join 操作的顺序是决定查询性能的一个关键因素。对所有可能的连接顺序进行穷举是低效的，所以连接顺序的优化需要一个 cost model。然而，我们仍然可以用启发式的优化方法来消除不必要的 join。</p>
+<p><img src="/images/15445/14-11.png" alt=""></p>
+<blockquote>
+<p>优化规则总结：</p>
+<p>删除不可能 or 不必要的谓词</p>
+<p>合并谓词</p>
+<p>越早过滤数据越好（谓词下推）</p>
+<p>分解一个复杂的谓词，并进行谓词下推（分割连接谓词）</p>
+<p>对谓词进行重新排序，使得选择性大的排前面</p>
+<p>用 join 替代笛卡尔积</p>
+<p>尽可能早地进行投影，以创建更小的 tuples 来减少中间结果（投影下推）</p>
+<p>对嵌套子查询：通过去相关性/扁平化嵌套子查询，来重写查询；分解嵌套子查询，将结果存储在一个临时表中</p>
+<p>去除不必要的 Join</p>
+</blockquote>
+
+    </div>
+    
+      
+        <div class="pagination">
+          <div class="pagination__title">
+            <span class="pagination__title-h"
+              >Read other posts</span
+            >
+            <hr />
+          </div>
+          <div class="pagination__buttons">
+            
+              <span class="button previous">
+                <a href="https://yuyang.run/posts/cmu15-445%E8%AF%BE%E7%A8%8B/query-planning-optimization-ii/">
+                  <span class="button__icon">←</span>
+                  <span class="button__text">[WIP]Lecture#15 Query Planning &amp; Optimization II</span>
+                </a>
+              </span>
+            
+            
+              <span class="button next">
+                <a href="https://yuyang.run/posts/cmu15-445%E8%AF%BE%E7%A8%8B/query-execution-ii/">
+                  <span class="button__text">Lecture#13 Query Execution II</span>
+                  <span class="button__icon">→</span>
+                </a>
+              </span>
+            
+          </div>
+        </div>
+      
+    
+
+    
+      
+        
+
+      
+    
+  </article>
+
+      </div>
+
+      
+        <footer class="footer">
+  <div class="footer__inner">
+    
+      <a
+  href="https://yuyang.run"
+  class="logo"
+  style="text-decoration: none;"
+>
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367" />
+</svg>
+</span>
+    <span class="logo__text"
+      >余为民同志</span
+    >
+    <span class="logo__cursor"></span>
+  
+</a>
+
+      <div class="copyright">
+        <span>© 2023 Powered by <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a></span>
+        <span><a href="https://github.com/panr/hugo-theme-hello-friend" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+    
+  </div>
+</footer>
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+
+      
+    </div>
+
+    
+  </body>
+</html>
