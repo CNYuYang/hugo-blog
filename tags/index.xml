@@ -11,7 +11,7 @@
     <language>en</language>
     <managingEditor>744727849@qq.com (YuYang)</managingEditor>
     <webMaster>744727849@qq.com (YuYang)</webMaster>
-    <lastBuildDate>Mon, 04 Dec 2023 00:06:13 +0800</lastBuildDate>
+    <lastBuildDate>Wed, 20 Dec 2023 20:25:11 +0800</lastBuildDate>
     
 	<atom:link href="https://yuyang.run/tags/index.xml" rel="self" type="application/rss+xml" />
     
@@ -19,7 +19,7 @@
     <item>
       <title>CMU15-445</title>
       <link>https://yuyang.run/tags/cmu15-445/</link>
-      <pubDate>Mon, 04 Dec 2023 00:06:13 +0800</pubDate>
+      <pubDate>Wed, 20 Dec 2023 20:25:11 +0800</pubDate>
       <author>744727849@qq.com (YuYang)</author>
       <guid>https://yuyang.run/tags/cmu15-445/</guid>
       <description>
@@ -39,9 +39,49 @@
     <item>
       <title>SQL</title>
       <link>https://yuyang.run/tags/sql/</link>
-      <pubDate>Mon, 04 Dec 2023 00:06:13 +0800</pubDate>
+      <pubDate>Wed, 20 Dec 2023 20:25:11 +0800</pubDate>
       <author>744727849@qq.com (YuYang)</author>
       <guid>https://yuyang.run/tags/sql/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>开源</title>
+      <link>https://yuyang.run/tags/%E5%BC%80%E6%BA%90/</link>
+      <pubDate>Mon, 04 Dec 2023 00:55:34 +0800</pubDate>
+      <author>744727849@qq.com (YuYang)</author>
+      <guid>https://yuyang.run/tags/%E5%BC%80%E6%BA%90/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>高斯</title>
+      <link>https://yuyang.run/tags/%E9%AB%98%E6%96%AF/</link>
+      <pubDate>Mon, 04 Dec 2023 00:55:34 +0800</pubDate>
+      <author>744727849@qq.com (YuYang)</author>
+      <guid>https://yuyang.run/tags/%E9%AB%98%E6%96%AF/</guid>
       <description>
         
           

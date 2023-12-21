@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>开源 on 余为民同志|做一个优秀的普通人，在热爱中燃烧！</title>
+    
+    
+    
+    <link>https://yuyang.run/categories/%E5%BC%80%E6%BA%90/</link>
+    <description>Recent content in 开源 on 余为民同志|做一个优秀的普通人，在热爱中燃烧！</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <managingEditor>744727849@qq.com (YuYang)</managingEditor>
+    <webMaster>744727849@qq.com (YuYang)</webMaster>
+    <lastBuildDate>Mon, 04 Dec 2023 00:55:34 +0800</lastBuildDate>
+    
+	<atom:link href="https://yuyang.run/categories/%E5%BC%80%E6%BA%90/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>openGuass编译</title>
+      <link>https://yuyang.run/posts/%E6%BA%90%E7%A0%81/openguass%E7%BC%96%E8%AF%91/</link>
+      <pubDate>Mon, 04 Dec 2023 00:55:34 +0800</pubDate>
+      <author>744727849@qq.com (YuYang)</author>
+      <guid>https://yuyang.run/posts/%E6%BA%90%E7%A0%81/openguass%E7%BC%96%E8%AF%91/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          下载并安装CentOS7.6：https://mirrors.aliyun.com/centos-vault/7.6.1810。这里选择的是CentOS-7-x86_64-DVD-1810.iso，避免其他版本出现缺失软件的情况。 下载编译工具：https://gitee.com/opengauss/
+          
+        
+        </description>
+    </item>
+    
+  </channel>
+</rss>

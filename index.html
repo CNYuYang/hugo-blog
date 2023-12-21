@@ -34,13 +34,7 @@
 <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://yuyang.run/img/apple-touch-icon-144-precomposed.png" />
 <link rel="shortcut icon" href="https://yuyang.run/img/favicon.png" />
 
-
-<link href="/fonts/JetBrainsMono-Italic.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
-<link href="/fonts/JetBrainsMono-Regular.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
-<link href="/fonts/JetBrainsMono-Medium.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
-<link href="/fonts/JetBrainsMono-MediumItalic.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
-<link href="/fonts/JetBrainsMono-Bold.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
-<link href="/fonts/JetBrainsMono-BoldItalic.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-lite-webfont@1.1.0/style.css" />
 
 
 <meta name="twitter:card" content="summary"/>
@@ -58,6 +52,7 @@
 
 
 <link rel="alternate" type="application/rss+xml" href="/index.xml" title="余为民同志|做一个优秀的普通人，在热爱中燃烧！" />
+
 
 
 
@@ -173,6 +168,86 @@
   
 
   <div class="posts">
+    
+    <article class="post on-list">
+      <h1 class="post-title"><a href="https://yuyang.run/posts/cmu15-445%E5%AE%9E%E9%AA%8C/bustub%E5%B7%B2%E5%AE%9E%E7%8E%B0%E9%83%A8%E5%88%86/">BusTub已实现部分</a></h1>
+      <div class="post-meta">
+        
+          <time class="post-date">
+            2023-12-20 20:25:11
+          </time>
+
+          
+        
+
+        
+
+        
+      </div>
+
+      
+        <span class="post-tags">
+          
+            <a href="https://yuyang.run/tags/cmu15-445/">#CMU15-445</a>&nbsp;
+          
+            <a href="https://yuyang.run/tags/sql/">#SQL</a>&nbsp;
+          
+        </span>
+      
+      <div class="post-content">
+        
+          
+          <img src="https://yuyang.run/cover/database.png" alt="BusTub已实现部分"/>
+          
+         
+        
+          
+        
+      </div>
+      
+        <div><a class="read-more button" href="/posts/cmu15-445%E5%AE%9E%E9%AA%8C/bustub%E5%B7%B2%E5%AE%9E%E7%8E%B0%E9%83%A8%E5%88%86/">阅读全文 →</a></div>
+      
+    </article>
+    
+    <article class="post on-list">
+      <h1 class="post-title"><a href="https://yuyang.run/posts/%E6%BA%90%E7%A0%81/openguass%E7%BC%96%E8%AF%91/">openGuass编译</a></h1>
+      <div class="post-meta">
+        
+          <time class="post-date">
+            2023-12-04 00:55:34
+          </time>
+
+          
+        
+
+        
+
+        
+      </div>
+
+      
+        <span class="post-tags">
+          
+            <a href="https://yuyang.run/tags/%E9%AB%98%E6%96%AF/">#高斯</a>&nbsp;
+          
+            <a href="https://yuyang.run/tags/sql/">#SQL</a>&nbsp;
+          
+            <a href="https://yuyang.run/tags/%E5%BC%80%E6%BA%90/">#开源</a>&nbsp;
+          
+        </span>
+      
+      <div class="post-content">
+        
+        
+          
+            下载并安装CentOS7.6：https://mirrors.aliyun.com/centos-vault/7.6.1810。这里选择的是CentOS-7-x86_64-DVD-1810.iso，避免其他版本出现缺失软件的情况。 下载编译工具：https://gitee.com/opengauss/
+          
+        
+      </div>
+      
+        <div><a class="read-more button" href="/posts/%E6%BA%90%E7%A0%81/openguass%E7%BC%96%E8%AF%91/">阅读全文 →</a></div>
+      
+    </article>
     
     <article class="post on-list">
       <h1 class="post-title"><a href="https://yuyang.run/posts/cmu15-445%E8%AF%BE%E7%A8%8B/concurrency-control-theory/">Lecture#16 Concurrency Control Theory</a></h1>
@@ -423,90 +498,6 @@
       </div>
       
         <div><a class="read-more button" href="/posts/cmu15-445%E8%AF%BE%E7%A8%8B/joins-algorithms/">阅读全文 →</a></div>
-      
-    </article>
-    
-    <article class="post on-list">
-      <h1 class="post-title"><a href="https://yuyang.run/posts/cmu15-445%E8%AF%BE%E7%A8%8B/sorting-&#43;-aggregations/">Lecture#10 Sorting + Aggregations</a></h1>
-      <div class="post-meta">
-        
-          <time class="post-date">
-            2023-11-20 15:29:13
-          </time>
-
-          
-        
-
-        
-
-        
-      </div>
-
-      
-        <span class="post-tags">
-          
-            <a href="https://yuyang.run/tags/cmu15-445/">#CMU15-445</a>&nbsp;
-          
-            <a href="https://yuyang.run/tags/sql/">#SQL</a>&nbsp;
-          
-        </span>
-      
-      <div class="post-content">
-        
-          
-          <img src="https://yuyang.run/cover/database.png" alt="Lecture#10 Sorting &#43; Aggregations"/>
-          
-         
-        
-          
-            外排序算法 # DBMS需要对数据进行排序，因为在关系模型下，表中的tuple没有特定的顺序，排序在ORDER BY、GROUP BY、JOIN和DISTINCT操作符中可能使用。如果需要排序的数据在内存中可以放下，那么DBMS可以使用标准的排序算法（qsort）。如果放不下，则需要使用external so
-          
-        
-      </div>
-      
-        <div><a class="read-more button" href="/posts/cmu15-445%E8%AF%BE%E7%A8%8B/sorting-&#43;-aggregations/">阅读全文 →</a></div>
-      
-    </article>
-    
-    <article class="post on-list">
-      <h1 class="post-title"><a href="https://yuyang.run/posts/cmu15-445%E8%AF%BE%E7%A8%8B/index-concurrency-control/">Lecture#9 Index Concurrency Control</a></h1>
-      <div class="post-meta">
-        
-          <time class="post-date">
-            2023-11-20 15:29:13
-          </time>
-
-          
-        
-
-        
-
-        
-      </div>
-
-      
-        <span class="post-tags">
-          
-            <a href="https://yuyang.run/tags/cmu15-445/">#CMU15-445</a>&nbsp;
-          
-            <a href="https://yuyang.run/tags/sql/">#SQL</a>&nbsp;
-          
-        </span>
-      
-      <div class="post-content">
-        
-          
-          <img src="https://yuyang.run/cover/database.png" alt="Lecture#9 Index Concurrency Control"/>
-          
-         
-        
-          
-            我们假设迄今为止讨论过的所有数据结构都是单线程的。但我们需要允许多线程安全地访问我们的数据结构，以利用额外的 CPU 内核。 Latches介绍 # LOCKS和LATCHES对比 # 讨论DBMS如何保护其内部元素的时候，lock和latch之间有重要区别。 Locks Lock是一个更高层次的逻辑基元(logical prim
-          
-        
-      </div>
-      
-        <div><a class="read-more button" href="/posts/cmu15-445%E8%AF%BE%E7%A8%8B/index-concurrency-control/">阅读全文 →</a></div>
       
     </article>
     

@@ -11,10 +11,50 @@
     <language>en</language>
     <managingEditor>744727849@qq.com (YuYang)</managingEditor>
     <webMaster>744727849@qq.com (YuYang)</webMaster>
-    <lastBuildDate>Mon, 04 Dec 2023 00:06:13 +0800</lastBuildDate>
+    <lastBuildDate>Wed, 20 Dec 2023 20:25:11 +0800</lastBuildDate>
     
 	<atom:link href="https://yuyang.run/categories/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>CMU15-445实验</title>
+      <link>https://yuyang.run/categories/cmu15-445%E5%AE%9E%E9%AA%8C/</link>
+      <pubDate>Wed, 20 Dec 2023 20:25:11 +0800</pubDate>
+      <author>744727849@qq.com (YuYang)</author>
+      <guid>https://yuyang.run/categories/cmu15-445%E5%AE%9E%E9%AA%8C/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>开源</title>
+      <link>https://yuyang.run/categories/%E5%BC%80%E6%BA%90/</link>
+      <pubDate>Mon, 04 Dec 2023 00:55:34 +0800</pubDate>
+      <author>744727849@qq.com (YuYang)</author>
+      <guid>https://yuyang.run/categories/%E5%BC%80%E6%BA%90/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
     
     <item>
       <title>CMU15-445课程</title>
@@ -62,26 +102,6 @@
       <pubDate>Thu, 12 Oct 2023 15:29:13 +0800</pubDate>
       <author>744727849@qq.com (YuYang)</author>
       <guid>https://yuyang.run/categories/%E9%87%8D%E6%9E%84/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>CMU15-445实验</title>
-      <link>https://yuyang.run/categories/cmu15-445%E5%AE%9E%E9%AA%8C/</link>
-      <pubDate>Fri, 08 May 2020 15:29:13 +0800</pubDate>
-      <author>744727849@qq.com (YuYang)</author>
-      <guid>https://yuyang.run/categories/cmu15-445%E5%AE%9E%E9%AA%8C/</guid>
       <description>
         
           

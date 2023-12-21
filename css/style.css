@@ -45,54 +45,6 @@ body.dark-theme {
 /*@media ($phone) {*/
 /*margin-top: 0;*/
 /*}*/
-@font-face {
-  font-family: 'JetBrainsMono';
-  font-style: normal;
-  font-weight: 400;
-  font-feature-settings: "liga", "tnum", "case", "calt", "zero", "ss01", "locl";
-  src: url("../fonts/JetBrainsMono-Regular.woff2") format("woff2");
-  font-display: swap; }
-
-@font-face {
-  font-family: 'JetBrainsMono';
-  font-style: italic;
-  font-weight: 400;
-  font-feature-settings: "liga", "tnum", "case", "calt", "zero", "ss01", "locl";
-  src: url("../fonts/JetBrainsMono-Italic.woff2") format("woff2");
-  font-display: swap; }
-
-@font-face {
-  font-family: 'JetBrainsMono';
-  font-style: normal;
-  font-weight: 600;
-  font-feature-settings: "liga", "tnum", "case", "calt", "zero", "ss01", "locl";
-  src: url("../fonts/JetBrainsMono-Medium.woff2") format("woff2");
-  font-display: swap; }
-
-@font-face {
-  font-family: 'JetBrainsMono';
-  font-style: italic;
-  font-weight: 600;
-  font-feature-settings: "liga", "tnum", "case", "calt", "zero", "ss01", "locl";
-  src: url("../fonts/JetBrainsMono-MediumItalic.woff2") format("woff2");
-  font-display: swap; }
-
-@font-face {
-  font-family: 'JetBrainsMono';
-  font-style: normal;
-  font-weight: 800;
-  font-feature-settings: "liga", "tnum", "case", "calt", "zero", "ss01", "locl";
-  src: url("../fonts/JetBrainsMono-Bold.woff2") format("woff2");
-  font-display: swap; }
-
-@font-face {
-  font-family: 'JetBrainsMono';
-  font-style: italic;
-  font-weight: 800;
-  font-feature-settings: "liga", "tnum", "case", "calt", "zero", "ss01", "locl";
-  src: url("../fonts/JetBrainsMono-BoldItalic.woff2") format("woff2");
-  font-display: swap; }
-
 .button-container {
   display: table;
   margin-left: auto;
@@ -367,7 +319,7 @@ html {
 body {
   margin: 0;
   padding: 0;
-  font-family: 'JetbrainsMono', -apple-system, BlinkMacSystemFont, "Roboto", "Segoe UI",  Helvetica, Arial, sans-serif;
+  font-family: 'LXGW WenKai Lite', -apple-system, BlinkMacSystemFont, "Roboto", "Segoe UI",  Helvetica, Arial, sans-serif;
   font-size: 1rem;
   font-weight: 500;
   font-feature-settings: "liga", "tnum", "case", "calt", "zero", "ss01", "locl";
@@ -444,7 +396,7 @@ figure {
 
 code, kbd {
   font-family: Consolas,Monaco,Andale Mono,Ubuntu Mono,monospace;
-  background: var(--background-secondary);
+  background: #FCB69F;
   padding: 1px 6px;
   margin: 0 2px;
   border-radius: 5px;
@@ -1104,3 +1056,9 @@ div.code-toolbar > .toolbar span:focus {
 
 .terms {
   max-width: 50%; }
+
+strong {
+  background: #8FD3F4;
+  border-radius: 2px;
+  padding-left: 5px;
+  padding-right: 5px; }

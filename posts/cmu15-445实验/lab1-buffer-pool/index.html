@@ -11,7 +11,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta
   name="description"
-  content="时钟更换策略 # 时钟的组成 # 对于单个frame应当有以下三部分组成：frame_id、Ref、PIN。 frame_id：唯一确定id，与buffer pool相对应。 Ref：该frame最近是否使用过。使挑选的frame尽量是很久之前使用的（类似与LRU） PIN：该frame是否正在使用。 注：该时钟不包"
+  content="🔗代码实现链接：https://gitee.com/cnyuyang/bustub 第一次做这个实验的时候在2020年，当时需要实现的是时钟替换策略等。在2023年再次做时，发现需要实现的内容已经有所变换，所以索性将该项目完完整整的实现了一遍。 DiskScheduler实现 # 🔗代码链接：https:/"
 />
 <meta
   name="keywords"
@@ -34,27 +34,22 @@
 <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://yuyang.run/img/apple-touch-icon-144-precomposed.png" />
 <link rel="shortcut icon" href="https://yuyang.run/img/favicon.png" />
 
-
-<link href="/fonts/JetBrainsMono-Italic.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
-<link href="/fonts/JetBrainsMono-Regular.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
-<link href="/fonts/JetBrainsMono-Medium.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
-<link href="/fonts/JetBrainsMono-MediumItalic.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
-<link href="/fonts/JetBrainsMono-Bold.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
-<link href="/fonts/JetBrainsMono-BoldItalic.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-lite-webfont@1.1.0/style.css" />
 
 
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Lab1 Buffer Pool"/>
-<meta name="twitter:description" content="时钟更换策略 # 时钟的组成 # 对于单个frame应当有以下三部分组成：frame_id、Ref、PIN。 frame_id：唯一确定id，与buffer pool相对应。 Ref：该frame最近是否使用过。使挑选的frame尽量是很久之前使用的（类似与LRU） PIN：该frame是否正在使用。 注：该时钟不包"/>
+<meta name="twitter:description" content="🔗代码实现链接：https://gitee.com/cnyuyang/bustub 第一次做这个实验的时候在2020年，当时需要实现的是时钟替换策略等。在2023年再次做时，发现需要实现的内容已经有所变换，所以索性将该项目完完整整的实现了一遍。 DiskScheduler实现 # 🔗代码链接：https:/"/>
 
 
 
 <meta property="og:title" content="Lab1 Buffer Pool" />
-<meta property="og:description" content="时钟更换策略 # 时钟的组成 # 对于单个frame应当有以下三部分组成：frame_id、Ref、PIN。 frame_id：唯一确定id，与buffer pool相对应。 Ref：该frame最近是否使用过。使挑选的frame尽量是很久之前使用的（类似与LRU） PIN：该frame是否正在使用。 注：该时钟不包" />
+<meta property="og:description" content="🔗代码实现链接：https://gitee.com/cnyuyang/bustub 第一次做这个实验的时候在2020年，当时需要实现的是时钟替换策略等。在2023年再次做时，发现需要实现的内容已经有所变换，所以索性将该项目完完整整的实现了一遍。 DiskScheduler实现 # 🔗代码链接：https:/" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://yuyang.run/posts/cmu15-445%E5%AE%9E%E9%AA%8C/lab1-buffer-pool/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2020-05-08T15:29:13+08:00" />
 <meta property="article:modified_time" content="2020-05-08T15:29:13+08:00" />
+
 
 
 
@@ -213,13 +208,32 @@
         <h2>目录</h2>
         <aside class="table-of-contents"><nav id="TableOfContents">
   <ul>
-    <li><a href="#时钟更换策略">时钟更换策略</a>
+    <li><a href="#diskscheduler实现">DiskScheduler实现</a>
+      <ul>
+        <li><a href="#schedule方法实现">Schedule方法实现</a></li>
+        <li><a href="#startworkerthread方法实现">StartWorkerThread方法实现</a></li>
+      </ul>
+    </li>
+    <li><a href="#时钟替换策略">时钟替换策略</a>
       <ul>
         <li><a href="#时钟的组成">时钟的组成</a></li>
-        <li><a href="#时钟的初始化">时钟的初始化</a></li>
         <li><a href="#victim">Victim</a></li>
-        <li><a href="#pin">PIN</a></li>
-        <li><a href="#unpin">UNPIN</a></li>
+        <li><a href="#pin">Pin</a></li>
+        <li><a href="#unpin">Unpin</a></li>
+        <li><a href="#size">Size</a></li>
+      </ul>
+    </li>
+    <li><a href="#lru替换策略">LRU替换策略</a>
+      <ul>
+        <li><a href="#unpin-1">Unpin</a></li>
+        <li><a href="#pin-1">Pin</a></li>
+        <li><a href="#size-1">Size</a></li>
+        <li><a href="#victim-1">Victim</a></li>
+      </ul>
+    </li>
+    <li><a href="#lru-k替换策略">LRU-K替换策略</a>
+      <ul>
+        <li><a href="#recordaccess">RecordAccess</a></li>
       </ul>
     </li>
     <li><a href="#缓冲池管理器">缓冲池管理器</a>
@@ -236,54 +250,199 @@
         </div>
         
       
-      <h2 id="时钟更换策略">
-  时钟更换策略
-  <a href="#%e6%97%b6%e9%92%9f%e6%9b%b4%e6%8d%a2%e7%ad%96%e7%95%a5" class="h-anchor" aria-hidden="true">#</a>
+      <p>🔗代码实现链接：<a href="https://gitee.com/cnyuyang/bustub">https://gitee.com/cnyuyang/bustub</a></p>
+<p>第一次做这个实验的时候在2020年，当时需要实现的是时钟替换策略等。在2023年再次做时，发现需要实现的内容已经有所变换，所以索性将该项目完完整整的实现了一遍。</p>
+<h2 id="diskscheduler实现">
+  DiskScheduler实现
+  <a href="#diskscheduler%e5%ae%9e%e7%8e%b0" class="h-anchor" aria-hidden="true">#</a>
 </h2>
+<p>🔗代码链接：<a href="https://gitee.com/cnyuyang/bustub/blob/master/src/storage/disk/disk_scheduler.cpp">https://gitee.com/cnyuyang/bustub/blob/master/src/storage/disk/disk_scheduler.cpp</a></p>
+<p>新的<code>BufferPoolManager</code>构造函数为：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>BufferPoolManager<span style="color:#f92672">::</span>BufferPoolManager(size_t pool_size, DiskManager <span style="color:#f92672">*</span>disk_manager, size_t replacer_k,
+</span></span><span style="display:flex;"><span>                                     LogManager <span style="color:#f92672">*</span>log_manager)
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">:</span> pool_size_(pool_size), disk_scheduler_(std<span style="color:#f92672">::</span>make_unique<span style="color:#f92672">&lt;</span>DiskScheduler<span style="color:#f92672">&gt;</span>(disk_manager)), log_manager_(log_manager) 
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        ...<span style="color:#75715e">//实现
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    }
+</span></span></code></pre></div><p>可知<code>BufferPoolManager</code>通过<code>DiskScheduler</code>调度器获取磁盘上的数据。先看<code>DiskScheduler</code>的测试类<code>DiskSchedulerTest</code>了解其使用方法：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">auto</span> promise1 <span style="color:#f92672">=</span> disk_scheduler<span style="color:#f92672">-&gt;</span>CreatePromise();
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">auto</span> future1 <span style="color:#f92672">=</span> promise1.get_future();
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">auto</span> promise2 <span style="color:#f92672">=</span> disk_scheduler<span style="color:#f92672">-&gt;</span>CreatePromise();
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">auto</span> future2 <span style="color:#f92672">=</span> promise2.get_future();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>disk_scheduler<span style="color:#f92672">-&gt;</span>Schedule({<span style="color:#75715e">/*is_write=*/</span>true, data, <span style="color:#75715e">/*page_id=*/</span><span style="color:#ae81ff">0</span>, std<span style="color:#f92672">::</span>move(promise1)});
+</span></span><span style="display:flex;"><span>disk_scheduler<span style="color:#f92672">-&gt;</span>Schedule({<span style="color:#75715e">/*is_write=*/</span>false, buf, <span style="color:#75715e">/*page_id=*/</span><span style="color:#ae81ff">0</span>, std<span style="color:#f92672">::</span>move(promise2)});
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>ASSERT_TRUE(future1.get());
+</span></span><span style="display:flex;"><span>ASSERT_TRUE(future2.get());
+</span></span></code></pre></div><p>可知<code>DiskScheduler</code>调度器通过使用<code>std::promise</code>和<code>std::future</code>的方式实现了异步操作(<a href="https://www.limerence2017.com/2023/09/17/concpp07/">https://www.limerence2017.com/2023/09/17/concpp07/</a>)。</p>
+<p>其中<code>CreatePromise</code>方法已实现：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">using</span> DiskSchedulerPromise <span style="color:#f92672">=</span> std<span style="color:#f92672">::</span>promise<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">bool</span><span style="color:#f92672">&gt;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">auto</span> <span style="color:#a6e22e">CreatePromise</span>() <span style="color:#f92672">-&gt;</span> DiskSchedulerPromise { <span style="color:#66d9ef">return</span> {}; };
+</span></span></code></pre></div><h3 id="schedule方法实现">
+  Schedule方法实现
+  <a href="#schedule%e6%96%b9%e6%b3%95%e5%ae%9e%e7%8e%b0" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> DiskScheduler<span style="color:#f92672">::</span>Schedule(DiskRequest r) {
+</span></span><span style="display:flex;"><span>  request_queue_.Put(std<span style="color:#f92672">::</span>make_optional<span style="color:#f92672">&lt;</span>DiskRequest<span style="color:#f92672">&gt;</span>(std<span style="color:#f92672">::</span>move(r)));
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>该方法仅用于向队列提交任务，其中<code>request_queue_</code>的类型为<code>Channel&lt;std::optional&lt;DiskRequest&gt;&gt;</code>。<code>Channel</code>对象为<code>bustub</code>中实现的一种消息队列，可查看文章<a href="/posts/cmu15-445%E5%AE%9E%E9%AA%8C/bustub%E5%B7%B2%E5%AE%9E%E7%8E%B0%E9%83%A8%E5%88%86/">BusTub已实现部分</a>。</p>
+<h3 id="startworkerthread方法实现">
+  StartWorkerThread方法实现
+  <a href="#startworkerthread%e6%96%b9%e6%b3%95%e5%ae%9e%e7%8e%b0" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<p>在<code>DiskScheduler</code>的构造函数中，会开启一个线程调用<code>DiskScheduler</code>方法：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>background_thread_.emplace([<span style="color:#f92672">&amp;</span>] { StartWorkerThread(); });
+</span></span></code></pre></div><p>且<code>DiskScheduler</code>的析构函数中，会往消息队列中塞入一个<code>std::nullopt</code>。所以<code>StartWorkerThread</code>的实现逻辑应该是，循环处理消息队列中的任务，直到出现<code>std::nullopt</code>则退出：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> DiskScheduler<span style="color:#f92672">::</span>StartWorkerThread() {
+</span></span><span style="display:flex;"><span>  std<span style="color:#f92672">::</span>optional<span style="color:#f92672">&lt;</span>DiskRequest<span style="color:#f92672">&gt;</span> request;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">while</span> ((request <span style="color:#f92672">=</span> request_queue_.Get(), request.has_value())) {
+</span></span><span style="display:flex;"><span>    ...
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>而消息队列中的<code>DiskRequest</code>包含4个属性：<code>is_write_</code>、<code>data_</code>、<code>page_id_</code>、<code>callback_</code>。</p>
+<ul>
+<li>
+<p>is_write_：是否是写操作，如果是写操作，则将<code>data_</code>中的数据，写入到<code>page_id_</code>号页中。如果是读操作，则将<code>page_id_</code>号页中的数据读取到<code>data_</code>中。</p>
+</li>
+<li>
+<p>data_：数据，可能是读取的，也可能是写入的。</p>
+</li>
+<li>
+<p>page_id_：页id</p>
+</li>
+<li>
+<p>callback_：<code>std::promise</code>对象。</p>
+</li>
+</ul>
+<p>对<code>DiskRequest</code>的处理：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">if</span> (request<span style="color:#f92672">-&gt;</span>is_write_) {
+</span></span><span style="display:flex;"><span>    disk_manager_<span style="color:#f92672">-&gt;</span>WritePage(request<span style="color:#f92672">-&gt;</span>page_id_, request<span style="color:#f92672">-&gt;</span>data_);
+</span></span><span style="display:flex;"><span>} <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>    disk_manager_<span style="color:#f92672">-&gt;</span>ReadPage(request<span style="color:#f92672">-&gt;</span>page_id_, request<span style="color:#f92672">-&gt;</span>data_);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>request <span style="color:#f92672">-&gt;</span>callback_.set_value(true);
+</span></span></code></pre></div><h2 id="时钟替换策略">
+  时钟替换策略
+  <a href="#%e6%97%b6%e9%92%9f%e6%9b%bf%e6%8d%a2%e7%ad%96%e7%95%a5" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p>🔗代码链接：<a href="https://gitee.com/cnyuyang/bustub/blob/master/src/buffer/clock_replacer.cpp">https://gitee.com/cnyuyang/bustub/blob/master/src/buffer/clock_replacer.cpp</a></p>
 <h3 id="时钟的组成">
   时钟的组成
   <a href="#%e6%97%b6%e9%92%9f%e7%9a%84%e7%bb%84%e6%88%90" class="h-anchor" aria-hidden="true">#</a>
 </h3>
 <p><img src="/images/15445/lab1-01.png" alt=""></p>
 <p>对于单个<code>frame</code>应当有以下三部分组成：<code>frame_id</code>、<code>Ref</code>、<code>PIN</code>。</p>
-<p><code>frame_id</code>：唯一确定id，与buffer pool相对应。</p>
+<p><code>frame_id</code>：唯一确定id，与buffer pool中数组下标相对应(bufferr pool中使用数组存储数据)。</p>
 <p><code>Ref</code>：该<code>frame</code>最近是否使用过。使挑选的<code>frame</code>尽量是很久之前使用的（类似与LRU）</p>
-<p><code>PIN</code>：该<code>frame</code>是否正在使用。</p>
-<blockquote>
-<p>注：该时钟不包含任何<code>page</code>信息，真正的<code>page</code>是存储在<code>buffer pool</code>。该时钟只是在<code>buffer pool</code>满了后，<code>buffer pool manager</code>希望加载新的<code>page</code>时，为其提供可以替换的<code>frame_id</code>。</p>
-</blockquote>
-<h3 id="时钟的初始化">
-  时钟的初始化
-  <a href="#%e6%97%b6%e9%92%9f%e7%9a%84%e5%88%9d%e5%a7%8b%e5%8c%96" class="h-anchor" aria-hidden="true">#</a>
-</h3>
-<p><code>frame_id</code>：初始化<code>0</code>-<code>X-1</code>,<code>X</code>代表<code>buffer pool</code>中能存储<code>Page</code>的数量。</p>
-<p>接下来两个元素的初始化，我们就要先要知道时钟使用的时机：<strong>所有的buffer pool都加载了Page</strong>，加载一个Page那对应的<code>PIN</code>必然是<code>true</code>，若Page的使用还未结束那么<code>Ref</code>的初始化应当为<code>false</code>。</p>
-<p><code>Ref</code>：上述分析，<code>false</code></p>
-<p><code>PIN</code>：上述分析，<code>true</code></p>
-<p><img src="/images/15445/lab1-02.png" alt=""></p>
+<p><code>PIN</code>：该<code>frame</code>是否正在使用。正在使用中的<code>frame</code>，不能挑选为受害者。</p>
 <h3 id="victim">
   Victim
   <a href="#victim" class="h-anchor" aria-hidden="true">#</a>
 </h3>
-<p>Victim(受害者)，方法名很有意思。就在<code>buffer pool</code>满了时，<code>buffer pool manager</code>希望加载新的<code>page</code>时，为其提供可以替换的<code>frame_id</code>。</p>
+<p>Victim(受害者)，改方法是在<code>buffer pool</code>满了时，<code>buffer pool manager</code>希望加载新的<code>page</code>时，为其提供可以替换的<code>frame_id</code>。</p>
 <p>首先我们要知道我们要找什么样的受害者：<code>PIN</code>为<code>false</code>、<code>Ref</code>也为<code>false</code>。代表现在不在使用，且最近未被使用。</p>
 <p><img src="/images/15445/lab1-03.png" alt=""></p>
 <p><code>hand</code>是时钟的指针，它顺时针旋转，便可以发现可以被移除的<code>frame</code>。</p>
-<p>如果<code>hand</code>扫描一圈发现所有的<code>PIN</code>都是<code>true</code>的话，就代表所有的<code>page</code>都在被使用，就无法加载新的<code>page</code>进<code>buffer pool</code>，便返回<code>false</code>。如Clock刚初始化的时候：</p>
+<p>如果<code>hand</code>扫描一圈发现所有的<code>PIN</code>都是<code>true</code>的话，就代表所有的<code>page</code>都在被使用，就无法加载新的<code>page</code>进<code>buffer pool</code>，便返回<code>false</code>。</p>
 <p><img src="/images/15445/lab1-02.png" alt=""></p>
 <p>还有一个问题，就是我说的在<code>PIN</code>都是<code>true</code>时才找不到，但是我们要找的确是<code>PIN</code>和<code>Ref</code>都为<code>false</code>的情况。那是因为Ref是可以改变的，当时针扫描过一个<code>frame</code>时，若它的<code>PIN</code>是<code>false</code>，且<code>Ref</code>为true，那此时便将<code>Ref</code>变为<code>false</code>。</p>
 <p><img src="/images/15445/lab1-04.png" alt=""></p>
+<p><strong>同时将该值从时钟中移除。</strong></p>
 <h3 id="pin">
-  PIN
+  Pin
   <a href="#pin" class="h-anchor" aria-hidden="true">#</a>
 </h3>
 <p>PIN(固定方法)则是代表，该<code>frame</code>中存储的<code>page</code>正在使用，不能将其移除（<code>PIN</code> = <code>true</code>）。</p>
 <h3 id="unpin">
-  UNPIN
+  Unpin
   <a href="#unpin" class="h-anchor" aria-hidden="true">#</a>
 </h3>
 <p>UNPIN(取消固定方法)则是代表，该<code>frame</code>中存储的<code>page</code>正在使用，可以将其移除（<code>PIN</code> = <code>false</code>），同时该<code>frame</code>刚被使用过（<code>Ref</code> = <code>true</code>）。</p>
 <p><img src="/images/15445/lab1-05.png" alt=""></p>
+<p><strong>将该值添加进时钟中。</strong></p>
+<h3 id="size">
+  Size
+  <a href="#size" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<p>当前时钟中，可以被替换的个数。即<code>PIN</code>为<code>false</code>的个数。</p>
+<h2 id="lru替换策略">
+  LRU替换策略
+  <a href="#lru%e6%9b%bf%e6%8d%a2%e7%ad%96%e7%95%a5" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p>🔗代码链接：<a href="https://gitee.com/cnyuyang/bustub/blob/master/src/buffer/lru_replacer.cpp">https://gitee.com/cnyuyang/bustub/blob/master/src/buffer/lru_replacer.cpp</a></p>
+<p>📺视频介绍：<a href="https://www.bilibili.com/video/BV1Va411677h">https://www.bilibili.com/video/BV1Va411677h</a></p>
+<p>LRU算法的实现数据结构，由一个哈希表和双向队列组成：</p>
+<p><img src="/images/15445/lab1-11.png" alt=""></p>
+<blockquote>
+<p>时钟替换策略(<code>ClockReplacer</code>)和LRU替换策略(<code>LRUReplacer</code>)，均继承<code>Replacer</code>，所以函数功能是一样的，这里仅介绍实现。</p>
+</blockquote>
+<h3 id="unpin-1">
+  Unpin
+  <a href="#unpin-1" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<ul>
+<li>若双向队列中存在该<code>frame_id</code>，则通过哈希表找到该对象，并将其<code>pin</code>值修改为<code>false</code>。</li>
+<li>若双向队列中不存在该<code>frame_id</code>，则在队头添加一个对象，<code>pin</code>值为<code>false</code>。</li>
+</ul>
+<h3 id="pin-1">
+  Pin
+  <a href="#pin-1" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<ul>
+<li>若双向队列中不存在该<code>frame_id</code>，直接返回。</li>
+<li>若双向队列中存在该<code>frame_id</code>，则将其从原来的位置移动到队头。并将其<code>pin</code>值修改为<code>true</code>。</li>
+</ul>
+<h3 id="size-1">
+  Size
+  <a href="#size-1" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<p>能被替换的个数，遍历双向队列，统计<code>pin</code>值为<code>false</code>的个数。</p>
+<h3 id="victim-1">
+  Victim
+  <a href="#victim-1" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<ul>
+<li>如果没有能被替换的，则返回<code>false</code>。</li>
+<li>否则从<strong>队尾</strong>开始遍历双向列表，找到第一个pin值为<code>false</code>的对象。同时将该对象从双向队列与哈希表中移除。</li>
+</ul>
+<h2 id="lru-k替换策略">
+  LRU-K替换策略
+  <a href="#lru-k%e6%9b%bf%e6%8d%a2%e7%ad%96%e7%95%a5" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p>📑算法介绍：<a href="https://zhuanlan.zhihu.com/p/622224538">https://zhuanlan.zhihu.com/p/622224538</a></p>
+<p>🔗代码链接：<a href="https://gitee.com/cnyuyang/bustub/blob/master/src/buffer/lru_k_replacer.cpp">https://gitee.com/cnyuyang/bustub/blob/master/src/buffer/lru_k_replacer.cpp</a></p>
+<p><code>LRUKReplacer</code>的函数签名和上述两种策略不一致也没有继承<code>Replacer</code>类。实现起来更为复杂。数据结构如图所示：</p>
+<p><img src="/images/15445/lab1-12.png" alt=""></p>
+<ul>
+<li><code>history_list_</code>、<code>history_map_</code>、<code>cache_list_</code>、<code>cache_map_</code>为实现<code>LRU-K</code>核心的两个双向列表</li>
+<li><code>access_count_</code>用于计算访问次数</li>
+<li><code>is_evictable_</code>用于记录是否能被锁定(类似与上面两个算法中的<code>pin</code>值)</li>
+</ul>
+<h3 id="recordaccess">
+  RecordAccess
+  <a href="#recordaccess" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<p>访问记录，先通过<code>access_count_</code>哈希表找到访问次数并+1。在使用访问次数和k值做比较，存在以下三种情况：</p>
+<ol>
+<li>访问次数等于k</li>
+</ol>
+<ul>
+<li>将其从<code>history_list_</code>列表中删除，并添加到<code>cache_list_</code>列表的表头。</li>
+</ul>
+<ol start="2">
+<li>访问次数大于k</li>
+</ol>
+<ul>
+<li>同<code>LRU</code>算法，将对象移到<code>cache_list_</code>列表的表头。</li>
+</ul>
+<ol start="3">
+<li>访问次数小于k</li>
+</ol>
+<ul>
+<li>对<code>history_list_</code>列表采用FIFO的策略，若列表中已有该值则不做任何操作。若没有则加到列表的表头。</li>
+</ul>
 <h2 id="缓冲池管理器">
   缓冲池管理器
   <a href="#%e7%bc%93%e5%86%b2%e6%b1%a0%e7%ae%a1%e7%90%86%e5%99%a8" class="h-anchor" aria-hidden="true">#</a>
