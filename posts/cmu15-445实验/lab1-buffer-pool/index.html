@@ -101,6 +101,10 @@
           <li><a href="https://geekbang.yuyang.run">极客帮</a></li>
         
       
+        
+          <li><a href="/about/">关于我</a></li>
+        
+      
       
       
   </ul>
@@ -121,6 +125,10 @@
     
       
         <li><a href="https://geekbang.yuyang.run">极客帮</a></li>
+      
+    
+      
+        <li><a href="/about/">关于我</a></li>
       
     
   </ul>
@@ -234,14 +242,18 @@
     <li><a href="#lru-k替换策略">LRU-K替换策略</a>
       <ul>
         <li><a href="#recordaccess">RecordAccess</a></li>
+        <li><a href="#setevictable">SetEvictable</a></li>
+        <li><a href="#remove">Remove</a></li>
+        <li><a href="#evict">Evict</a></li>
       </ul>
     </li>
     <li><a href="#缓冲池管理器">缓冲池管理器</a>
       <ul>
         <li><a href="#管理器的组成">管理器的组成</a></li>
+        <li><a href="#page的结构">Page的结构</a></li>
+        <li><a href="#初始化">初始化</a></li>
         <li><a href="#fetchpage">FetchPage</a></li>
         <li><a href="#newpage">NewPage</a></li>
-        <li><a href="#page的结构">Page的结构</a></li>
         <li><a href="#unpinpage">UnpinPage</a></li>
       </ul>
     </li>
@@ -443,6 +455,42 @@
 <ul>
 <li>对<code>history_list_</code>列表采用FIFO的策略，若列表中已有该值则不做任何操作。若没有则加到列表的表头。</li>
 </ul>
+<h3 id="setevictable">
+  SetEvictable
+  <a href="#setevictable" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<p>设置是否可被挑选为牺牲者。首先通过<code>access_count_</code>哈希表判断是否是访问过的，没访问过直接返回。在判断入参和<code>is_evictable_</code>哈希表中的值：</p>
+<ol>
+<li>
+<p>之前是不能释放，现在能释放：<code>curr_size_++</code></p>
+</li>
+<li>
+<p>之前是能释放，现在不能释放：<code>curr_size_--</code></p>
+</li>
+</ol>
+<h3 id="remove">
+  Remove
+  <a href="#remove" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<blockquote>
+<p>从替换器中删除可逐出的帧及其访问历史记录。如果删除成功，此函数还应该减少替换器的大小(<code>curr_size_--</code>)。</p>
+<p>请注意，这与逐出帧不同，后者总是删除具有最大向后 k 距离的帧。 此函数删除指定的帧 ID，无论其向 k 距离是多少。</p>
+</blockquote>
+<ul>
+<li>首先通过<code>access_count_</code>哈希表判断是否是访问过的，没访问过直接返回。</li>
+<li>接着，<code>is_evictable_</code>哈希表中记录的如果为false，即不可被挑选为牺牲者。抛出异常。</li>
+<li>然后，删除其在<code>history_list_</code>或<code>cache_list_</code>中的记录</li>
+<li><code>curr_size_--</code>、<code>access_count_</code>记录为0、<code>is_evictable_</code>设置为false</li>
+</ul>
+<h3 id="evict">
+  Evict
+  <a href="#evict" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<ul>
+<li>先通过<code>curr_size_</code>判断是否存在能被驱逐的对象。若为0则返回false。</li>
+<li>先在访问次数小于k的队列(<code>history_list_</code>)中查找，采用FIFO的策略，从队尾开始找到第一个<code>is_evictable_</code>哈希表中记录为false的对象。</li>
+<li>先在访问次数大于k的队列(<code>cache_list_</code>)中查找，采用LRU的策略，从队尾开始找到第一个<code>is_evictable_</code>哈希表中记录为false的对象。</li>
+</ul>
 <h2 id="缓冲池管理器">
   缓冲池管理器
   <a href="#%e7%bc%93%e5%86%b2%e6%b1%a0%e7%ae%a1%e7%90%86%e5%99%a8" class="h-anchor" aria-hidden="true">#</a>
@@ -452,11 +500,32 @@
   <a href="#%e7%ae%a1%e7%90%86%e5%99%a8%e7%9a%84%e7%bb%84%e6%88%90" class="h-anchor" aria-hidden="true">#</a>
 </h3>
 <p><img src="/images/15445/lab1-06.png" alt=""></p>
-<p>由三部分组成<code>Buffer Pool</code> 、<code>Clock</code>、 <code>Free List</code>。他们分别的作用：</p>
-<p><code>Buffer Pool</code>：用来存储<code>Page</code></p>
-<p><code>Free List</code>：目前<code>Buffer Pool</code>中有那几个地方没有加载<code>Page</code></p>
-<p><code>Clock</code>：在<code>Free List</code>为空时（<code>Buffer Pool</code>加载满时），提供可以移除的受害者。</p>
-<h3 id="fetchpage">
+<p>由四部分组成<code>pages_</code> 、<code>replacer_</code>、 <code>free_list_</code>、<code>page_table_</code>。他们分别的作用：</p>
+<p><code>pages_</code>：用数组来存储<code>Page</code></p>
+<p><code>free_list_</code>：目前<code>pages_</code>中有那几个地方没有加载<code>Page</code></p>
+<p><code>replacer_ </code>：LRU-K实现的替换器</p>
+<p><code>page_table_</code>：记录<code>page_id</code>和<code>frame_id</code>映射的哈希表</p>
+<h3 id="page的结构">
+  Page的结构
+  <a href="#page%e7%9a%84%e7%bb%93%e6%9e%84" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<p><img src="/images/15445/lab1-09.png" alt=""></p>
+<p><code>pageId</code>：<code>Page</code>唯一的唯一标识，决定其存储位置。</p>
+<p><code>pinCount</code>：正在被多少线程使用。</p>
+<p><code>dirty</code>：内容是否修改</p>
+<p><code>Data</code>：存储在磁盘上的数据</p>
+<h3 id="初始化">
+  初始化
+  <a href="#%e5%88%9d%e5%a7%8b%e5%8c%96" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<ul>
+<li><code>pages_</code>申请<code>pool_size_</code>大小的数组空间：<code>pages_ = new Page[pool_size_]</code></li>
+<li><code>free_list_</code>存储<code>0</code>-<code>pool_size_-1</code>的数字：</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">for</span> (size_t i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> pool_size_; <span style="color:#f92672">++</span>i) {
+</span></span><span style="display:flex;"><span>  free_list_.emplace_back(<span style="color:#66d9ef">static_cast</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">int</span><span style="color:#f92672">&gt;</span>(i));
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="fetchpage">
   FetchPage
   <a href="#fetchpage" class="h-anchor" aria-hidden="true">#</a>
 </h3>
@@ -467,15 +536,6 @@
   <a href="#newpage" class="h-anchor" aria-hidden="true">#</a>
 </h3>
 <p><img src="/images/15445/lab1-08.png" alt=""></p>
-<h3 id="page的结构">
-  Page的结构
-  <a href="#page%e7%9a%84%e7%bb%93%e6%9e%84" class="h-anchor" aria-hidden="true">#</a>
-</h3>
-<p><img src="/images/15445/lab1-09.png" alt=""></p>
-<p><code>pageId</code>：<code>Page</code>唯一的唯一标识，决定其存储位置。</p>
-<p><code>pinCount</code>：正在被多少线程使用。</p>
-<p><code>dirty</code>：内容是否修改</p>
-<p><code>Data</code>：存储在磁盘上的数据</p>
 <h3 id="unpinpage">
   UnpinPage
   <a href="#unpinpage" class="h-anchor" aria-hidden="true">#</a>

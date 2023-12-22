@@ -29,7 +29,7 @@
         
         
         
-          🔗代码实现链接：https://gitee.com/cnyuyang/bustub Channel的实现 #
+          🔗代码实现链接：https://gitee.com/cnyuyang/bustub 这篇博客，介绍BusTub为我们实现的部分，不需要我们开发的部分。其中的代码也有值得我们学习的地方。 Channel的实现 # 🔗代码链接：https://gitee.com/cnyuyang/bustub/blob/mas
           
         
         </description>
@@ -453,6 +453,26 @@
         
         
           关系性数据库提出的背景 # 刚开始是没有数据库这概念的.当数据量比较少时用一个啥txt文本文件就差不多就能搞定了.但数据量稍微多一点时,而且数据保存在不同的文件中.比如啥txt,doc,excel等文件.==此时要处理数据还是手动去查询更改就非常之麻烦==.可能得再整个简单应用程序帮你做些事了.只给你提
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>About</title>
+      <link>https://yuyang.run/about/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <author>744727849@qq.com (YuYang)</author>
+      <guid>https://yuyang.run/about/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          教育经历 # 2017.9-2021.6 武汉理工大学 信息工程学院 本科 工作经历 # 2020.7-2020.12 青藤云安全 青藤蜂巢·云原生安全平台 助理工程师 2021.7-2023.11 华为技术有限公司 通用软件开发工程师 2023.11-至今 华为云计算有限公司 数据库开发工程师 联系方式 # QQ：744727849 BiliBili：余为民同志
           
         
         </description>
