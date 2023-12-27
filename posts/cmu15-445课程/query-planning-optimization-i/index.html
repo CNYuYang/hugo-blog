@@ -34,7 +34,7 @@
 <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://yuyang.run/img/apple-touch-icon-144-precomposed.png" />
 <link rel="shortcut icon" href="https://yuyang.run/img/favicon.png" />
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-lite-webfont@1.1.0/style.css" />
+
 
 
 <meta name="twitter:card" content="summary"/>
@@ -169,6 +169,21 @@
   
 
   <article class="post">
+    
+    
+        <div style="position: fixed; right:10px; overflow:auto; top: 100px; width: 22%; bottom:50px">
+          <h2>目录</h2>
+          <aside class="table-of-contents"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#谓词下推">谓词下推</a></li>
+    <li><a href="#投影下推">投影下推</a></li>
+    <li><a href="#优化-sub-queries">优化 sub-queries</a></li>
+    <li><a href="#其他规则">其他规则</a></li>
+  </ul>
+</nav></aside>
+        </div>
+      
+    
     <div class="in-article">
       
         <figure class="post-cover">
@@ -210,21 +225,7 @@
     
 
     <div class="post-content">
-      
-        
-        <div style="position: fixed; right:5px; overflow:auto; top: 100px; width: 22%; bottom:50px">
-        <h2>目录</h2>
-        <aside class="table-of-contents"><nav id="TableOfContents">
-  <ul>
-    <li><a href="#谓词下推">谓词下推</a></li>
-    <li><a href="#投影下推">投影下推</a></li>
-    <li><a href="#优化-sub-queries">优化 sub-queries</a></li>
-    <li><a href="#其他规则">其他规则</a></li>
-  </ul>
-</nav></aside>
-        </div>
-        
-      
+
       <p>SQL是声明性的，这意味着用户告诉 DBMS 他们想要什么答案，而不是如何得到答案。因此，DBMS 需要将 SQL 语句转换为可执行的查询计划。 但不同的查询计划的效率可能出现多个数量级的差别，如 Join Algorithms 一节中的 Simple Nested Loop Join 与 Hash Join 的时间对比 (1.3 hours vs. 0.45 seconds)。因此，DBMS 需要一种方法来为给定查询选择“最佳”计划。 这是 Query Optimizer 的工作。</p>
 <blockquote>
 <p>Query Optimizer 第一次出现在 IBM System R，那时人们认为 DBMS 指定的查询计划永远无法比人类指定的更好。System R 的 optimizer 中的一些理念至今仍在使用。</p>

@@ -34,7 +34,7 @@
 <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://yuyang.run/img/apple-touch-icon-144-precomposed.png" />
 <link rel="shortcut icon" href="https://yuyang.run/img/favicon.png" />
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-lite-webfont@1.1.0/style.css" />
+
 
 
 <meta name="twitter:card" content="summary"/>
@@ -169,6 +169,34 @@
   
 
   <article class="post">
+    
+    
+        <div style="position: fixed; right:10px; overflow:auto; top: 100px; width: 22%; bottom:50px">
+          <h2>目录</h2>
+          <aside class="table-of-contents"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#join操作输出">Join操作输出</a></li>
+    <li><a href="#io开销分析">IO开销分析</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#简单嵌套循环join">简单嵌套循环Join</a></li>
+    <li><a href="#块式嵌套循环join">块式嵌套循环Join</a></li>
+    <li><a href="#索引嵌套循环join">索引嵌套循环Join</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#基础哈希join">基础哈希Join</a>
+      <ul>
+        <li><a href="#布隆过滤器">布隆过滤器</a></li>
+      </ul>
+    </li>
+    <li><a href="#分区哈希joingrace-hash-join">分区哈希Join(GRACE hash join)</a></li>
+  </ul>
+</nav></aside>
+        </div>
+      
+    
     <div class="in-article">
       
         <figure class="post-cover">
@@ -210,34 +238,7 @@
     
 
     <div class="post-content">
-      
-        
-        <div style="position: fixed; right:5px; overflow:auto; top: 100px; width: 22%; bottom:50px">
-        <h2>目录</h2>
-        <aside class="table-of-contents"><nav id="TableOfContents">
-  <ul>
-    <li><a href="#join操作输出">Join操作输出</a></li>
-    <li><a href="#io开销分析">IO开销分析</a></li>
-  </ul>
 
-  <ul>
-    <li><a href="#简单嵌套循环join">简单嵌套循环Join</a></li>
-    <li><a href="#块式嵌套循环join">块式嵌套循环Join</a></li>
-    <li><a href="#索引嵌套循环join">索引嵌套循环Join</a></li>
-  </ul>
-
-  <ul>
-    <li><a href="#基础哈希join">基础哈希Join</a>
-      <ul>
-        <li><a href="#布隆过滤器">布隆过滤器</a></li>
-      </ul>
-    </li>
-    <li><a href="#分区哈希joingrace-hash-join">分区哈希Join(GRACE hash join)</a></li>
-  </ul>
-</nav></aside>
-        </div>
-        
-      
       <h1 id="joins">
   Joins
   <a href="#joins" class="h-anchor" aria-hidden="true">#</a>

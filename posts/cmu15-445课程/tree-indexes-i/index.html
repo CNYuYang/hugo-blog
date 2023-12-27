@@ -34,7 +34,7 @@
 <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://yuyang.run/img/apple-touch-icon-144-precomposed.png" />
 <link rel="shortcut icon" href="https://yuyang.run/img/favicon.png" />
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-lite-webfont@1.1.0/style.css" />
+
 
 
 <meta name="twitter:card" content="summary"/>
@@ -169,6 +169,49 @@
   
 
   <article class="post">
+    
+    
+        <div style="position: fixed; right:10px; overflow:auto; top: 100px; width: 22%; bottom:50px">
+          <h2>目录</h2>
+          <aside class="table-of-contents"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#相关资料">相关资料</a></li>
+    <li><a href="#举例b-tree">举例：B+ Tree</a></li>
+    <li><a href="#节点">节点</a>
+      <ul>
+        <li><a href="#叶子节点">叶子节点</a></li>
+        <li><a href="#节点值">节点值</a></li>
+      </ul>
+    </li>
+    <li><a href="#b树-vs-b树">B+树 vs B树</a></li>
+    <li><a href="#聚集索引">聚集索引</a></li>
+    <li><a href="#查询条件">查询条件</a>
+      <ul>
+        <li><a href="#查找keyab">查找Key=(A,B)</a></li>
+        <li><a href="#查找keya">查找Key=(A,*)</a></li>
+        <li><a href="#查找keyb">查找Key=(*,B)</a></li>
+      </ul>
+    </li>
+  </ul>
+
+  <ul>
+    <li><a href="#节点大小">节点大小</a></li>
+    <li><a href="#合并阈值">合并阈值</a></li>
+    <li><a href="#可变长度的key">可变长度的Key</a></li>
+    <li><a href="#非唯一索引">非唯一索引</a></li>
+    <li><a href="#搜索">搜索</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#前缀压缩">前缀压缩</a></li>
+    <li><a href="#后缀截断">后缀截断</a></li>
+    <li><a href="#批量插入">批量插入</a></li>
+    <li><a href="#指针旋转">指针旋转</a></li>
+  </ul>
+</nav></aside>
+        </div>
+      
+    
     <div class="in-article">
       
         <figure class="post-cover">
@@ -210,49 +253,7 @@
     
 
     <div class="post-content">
-      
-        
-        <div style="position: fixed; right:5px; overflow:auto; top: 100px; width: 22%; bottom:50px">
-        <h2>目录</h2>
-        <aside class="table-of-contents"><nav id="TableOfContents">
-  <ul>
-    <li><a href="#相关资料">相关资料</a></li>
-    <li><a href="#举例b-tree">举例：B+ Tree</a></li>
-    <li><a href="#节点">节点</a>
-      <ul>
-        <li><a href="#叶子节点">叶子节点</a></li>
-        <li><a href="#节点值">节点值</a></li>
-      </ul>
-    </li>
-    <li><a href="#b树-vs-b树">B+树 vs B树</a></li>
-    <li><a href="#聚集索引">聚集索引</a></li>
-    <li><a href="#查询条件">查询条件</a>
-      <ul>
-        <li><a href="#查找keyab">查找Key=(A,B)</a></li>
-        <li><a href="#查找keya">查找Key=(A,*)</a></li>
-        <li><a href="#查找keyb">查找Key=(*,B)</a></li>
-      </ul>
-    </li>
-  </ul>
 
-  <ul>
-    <li><a href="#节点大小">节点大小</a></li>
-    <li><a href="#合并阈值">合并阈值</a></li>
-    <li><a href="#可变长度的key">可变长度的Key</a></li>
-    <li><a href="#非唯一索引">非唯一索引</a></li>
-    <li><a href="#搜索">搜索</a></li>
-  </ul>
-
-  <ul>
-    <li><a href="#前缀压缩">前缀压缩</a></li>
-    <li><a href="#后缀截断">后缀截断</a></li>
-    <li><a href="#批量插入">批量插入</a></li>
-    <li><a href="#指针旋转">指针旋转</a></li>
-  </ul>
-</nav></aside>
-        </div>
-        
-      
       <p>构建索引的另一种方式就是通过Tree。</p>
 <h1 id="b-tree">
   B+ Tree

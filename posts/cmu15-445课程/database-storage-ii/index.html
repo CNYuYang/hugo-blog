@@ -34,7 +34,7 @@
 <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://yuyang.run/img/apple-touch-icon-144-precomposed.png" />
 <link rel="shortcut icon" href="https://yuyang.run/img/favicon.png" />
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-lite-webfont@1.1.0/style.css" />
+
 
 
 <meta name="twitter:card" content="summary"/>
@@ -169,6 +169,40 @@
   
 
   <article class="post">
+    
+    
+        <div style="position: fixed; right:10px; overflow:auto; top: 100px; width: 22%; bottom:50px">
+          <h2>目录</h2>
+          <aside class="table-of-contents"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#可变精度数">可变精度数</a></li>
+    <li><a href="#固定精度数">固定精度数</a>
+      <ul>
+        <li><a href="#postgres-numeric">POSTGRES: NUMERIC</a></li>
+      </ul>
+    </li>
+    <li><a href="#超大数据">超大数据</a>
+      <ul>
+        <li><a href="#overflow-page">OverFlow Page</a></li>
+        <li><a href="#external-file">External File</a></li>
+      </ul>
+    </li>
+  </ul>
+
+  <ul>
+    <li><a href="#oltp">OLTP</a></li>
+    <li><a href="#ol-ap">OL AP</a></li>
+    <li><a href="#n-ary--存储模型">N-ARY  存储模型</a></li>
+    <li><a href="#decomposition-存储模型">DECOMPOSITION 存储模型</a>
+      <ul>
+        <li><a href="#元组id">元组ID</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></aside>
+        </div>
+      
+    
     <div class="in-article">
       
         <figure class="post-cover">
@@ -210,40 +244,7 @@
     
 
     <div class="post-content">
-      
-        
-        <div style="position: fixed; right:5px; overflow:auto; top: 100px; width: 22%; bottom:50px">
-        <h2>目录</h2>
-        <aside class="table-of-contents"><nav id="TableOfContents">
-  <ul>
-    <li><a href="#可变精度数">可变精度数</a></li>
-    <li><a href="#固定精度数">固定精度数</a>
-      <ul>
-        <li><a href="#postgres-numeric">POSTGRES: NUMERIC</a></li>
-      </ul>
-    </li>
-    <li><a href="#超大数据">超大数据</a>
-      <ul>
-        <li><a href="#overflow-page">OverFlow Page</a></li>
-        <li><a href="#external-file">External File</a></li>
-      </ul>
-    </li>
-  </ul>
 
-  <ul>
-    <li><a href="#oltp">OLTP</a></li>
-    <li><a href="#ol-ap">OL AP</a></li>
-    <li><a href="#n-ary--存储模型">N-ARY  存储模型</a></li>
-    <li><a href="#decomposition-存储模型">DECOMPOSITION 存储模型</a>
-      <ul>
-        <li><a href="#元组id">元组ID</a></li>
-      </ul>
-    </li>
-  </ul>
-</nav></aside>
-        </div>
-        
-      
       <h1 id="日志结构的文件组织">
   日志结构的文件组织
   <a href="#%e6%97%a5%e5%bf%97%e7%bb%93%e6%9e%84%e7%9a%84%e6%96%87%e4%bb%b6%e7%bb%84%e7%bb%87" class="h-anchor" aria-hidden="true">#</a>

@@ -34,7 +34,7 @@
 <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://yuyang.run/img/apple-touch-icon-144-precomposed.png" />
 <link rel="shortcut icon" href="https://yuyang.run/img/favicon.png" />
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-lite-webfont@1.1.0/style.css" />
+
 
 
 <meta name="twitter:card" content="summary"/>
@@ -169,6 +169,32 @@
   
 
   <article class="post">
+    
+    
+        <div style="position: fixed; right:10px; overflow:auto; top: 100px; width: 22%; bottom:50px">
+          <h2>目录</h2>
+          <aside class="table-of-contents"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#迭代模型">迭代模型</a></li>
+    <li><a href="#物化模型">物化模型</a></li>
+    <li><a href="#向量化批处理模型">向量化/批处理模型</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#顺序扫描">顺序扫描</a>
+      <ul>
+        <li><a href="#区域地图">区域地图</a></li>
+        <li><a href="#推迟物化">推迟物化</a></li>
+        <li><a href="#堆聚簇">堆聚簇</a></li>
+      </ul>
+    </li>
+    <li><a href="#索引扫描">索引扫描</a></li>
+    <li><a href="#多索引">多索引</a></li>
+  </ul>
+</nav></aside>
+        </div>
+      
+    
     <div class="in-article">
       
         <figure class="post-cover">
@@ -210,32 +236,7 @@
     
 
     <div class="post-content">
-      
-        
-        <div style="position: fixed; right:5px; overflow:auto; top: 100px; width: 22%; bottom:50px">
-        <h2>目录</h2>
-        <aside class="table-of-contents"><nav id="TableOfContents">
-  <ul>
-    <li><a href="#迭代模型">迭代模型</a></li>
-    <li><a href="#物化模型">物化模型</a></li>
-    <li><a href="#向量化批处理模型">向量化/批处理模型</a></li>
-  </ul>
 
-  <ul>
-    <li><a href="#顺序扫描">顺序扫描</a>
-      <ul>
-        <li><a href="#区域地图">区域地图</a></li>
-        <li><a href="#推迟物化">推迟物化</a></li>
-        <li><a href="#堆聚簇">堆聚簇</a></li>
-      </ul>
-    </li>
-    <li><a href="#索引扫描">索引扫描</a></li>
-    <li><a href="#多索引">多索引</a></li>
-  </ul>
-</nav></aside>
-        </div>
-        
-      
       <p>通常一个 SQL 语句会被组织成如图的树状查询计划，数据从叶节点流到根节点，查询结果在根节点中得出。</p>
 <p>通常，树上的操作符 operators 是二元的 (1~2个子运算符)。</p>
 <p><img src="/images/15445/12-01.png" alt=""></p>

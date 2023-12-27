@@ -11,10 +11,29 @@
     <language>en</language>
     <managingEditor>744727849@qq.com (YuYang)</managingEditor>
     <webMaster>744727849@qq.com (YuYang)</webMaster>
-    <lastBuildDate>Wed, 20 Dec 2023 20:25:11 +0800</lastBuildDate>
+    <lastBuildDate>Wed, 27 Dec 2023 20:40:00 +0800</lastBuildDate>
     
 	<atom:link href="https://yuyang.run/posts/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Lab2 Hash Index</title>
+      <link>https://yuyang.run/posts/cmu15-445%E5%AE%9E%E9%AA%8C/lab2-hash-index/</link>
+      <pubDate>Wed, 27 Dec 2023 20:40:00 +0800</pubDate>
+      <author>744727849@qq.com (YuYang)</author>
+      <guid>https://yuyang.run/posts/cmu15-445%E5%AE%9E%E9%AA%8C/lab2-hash-index/</guid>
+      <description>
+        
+          &lt;img src=&#34;https://yuyang.run/cover/database.png&#34;/&gt;
+          
+        
+        
+        
+          在fall2019的版本中需要实现的hash table的测试代码(hash_table_page_test.cpp、hash_table_test.cpp)已经被注释掉了，所以这里实现的是fall2023版本中的可扩展哈希。 这里引用此前笔记中的内容，展示可扩展哈希的查询、新增、删除的过程： 结构： 查找
+          
+        
+        </description>
+    </item>
     
     <item>
       <title>BusTub已实现部分</title>
@@ -241,26 +260,6 @@
         
         
           源码获取 # 使用git clone命令获取9.0.x源码：git clone -b 9.0.x git@github.com:apache/tomcat.git Idea运行 # 添加pom.xml # tomcat9项目是使用ant编译的，需要先将其使用maven管理。 新建pom.xml文件： &amp;lt;?xml version=&amp;#34;1.0&amp;#34; encoding=&amp;#34;UTF-8&amp;#34;?&amp;gt; &amp;lt;project xmlns=&amp;#34;http://maven.apache.org/POM/4.0.0&amp;#34; xmlns:xsi=&amp;#34;http://www.w3.org/2001/XMLSchema-instance&amp;#34; xsi:schemaLocation=&amp;#34;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&amp;#34;&amp;gt; &amp;lt;modelVersion&amp;gt;4.0.0&amp;lt;/modelVersion&amp;gt; &amp;lt;groupId&amp;gt;org.apache.tomcat&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;tomcat&amp;lt;/artifactId&amp;gt; &amp;lt;name&amp;gt;tomcat&amp;lt;/name&amp;gt; &amp;lt;version&amp;gt;9.0.19&amp;lt;/version&amp;gt; &amp;lt;dependencies&amp;gt; &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;junit&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;junit&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;4.12&amp;lt;/version&amp;gt; &amp;lt;scope&amp;gt;test&amp;lt;/scope&amp;gt; &amp;lt;/dependency&amp;gt; &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.apache.ant&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;ant&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;1.10.5&amp;lt;/version&amp;gt; &amp;lt;/dependency&amp;gt; &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;wsdl4j&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;wsdl4j&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;1.6.3&amp;lt;/version&amp;gt; &amp;lt;/dependency&amp;gt; &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;biz.aQute.bnd&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;biz.aQute.bndlib&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;5.2.0&amp;lt;/version&amp;gt; &amp;lt;scope&amp;gt;provided&amp;lt;/scope&amp;gt; &amp;lt;/dependency&amp;gt; &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.apache.geronimo.specs&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;geronimo-jaxrpc_1.1_spec&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;2.1&amp;lt;/version&amp;gt; &amp;lt;/dependency&amp;gt; &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.eclipse.jdt&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;ecj&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;3.17.0&amp;lt;/version&amp;gt; &amp;lt;/dependency&amp;gt; &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.easymock&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;easymock&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;4.0.2&amp;lt;/version&amp;gt; &amp;lt;scope&amp;gt;test&amp;lt;/scope&amp;gt; &amp;lt;/dependency&amp;gt; &amp;lt;/dependencies&amp;gt;
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>使用react-router重构前端路由</title>
-      <link>https://yuyang.run/posts/%E9%87%8D%E6%9E%84/%E4%BD%BF%E7%94%A8react-router%E9%87%8D%E6%9E%84%E5%89%8D%E7%AB%AF%E8%B7%AF%E7%94%B1/</link>
-      <pubDate>Thu, 12 Oct 2023 15:29:13 +0800</pubDate>
-      <author>744727849@qq.com (YuYang)</author>
-      <guid>https://yuyang.run/posts/%E9%87%8D%E6%9E%84/%E4%BD%BF%E7%94%A8react-router%E9%87%8D%E6%9E%84%E5%89%8D%E7%AB%AF%E8%B7%AF%E7%94%B1/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          重构前情况 # 因为公司的特点，开发人员没有太多区分，都是称为通用软件开发工程师。所以在工作中的看到的很多前端项目，都是有后端人员开发而来。所以在我们的代码中有很多后端程序思维写出的前端代码，而在一个项目中的路由情况尤为糟糕。 打开项目后看到的router.js代码： &amp;lt;HashRouter&amp;gt; &amp;lt;Route path=&amp;#34;/&amp;#34; component={TempMgrView}/&amp;gt; ... &amp;lt;Route path=&amp;#34;/settings&amp;#34; component={SettingView}/&amp;gt; &amp;lt;/HashRouter&amp;gt; 看起来是用了路由功能
           
         
         </description>

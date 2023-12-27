@@ -34,7 +34,7 @@
 <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://yuyang.run/img/apple-touch-icon-144-precomposed.png" />
 <link rel="shortcut icon" href="https://yuyang.run/img/favicon.png" />
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-lite-webfont@1.1.0/style.css" />
+
 
 
 <meta name="twitter:card" content="summary"/>
@@ -169,6 +169,36 @@
   
 
   <article class="post">
+    
+    
+        <div style="position: fixed; right:10px; overflow:auto; top: 100px; width: 22%; bottom:50px">
+          <h2>目录</h2>
+          <aside class="table-of-contents"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#2路外排序">2路外排序</a>
+      <ul>
+        <li><a href="#第0步">第0步</a></li>
+        <li><a href="#第123步">第1、2、3&hellip;步</a></li>
+        <li><a href="#两份缓存优化">两份缓存优化</a></li>
+        <li><a href="#通用k路外排序">通用K路外排序</a></li>
+      </ul>
+    </li>
+    <li><a href="#b树排序">B+树排序</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#排序">排序</a></li>
+    <li><a href="#哈希">哈希</a>
+      <ul>
+        <li><a href="#外部哈希聚合">外部哈希聚合</a></li>
+        <li><a href="#哈希聚合">哈希聚合</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></aside>
+        </div>
+      
+    
     <div class="in-article">
       
         <figure class="post-cover">
@@ -210,36 +240,7 @@
     
 
     <div class="post-content">
-      
-        
-        <div style="position: fixed; right:5px; overflow:auto; top: 100px; width: 22%; bottom:50px">
-        <h2>目录</h2>
-        <aside class="table-of-contents"><nav id="TableOfContents">
-  <ul>
-    <li><a href="#2路外排序">2路外排序</a>
-      <ul>
-        <li><a href="#第0步">第0步</a></li>
-        <li><a href="#第123步">第1、2、3&hellip;步</a></li>
-        <li><a href="#两份缓存优化">两份缓存优化</a></li>
-        <li><a href="#通用k路外排序">通用K路外排序</a></li>
-      </ul>
-    </li>
-    <li><a href="#b树排序">B+树排序</a></li>
-  </ul>
 
-  <ul>
-    <li><a href="#排序">排序</a></li>
-    <li><a href="#哈希">哈希</a>
-      <ul>
-        <li><a href="#外部哈希聚合">外部哈希聚合</a></li>
-        <li><a href="#哈希聚合">哈希聚合</a></li>
-      </ul>
-    </li>
-  </ul>
-</nav></aside>
-        </div>
-        
-      
       <h1 id="外排序算法">
   外排序算法
   <a href="#%e5%a4%96%e6%8e%92%e5%ba%8f%e7%ae%97%e6%b3%95" class="h-anchor" aria-hidden="true">#</a>

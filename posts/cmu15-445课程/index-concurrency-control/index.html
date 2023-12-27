@@ -34,7 +34,7 @@
 <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://yuyang.run/img/apple-touch-icon-144-precomposed.png" />
 <link rel="shortcut icon" href="https://yuyang.run/img/favicon.png" />
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-lite-webfont@1.1.0/style.css" />
+
 
 
 <meta name="twitter:card" content="summary"/>
@@ -169,6 +169,41 @@
   
 
   <article class="post">
+    
+    
+        <div style="position: fixed; right:10px; overflow:auto; top: 100px; width: 22%; bottom:50px">
+          <h2>目录</h2>
+          <aside class="table-of-contents"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#locks和latches对比">LOCKS和LATCHES对比</a></li>
+    <li><a href="#latch的模式">latch的模式</a></li>
+    <li><a href="#latch的实现">latch的实现</a>
+      <ul>
+        <li><a href="#操作系统提供的阻塞锁">操作系统提供的阻塞锁</a></li>
+        <li><a href="#test-and-set-spin-latchtas">Test-and-Set Spin Latch（TAS）</a></li>
+        <li><a href="#读写锁">读写锁</a></li>
+      </ul>
+    </li>
+  </ul>
+
+  <ul>
+    <li><a href="#方案一对page页加锁">方案一：对page页加锁</a></li>
+    <li><a href="#方案二对solt槽位加锁">方案二：对solt槽位加锁</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#基础实现">基础实现</a>
+      <ul>
+        <li><a href="#查找id为38的节点">查找id为38的节点</a></li>
+        <li><a href="#删除id为38的节点">删除id为38的节点</a></li>
+      </ul>
+    </li>
+    <li><a href="#优化实现">优化实现</a></li>
+  </ul>
+</nav></aside>
+        </div>
+      
+    
     <div class="in-article">
       
         <figure class="post-cover">
@@ -210,41 +245,7 @@
     
 
     <div class="post-content">
-      
-        
-        <div style="position: fixed; right:5px; overflow:auto; top: 100px; width: 22%; bottom:50px">
-        <h2>目录</h2>
-        <aside class="table-of-contents"><nav id="TableOfContents">
-  <ul>
-    <li><a href="#locks和latches对比">LOCKS和LATCHES对比</a></li>
-    <li><a href="#latch的模式">latch的模式</a></li>
-    <li><a href="#latch的实现">latch的实现</a>
-      <ul>
-        <li><a href="#操作系统提供的阻塞锁">操作系统提供的阻塞锁</a></li>
-        <li><a href="#test-and-set-spin-latchtas">Test-and-Set Spin Latch（TAS）</a></li>
-        <li><a href="#读写锁">读写锁</a></li>
-      </ul>
-    </li>
-  </ul>
 
-  <ul>
-    <li><a href="#方案一对page页加锁">方案一：对page页加锁</a></li>
-    <li><a href="#方案二对solt槽位加锁">方案二：对solt槽位加锁</a></li>
-  </ul>
-
-  <ul>
-    <li><a href="#基础实现">基础实现</a>
-      <ul>
-        <li><a href="#查找id为38的节点">查找id为38的节点</a></li>
-        <li><a href="#删除id为38的节点">删除id为38的节点</a></li>
-      </ul>
-    </li>
-    <li><a href="#优化实现">优化实现</a></li>
-  </ul>
-</nav></aside>
-        </div>
-        
-      
       <p>我们假设迄今为止讨论过的所有数据结构都是单线程的。但我们需要允许多线程安全地访问我们的数据结构，以利用额外的 CPU 内核。</p>
 <h1 id="latches介绍">
   Latches介绍

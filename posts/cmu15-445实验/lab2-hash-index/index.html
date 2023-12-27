@@ -3,7 +3,7 @@
   <head>
     
       <title>
-        About ::
+        Lab2 Hash Index ::
         余为民同志|做一个优秀的普通人，在热爱中燃烧！
       </title>
     
@@ -11,14 +11,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta
   name="description"
-  content="教育经历 # 2017.9-2021.6 武汉理工大学 信息工程学院 本科 工作经历 # 2020.7-2020.12 青藤云安全 青藤蜂巢·云原生安全平台 助理工程师 2021.7-2023.11 华为技术有限公司 通用软件开发工程师 2023.11-至今 华为云计算有限公司 数据库开发工程师 联系方式 # QQ：744727849 BiliBili：余为民同志"
+  content="在fall2019的版本中需要实现的hash table的测试代码(hash_table_page_test.cpp、hash_table_test.cpp)已经被注释掉了，所以这里实现的是fall2023版本中的可扩展哈希。 这里引用此前笔记中的内容，展示可扩展哈希的查询、新增、删除的过程： 结构： 查找"
 />
 <meta
   name="keywords"
   content=""
 />
 <meta name="robots" content="noodp" />
-<link rel="canonical" href="https://yuyang.run/about/" />
+<link rel="canonical" href="https://yuyang.run/posts/cmu15-445%E5%AE%9E%E9%AA%8C/lab2-hash-index/" />
 
 
 
@@ -38,17 +38,17 @@
 
 
 <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="About"/>
-<meta name="twitter:description" content="教育经历 # 2017.9-2021.6 武汉理工大学 信息工程学院 本科 工作经历 # 2020.7-2020.12 青藤云安全 青藤蜂巢·云原生安全平台 助理工程师 2021.7-2023.11 华为技术有限公司 通用软件开发工程师 2023.11-至今 华为云计算有限公司 数据库开发工程师 联系方式 # QQ：744727849 BiliBili：余为民同志"/>
+<meta name="twitter:title" content="Lab2 Hash Index"/>
+<meta name="twitter:description" content="在fall2019的版本中需要实现的hash table的测试代码(hash_table_page_test.cpp、hash_table_test.cpp)已经被注释掉了，所以这里实现的是fall2023版本中的可扩展哈希。 这里引用此前笔记中的内容，展示可扩展哈希的查询、新增、删除的过程： 结构： 查找"/>
 
 
 
-<meta property="og:title" content="About" />
-<meta property="og:description" content="教育经历 # 2017.9-2021.6 武汉理工大学 信息工程学院 本科 工作经历 # 2020.7-2020.12 青藤云安全 青藤蜂巢·云原生安全平台 助理工程师 2021.7-2023.11 华为技术有限公司 通用软件开发工程师 2023.11-至今 华为云计算有限公司 数据库开发工程师 联系方式 # QQ：744727849 BiliBili：余为民同志" />
+<meta property="og:title" content="Lab2 Hash Index" />
+<meta property="og:description" content="在fall2019的版本中需要实现的hash table的测试代码(hash_table_page_test.cpp、hash_table_test.cpp)已经被注释掉了，所以这里实现的是fall2023版本中的可扩展哈希。 这里引用此前笔记中的内容，展示可扩展哈希的查询、新增、删除的过程： 结构： 查找" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://yuyang.run/about/" /><meta property="article:section" content="" />
-
-
+<meta property="og:url" content="https://yuyang.run/posts/cmu15-445%E5%AE%9E%E9%AA%8C/lab2-hash-index/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-12-27T20:40:00+08:00" />
+<meta property="article:modified_time" content="2023-12-27T20:40:00+08:00" />
 
 
 
@@ -171,13 +171,39 @@
   <article class="post">
     
     
+        <div style="position: fixed; right:10px; overflow:auto; top: 100px; width: 22%; bottom:50px">
+          <h2>目录</h2>
+          <aside class="table-of-contents"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#读写页面">读写页面</a></li>
+  </ul>
+</nav></aside>
+        </div>
+      
     
     <div class="in-article">
       
+        <figure class="post-cover">
+  
+    <img src="https://yuyang.run/cover/database.png" alt="Lab2 Hash Index"/>
+  
+
+  
+</figure>
+
+      
     </div>
-    <h1 class="post-title">About</h1>
+    <h1 class="post-title">Lab2 Hash Index</h1>
     <div class="post-meta">
       
+        <time class="post-date">
+          2023-12-27 20:40:00
+        </time>
+
+        
+          
+        
+      
 
       
 
@@ -185,33 +211,62 @@
       
     </div>
 
+    
+      <span class="post-tags">
+        
+          <a href="https://yuyang.run/tags/cmu15-445/">#CMU15-445</a>&nbsp;
+        
+          <a href="https://yuyang.run/tags/sql/">#SQL</a>&nbsp;
+        
+      </span>
     
 
     <div class="post-content">
 
-      <h2 id="教育经历">
-  教育经历
-  <a href="#%e6%95%99%e8%82%b2%e7%bb%8f%e5%8e%86" class="h-anchor" aria-hidden="true">#</a>
+      <p>在fall2019的版本中需要实现的hash table的测试代码(<code>hash_table_page_test.cpp</code>、<code>hash_table_test.cpp</code>)已经被注释掉了，所以这里实现的是fall2023版本中的可扩展哈希。</p>
+<p>这里引用此前笔记中的内容，展示可扩展哈希的查询、新增、删除的过程：</p>
+<p><strong>结构：</strong></p>
+<p><img src="/images/15445/06-16.png" alt=""></p>
+<p><strong>查找：</strong></p>
+<p><img src="/images/15445/06-17.png" alt=""></p>
+<p><strong>插入：</strong></p>
+<p><img src="/images/15445/06-18.png" alt=""></p>
+<p><strong>分裂：</strong></p>
+<p><img src="/images/15445/06-19.png" alt=""></p>
+<h2 id="读写页面">
+  读写页面
+  <a href="#%e8%af%bb%e5%86%99%e9%a1%b5%e9%9d%a2" class="h-anchor" aria-hidden="true">#</a>
 </h2>
-<p>2017.9-2021.6 <a href="https://www.whut.edu.cn/">武汉理工大学</a> <a href="http://wutinfo.whut.edu.cn/">信息工程学院</a> 本科</p>
-<h2 id="工作经历">
-  工作经历
-  <a href="#%e5%b7%a5%e4%bd%9c%e7%bb%8f%e5%8e%86" class="h-anchor" aria-hidden="true">#</a>
-</h2>
-<p>2020.7-2020.12 <a href="https://www.qingteng.cn/fc-home.html?sdclkid=A5fi15fsbSDNxSDiA5F&amp;bd_vid=11536986963257973164">青藤云安全</a> <a href="https://www.qingteng.cn/fc-home.html">青藤蜂巢·云原生安全平台</a> 助理工程师</p>
-<p>2021.7-2023.11 华为技术有限公司 通用软件开发工程师</p>
-<p>2023.11-至今 华为云计算有限公司 数据库开发工程师</p>
-<h2 id="联系方式">
-  联系方式
-  <a href="#%e8%81%94%e7%b3%bb%e6%96%b9%e5%bc%8f" class="h-anchor" aria-hidden="true">#</a>
-</h2>
-<p>QQ：744727849</p>
-<p>BiliBili：<a href="https://space.bilibili.com/298073553">余为民同志</a></p>
 
     </div>
     
+      
+        <div class="pagination">
+          <div class="pagination__title">
+            <span class="pagination__title-h"
+              >Read other posts</span
+            >
+            <hr />
+          </div>
+          <div class="pagination__buttons">
+            
+            
+              <span class="button next">
+                <a href="https://yuyang.run/posts/cmu15-445%E5%AE%9E%E9%AA%8C/bustub%E5%B7%B2%E5%AE%9E%E7%8E%B0%E9%83%A8%E5%88%86/">
+                  <span class="button__text">BusTub已实现部分</span>
+                  <span class="button__icon">→</span>
+                </a>
+              </span>
+            
+          </div>
+        </div>
+      
+    
 
     
+      
+        
+
       
     
   </article>

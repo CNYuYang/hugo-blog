@@ -34,7 +34,7 @@
 <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://yuyang.run/img/apple-touch-icon-144-precomposed.png" />
 <link rel="shortcut icon" href="https://yuyang.run/img/favicon.png" />
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-lite-webfont@1.1.0/style.css" />
+
 
 
 <meta name="twitter:card" content="summary"/>
@@ -169,6 +169,34 @@
   
 
   <article class="post">
+    
+    
+        <div style="position: fixed; right:10px; overflow:auto; top: 100px; width: 22%; bottom:50px">
+          <h2>目录</h2>
+          <aside class="table-of-contents"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#buffer-pool-组织">Buffer Pool 组织</a></li>
+    <li><a href="#buffer-pool元数据">Buffer Pool元数据</a></li>
+    <li><a href="#locks-vs-latches">LOCKS VS LATCHES</a></li>
+    <li><a href="#page-table-vs-page-directory">PAGE TABLE VS PAGE DIRECTORY</a></li>
+    <li><a href="#分配策略">分配策略</a></li>
+    <li><a href="#buffer-pool--优化">BUFFER POOL  优化</a>
+      <ul>
+        <li><a href="#多个buffer-pool">多个Buffer Pool</a></li>
+        <li><a href="#预读取">预读取</a></li>
+        <li><a href="#扫描共享">扫描共享</a></li>
+        <li><a href="#缓冲池旁路">缓冲池旁路</a></li>
+      </ul>
+    </li>
+  </ul>
+
+  <ul>
+    <li><a href="#clock更换策略">CLOCK更换策略</a></li>
+  </ul>
+</nav></aside>
+        </div>
+      
+    
     <div class="in-article">
       
         <figure class="post-cover">
@@ -210,34 +238,7 @@
     
 
     <div class="post-content">
-      
-        
-        <div style="position: fixed; right:5px; overflow:auto; top: 100px; width: 22%; bottom:50px">
-        <h2>目录</h2>
-        <aside class="table-of-contents"><nav id="TableOfContents">
-  <ul>
-    <li><a href="#buffer-pool-组织">Buffer Pool 组织</a></li>
-    <li><a href="#buffer-pool元数据">Buffer Pool元数据</a></li>
-    <li><a href="#locks-vs-latches">LOCKS VS LATCHES</a></li>
-    <li><a href="#page-table-vs-page-directory">PAGE TABLE VS PAGE DIRECTORY</a></li>
-    <li><a href="#分配策略">分配策略</a></li>
-    <li><a href="#buffer-pool--优化">BUFFER POOL  优化</a>
-      <ul>
-        <li><a href="#多个buffer-pool">多个Buffer Pool</a></li>
-        <li><a href="#预读取">预读取</a></li>
-        <li><a href="#扫描共享">扫描共享</a></li>
-        <li><a href="#缓冲池旁路">缓冲池旁路</a></li>
-      </ul>
-    </li>
-  </ul>
 
-  <ul>
-    <li><a href="#clock更换策略">CLOCK更换策略</a></li>
-  </ul>
-</nav></aside>
-        </div>
-        
-      
       <h1 id="双重环境">
   双重环境
   <a href="#%e5%8f%8c%e9%87%8d%e7%8e%af%e5%a2%83" class="h-anchor" aria-hidden="true">#</a>

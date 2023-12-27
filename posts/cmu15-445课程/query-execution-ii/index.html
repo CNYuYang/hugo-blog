@@ -34,7 +34,7 @@
 <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://yuyang.run/img/apple-touch-icon-144-precomposed.png" />
 <link rel="shortcut icon" href="https://yuyang.run/img/favicon.png" />
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-lite-webfont@1.1.0/style.css" />
+
 
 
 <meta name="twitter:card" content="summary"/>
@@ -169,6 +169,41 @@
   
 
   <article class="post">
+    
+    
+        <div style="position: fixed; right:10px; overflow:auto; top: 100px; width: 22%; bottom:50px">
+          <h2>目录</h2>
+          <aside class="table-of-contents"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#每个dbms-worker一个进程">每个DBMS Worker一个进程</a></li>
+    <li><a href="#进程池">进程池</a></li>
+    <li><a href="#每个dbms-worker一个线程">每个DBMS Worker一个线程</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#查询间并发">查询间并发</a></li>
+    <li><a href="#查询内并发">查询内并发</a>
+      <ul>
+        <li><a href="#intra-operatorhorizontal">Intra-Operator(Horizontal)</a></li>
+        <li><a href="#inter-operator-parallelism-vertical">Inter-operator Parallelism (Vertical)</a></li>
+        <li><a href="#bushy-parallelism">Bushy Parallelism</a></li>
+      </ul>
+    </li>
+  </ul>
+
+  <ul>
+    <li><a href="#多数据库并行">多数据库并行</a></li>
+    <li><a href="#数据库分区">数据库分区</a>
+      <ul>
+        <li><a href="#垂直分区">垂直分区</a></li>
+        <li><a href="#水平分区">水平分区</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></aside>
+        </div>
+      
+    
     <div class="in-article">
       
         <figure class="post-cover">
@@ -210,41 +245,7 @@
     
 
     <div class="post-content">
-      
-        
-        <div style="position: fixed; right:5px; overflow:auto; top: 100px; width: 22%; bottom:50px">
-        <h2>目录</h2>
-        <aside class="table-of-contents"><nav id="TableOfContents">
-  <ul>
-    <li><a href="#每个dbms-worker一个进程">每个DBMS Worker一个进程</a></li>
-    <li><a href="#进程池">进程池</a></li>
-    <li><a href="#每个dbms-worker一个线程">每个DBMS Worker一个线程</a></li>
-  </ul>
 
-  <ul>
-    <li><a href="#查询间并发">查询间并发</a></li>
-    <li><a href="#查询内并发">查询内并发</a>
-      <ul>
-        <li><a href="#intra-operatorhorizontal">Intra-Operator(Horizontal)</a></li>
-        <li><a href="#inter-operator-parallelism-vertical">Inter-operator Parallelism (Vertical)</a></li>
-        <li><a href="#bushy-parallelism">Bushy Parallelism</a></li>
-      </ul>
-    </li>
-  </ul>
-
-  <ul>
-    <li><a href="#多数据库并行">多数据库并行</a></li>
-    <li><a href="#数据库分区">数据库分区</a>
-      <ul>
-        <li><a href="#垂直分区">垂直分区</a></li>
-        <li><a href="#水平分区">水平分区</a></li>
-      </ul>
-    </li>
-  </ul>
-</nav></aside>
-        </div>
-        
-      
       <p>我们在 Lec12 中已经讨论了怎么将 operators 组织为一个 query plan。当时我们是假设 query 是由一个 worker (是 DBMS 的组件，负责代表客户机执行任务并返回结果，可能是一个线程或进程) 执行。然而在实践中，query 往往是由多个 workers 并发执行。并发执行为 DBMS 提供了很多好处：</p>
 <ul>
 <li>提高吞吐量 (每秒能执行多少 query)，降低延迟 (执行一条 query 需要多久)。</li>

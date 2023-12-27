@@ -11,10 +11,29 @@
     <language>en</language>
     <managingEditor>744727849@qq.com (YuYang)</managingEditor>
     <webMaster>744727849@qq.com (YuYang)</webMaster>
-    <lastBuildDate>Wed, 20 Dec 2023 20:25:11 +0800</lastBuildDate>
+    <lastBuildDate>Wed, 27 Dec 2023 20:40:00 +0800</lastBuildDate>
     
 	<atom:link href="https://yuyang.run/tags/sql/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Lab2 Hash Index</title>
+      <link>https://yuyang.run/posts/cmu15-445%E5%AE%9E%E9%AA%8C/lab2-hash-index/</link>
+      <pubDate>Wed, 27 Dec 2023 20:40:00 +0800</pubDate>
+      <author>744727849@qq.com (YuYang)</author>
+      <guid>https://yuyang.run/posts/cmu15-445%E5%AE%9E%E9%AA%8C/lab2-hash-index/</guid>
+      <description>
+        
+          &lt;img src=&#34;https://yuyang.run/cover/database.png&#34;/&gt;
+          
+        
+        
+        
+          在fall2019的版本中需要实现的hash table的测试代码(hash_table_page_test.cpp、hash_table_test.cpp)已经被注释掉了，所以这里实现的是fall2023版本中的可扩展哈希。 这里引用此前笔记中的内容，展示可扩展哈希的查询、新增、删除的过程： 结构： 查找
+          
+        
+        </description>
+    </item>
     
     <item>
       <title>BusTub已实现部分</title>

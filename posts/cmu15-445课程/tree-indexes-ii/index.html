@@ -34,7 +34,7 @@
 <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://yuyang.run/img/apple-touch-icon-144-precomposed.png" />
 <link rel="shortcut icon" href="https://yuyang.run/img/favicon.png" />
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-lite-webfont@1.1.0/style.css" />
+
 
 
 <meta name="twitter:card" content="summary"/>
@@ -169,6 +169,41 @@
   
 
   <article class="post">
+    
+    
+        <div style="position: fixed; right:10px; overflow:auto; top: 100px; width: 22%; bottom:50px">
+          <h2>目录</h2>
+          <aside class="table-of-contents"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#重复的key">重复的key</a>
+      <ul>
+        <li><a href="#方案1追加-record-id">方案1:追加 Record Id</a></li>
+        <li><a href="#方案2overflow-leaf-nodes">方案2:Overflow Leaf Nodes</a></li>
+      </ul>
+    </li>
+    <li><a href="#隐式索引">隐式索引</a></li>
+    <li><a href="#部分索引">部分索引</a></li>
+    <li><a href="#覆盖索引">覆盖索引</a></li>
+    <li><a href="#索引包含列">索引包含列</a></li>
+    <li><a href="#函数表达式索引">函数/表达式索引</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#1-bit-span-trie">1-bit Span Trie</a>
+      <ul>
+        <li><a href="#横向压缩">横向压缩</a></li>
+        <li><a href="#纵向压缩-radix树">纵向压缩-Radix树</a></li>
+      </ul>
+    </li>
+  </ul>
+
+  <ul>
+    <li><a href="#查询类别">查询类别</a></li>
+  </ul>
+</nav></aside>
+        </div>
+      
+    
     <div class="in-article">
       
         <figure class="post-cover">
@@ -210,41 +245,7 @@
     
 
     <div class="post-content">
-      
-        
-        <div style="position: fixed; right:5px; overflow:auto; top: 100px; width: 22%; bottom:50px">
-        <h2>目录</h2>
-        <aside class="table-of-contents"><nav id="TableOfContents">
-  <ul>
-    <li><a href="#重复的key">重复的key</a>
-      <ul>
-        <li><a href="#方案1追加-record-id">方案1:追加 Record Id</a></li>
-        <li><a href="#方案2overflow-leaf-nodes">方案2:Overflow Leaf Nodes</a></li>
-      </ul>
-    </li>
-    <li><a href="#隐式索引">隐式索引</a></li>
-    <li><a href="#部分索引">部分索引</a></li>
-    <li><a href="#覆盖索引">覆盖索引</a></li>
-    <li><a href="#索引包含列">索引包含列</a></li>
-    <li><a href="#函数表达式索引">函数/表达式索引</a></li>
-  </ul>
 
-  <ul>
-    <li><a href="#1-bit-span-trie">1-bit Span Trie</a>
-      <ul>
-        <li><a href="#横向压缩">横向压缩</a></li>
-        <li><a href="#纵向压缩-radix树">纵向压缩-Radix树</a></li>
-      </ul>
-    </li>
-  </ul>
-
-  <ul>
-    <li><a href="#查询类别">查询类别</a></li>
-  </ul>
-</nav></aside>
-        </div>
-        
-      
       <h1 id="b树更多的细节">
   B+树更多的细节
   <a href="#b%e6%a0%91%e6%9b%b4%e5%a4%9a%e7%9a%84%e7%bb%86%e8%8a%82" class="h-anchor" aria-hidden="true">#</a>
