@@ -175,7 +175,21 @@
           <h2>目录</h2>
           <aside class="table-of-contents"><nav id="TableOfContents">
   <ul>
-    <li><a href="#读写页面">读写页面</a></li>
+    <li><a href="#读写页面卫兵">读/写页面卫兵</a>
+      <ul>
+        <li><a href="#移动构造函数移动赋值语句">移动构造函数&amp;移动赋值语句</a></li>
+        <li><a href="#析构函数drop">析构函数&amp;Drop</a></li>
+        <li><a href="#upgradereadupgradewrite">UpgradeRead&amp;UpgradeWrite</a></li>
+      </ul>
+    </li>
+    <li><a href="#可扩展哈希页面实现">可扩展哈希页面实现</a>
+      <ul>
+        <li><a href="#header页实现">Header页实现</a></li>
+        <li><a href="#directory页实现">Directory页实现</a></li>
+        <li><a href="#bucket页实现">Bucket页实现</a></li>
+      </ul>
+    </li>
+    <li><a href="#可扩展哈希实现">可扩展哈希实现</a></li>
   </ul>
 </nav></aside>
         </div>
@@ -233,9 +247,205 @@
 <p><img src="/images/15445/06-18.png" alt=""></p>
 <p><strong>分裂：</strong></p>
 <p><img src="/images/15445/06-19.png" alt=""></p>
-<h2 id="读写页面">
-  读写页面
-  <a href="#%e8%af%bb%e5%86%99%e9%a1%b5%e9%9d%a2" class="h-anchor" aria-hidden="true">#</a>
+<p><strong>但是在该项目实现中，需要还有一个header的结构，根据hash值的前2位分配到不同的directory：</strong></p>
+<p><img src="/images/15445/lab2-00.svg" alt=""></p>
+<h2 id="读写页面卫兵">
+  读/写页面卫兵
+  <a href="#%e8%af%bb%e5%86%99%e9%a1%b5%e9%9d%a2%e5%8d%ab%e5%85%b5" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p>🔗代码链接：<a href="https://gitee.com/cnyuyang/bustub/blob/master/src/storage/page/page_guard.cpp">https://gitee.com/cnyuyang/bustub/blob/master/src/storage/page/page_guard.cpp</a></p>
+<p>该Task的目的是：如果程序员忘记调用<code>UnpinPage</code>，页面将永远不会被从缓冲池中驱逐出去。导致缓冲池以更少的帧数量运行，因此将有更多的页交换进出磁盘。不仅性能受到影响，BUG也很难被发现。而这个卫兵的作用则是：创建页面卫兵为局部变量，<strong>当离开作用域时会自动执行析构函数，在析构函数中便可以调用页面的<code>UnpinPage</code>方法，帮助程序员自动释放资源</strong>。</p>
+<h3 id="移动构造函数移动赋值语句">
+  移动构造函数&amp;移动赋值语句
+  <a href="#%e7%a7%bb%e5%8a%a8%e6%9e%84%e9%80%a0%e5%87%bd%e6%95%b0%e7%a7%bb%e5%8a%a8%e8%b5%8b%e5%80%bc%e8%af%ad%e5%8f%a5" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<ul>
+<li>移动构造函数</li>
+</ul>
+<p>只需要在构造函数中将<code>that</code>中的资源移动到<code>this</code>中：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>std<span style="color:#f92672">::</span>swap(<span style="color:#66d9ef">this</span><span style="color:#f92672">-&gt;</span>bpm_, that.bpm_);
+</span></span><span style="display:flex;"><span>std<span style="color:#f92672">::</span>swap(<span style="color:#66d9ef">this</span><span style="color:#f92672">-&gt;</span>page_, that.page_);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">this</span><span style="color:#f92672">-&gt;</span>is_dirty_ <span style="color:#f92672">=</span> that.is_dirty_;
+</span></span></code></pre></div><p>使用: <code>BasicPageGuard a = BasicPageGuard(std::move(b))</code></p>
+<ul>
+<li>移动赋值语句</li>
+</ul>
+<p>先释放当前对象对<code>Buffer Pool</code>的占用，再将<code>that</code>中的资源移动到<code>this</code>中：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>Drop();
+</span></span><span style="display:flex;"><span>std<span style="color:#f92672">::</span>swap(<span style="color:#66d9ef">this</span><span style="color:#f92672">-&gt;</span>bpm_, that.bpm_);
+</span></span><span style="display:flex;"><span>std<span style="color:#f92672">::</span>swap(<span style="color:#66d9ef">this</span><span style="color:#f92672">-&gt;</span>page_, that.page_);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">this</span><span style="color:#f92672">-&gt;</span>is_dirty_ <span style="color:#f92672">=</span> that.is_dirty_;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">return</span> <span style="color:#f92672">*</span><span style="color:#66d9ef">this</span>;
+</span></span></code></pre></div><p>使用: <code>BasicPageGuard a = std::move(b)</code></p>
+<blockquote>
+<p>在ReadPageGuard/WritePageGuard的移动赋值语句中，除了调用<code>UnpinPage</code>方法还需要释放自己持有的锁。</p>
+</blockquote>
+<h3 id="析构函数drop">
+  析构函数&amp;Drop
+  <a href="#%e6%9e%90%e6%9e%84%e5%87%bd%e6%95%b0drop" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<p>析构函数只会调用<code>Drop</code>函数，<code>Drop</code>函数，可能被隐式的调用(析构函数)，也可能被显示的调用(直接调用<code>Drop</code>函数)。所以避免重复释放以及空指针异常，先判断自己的资源是否为空，不为空则调用<code>UnpinPage</code>方法：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">if</span> (bpm_ <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nullptr</span> <span style="color:#f92672">&amp;&amp;</span> page_ <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nullptr</span>) {
+</span></span><span style="display:flex;"><span>bpm_<span style="color:#f92672">-&gt;</span>UnpinPage(page_<span style="color:#f92672">-&gt;</span>GetPageId(), is_dirty_);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>bpm_ <span style="color:#f92672">=</span> <span style="color:#66d9ef">nullptr</span>;
+</span></span><span style="display:flex;"><span>page_ <span style="color:#f92672">=</span> <span style="color:#66d9ef">nullptr</span>;
+</span></span></code></pre></div><blockquote>
+<p>在<code>ReadPageGuard</code>/<code>WritePageGuard</code>的<code>Drop</code>函数中，除了调用<code>UnpinPage</code>方法还需要释放自己持有的锁。</p>
+</blockquote>
+<h3 id="upgradereadupgradewrite">
+  UpgradeRead&amp;UpgradeWrite
+  <a href="#upgradereadupgradewrite" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<p>将<code>BasicPageGuard</code>升级为<code>ReadPageGuard</code>或<code>WritePageGuard</code>。</p>
+<ol>
+<li>对页面上锁</li>
+<li>创建<code>ReadPageGuard</code>/<code>WritePageGuard</code></li>
+<li>释放本身资源</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">auto</span> BasicPageGuard<span style="color:#f92672">::</span>UpgradeRead() <span style="color:#f92672">-&gt;</span> ReadPageGuard {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> (page_ <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nullptr</span>) {
+</span></span><span style="display:flex;"><span>    page_<span style="color:#f92672">-&gt;</span>RLatch();
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">auto</span> read_page_guard <span style="color:#f92672">=</span> ReadPageGuard(bpm_, page_);
+</span></span><span style="display:flex;"><span>  bpm_ <span style="color:#f92672">=</span> <span style="color:#66d9ef">nullptr</span>;
+</span></span><span style="display:flex;"><span>  page_ <span style="color:#f92672">=</span> <span style="color:#66d9ef">nullptr</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> read_page_guard;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="可扩展哈希页面实现">
+  可扩展哈希页面实现
+  <a href="#%e5%8f%af%e6%89%a9%e5%b1%95%e5%93%88%e5%b8%8c%e9%a1%b5%e9%9d%a2%e5%ae%9e%e7%8e%b0" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<h3 id="header页实现">
+  Header页实现
+  <a href="#header%e9%a1%b5%e5%ae%9e%e7%8e%b0" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<p>🔗代码链接：<a href="https://gitee.com/cnyuyang/bustub/blob/master/src/storage/page/extendible_htable_header_page.cpp">https://gitee.com/cnyuyang/bustub/blob/master/src/storage/page/extendible_htable_header_page.cpp</a></p>
+<p><img src="/images/15445/lab2-01.png" alt=""></p>
+<p>这个页面的主要作用，就是根据计算出来的<code>hash</code>值，索引到对应存储页面。该类中的数据包括：</p>
+<ul>
+<li>
+<p><code>directory_page_ids_</code>：保存<code>directory</code>页面的<code>page_id</code></p>
+</li>
+<li>
+<p><code>max_depth_</code>：<code>header</code>页能处理的最大的深度，决定能索引的<code>directory</code>页面的最大大小。</p>
+</li>
+</ul>
+<p>需要实现的方法：</p>
+<ul>
+<li>
+<p><code>Init</code>：初始化，往<code>directory_page_ids_</code>会用到的区域填充非法<code>page_id</code>-<code>INVALID_PAGE_ID</code>，代表未分配。</p>
+</li>
+<li>
+<p><code>MaxSize</code>：能索引的<code>directory</code>页面的最大大小。由<code>max_depth_</code>决定，就是<code>max_depth_</code>位数能表示多少数据，及<code>1&lt;&lt;max_depth_</code>。</p>
+</li>
+<li>
+<p><code>HashToDirectoryIndex</code>：元素的<code>hash</code>值对应的<code>directory</code>在<code>directory_page_ids_</code>数组的下标。就是值的前<code>max_depth_</code>位，及<code>hash &gt;&gt; (sizeof(uint32_t) * 8 - this-&gt;max_depth_)</code>。</p>
+</li>
+<li>
+<p><code>GetDirectoryPageId</code>：获取<code>directory</code>页面的<code>page_id</code>，从数组中查询：<code>directory_page_ids_[directory_idx]</code>。</p>
+</li>
+<li>
+<p><code>SetDirectoryPageId</code>：设置<code>directory</code>页面的<code>page_id</code>，及设置数组：<code>directory_page_ids_[directory_idx] = directory_page_id</code>。</p>
+</li>
+</ul>
+<h3 id="directory页实现">
+  Directory页实现
+  <a href="#directory%e9%a1%b5%e5%ae%9e%e7%8e%b0" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<p>🔗代码链接：<a href="https://gitee.com/cnyuyang/bustub/blob/master/src/storage/page/extendible_htable_directory_page.cpp">https://gitee.com/cnyuyang/bustub/blob/master/src/storage/page/extendible_htable_directory_page.cpp</a></p>
+<p><img src="/images/15445/lab2-02.png" alt=""></p>
+<p>这个页面的主要作用，一方面是索引到存储数据的<code>bucket</code>页面，一方面是维护全局及<code>bucket</code>页面的<strong>度</strong>。该类存储的数据包括：</p>
+<ul>
+<li>
+<p><code>max_depth_</code>：度可用最大的深度</p>
+</li>
+<li>
+<p><code>global_depth_</code>：全局的度</p>
+</li>
+<li>
+<p><code>local_depths_</code>：每个<code>bucket</code>页面的度</p>
+</li>
+<li>
+<p><code>bucket_page_ids_</code>：保存<code>bucket</code>页面的<code>page_id</code></p>
+</li>
+</ul>
+<p>需要实现的方法：</p>
+<ul>
+<li>
+<p><code>Init</code>：初始化，<code>local_depths_</code>中填充初始的度(0)，<code>bucket_page_ids_</code>中填充初始非法<code>page_id</code>-<code>INVALID_PAGE_ID</code>，代表未分配。</p>
+</li>
+<li>
+<p><code>MaxSize</code>：返回能最多管理的<code>bucket</code>数量，及<code>1 &lt;&lt; max_depth_</code>。</p>
+</li>
+<li>
+<p><code>Size</code>：当前能管理<code>bucket</code>数量，及<code>1 &lt;&lt; global_depth_</code></p>
+</li>
+<li>
+<p><code>GetLocalDepth</code>、<code>SetLocalDepth</code>、<code>IncrLocalDepth</code>、<code>DecrLocalDepth</code>：对<code>bucket</code>页面的度的管理，根据数组下标操作<code>local_depths_</code>数组。</p>
+</li>
+<li>
+<p><code>GetBucketPageId</code>、<code>SetBucketPageId</code>：对<code>bucket</code>页面的<code>page_id</code>的管理，根据数组下标操作<code>bucket_page_ids_</code>数组。</p>
+</li>
+<li>
+<p><code>GetGlobalDepthMask</code>、<code>HashToBucketIndex</code>：掩码(111&hellip;.111)：<code>global_depth_</code>个1、<code>hash &amp; mark</code>就是要存储的<code>bucket</code>的下标。</p>
+</li>
+<li>
+<p><code>IncrGlobalDepth</code>：增加全局的度，该函数要实现的是：</p>
+<ol>
+<li><code>bucket_page_ids_</code>，<code>local_depths_</code>，数组扩容一倍，内容先复制之前的</li>
+<li><code>global_depth_++</code>
+<img src="/images/15445/lab2-03.png" alt=""></li>
+</ol>
+</li>
+</ul>
+<blockquote>
+<p>拆分满了的<code>bucket</code>的前置准备</p>
+</blockquote>
+<ul>
+<li>
+<p><code>GetSplitImageIndex</code>：获取需要被拆分的<code>bucket</code>的，另一个用于存储新<code>bucket</code>的数组索引。及上图中的紫色索引。</p>
+</li>
+<li>
+<p><code>CanShrink</code>：是否可以收缩，当所有<code>bucket</code>的度，小于全局的度<code>global_depth_</code>是可以收缩。</p>
+</li>
+<li>
+<p><code>DecrGlobalDepth</code>：减小全局的度，直接<code>global_depth_--</code>。</p>
+</li>
+</ul>
+<h3 id="bucket页实现">
+  Bucket页实现
+  <a href="#bucket%e9%a1%b5%e5%ae%9e%e7%8e%b0" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<p>🔗代码链接：<a href="https://gitee.com/cnyuyang/bustub/blob/master/src/storage/page/extendible_htable_bucket_page.cpp">https://gitee.com/cnyuyang/bustub/blob/master/src/storage/page/extendible_htable_bucket_page.cpp</a></p>
+<p><img src="/images/15445/lab2-04.png" alt=""></p>
+<p>该页面用于实际存储<code>key</code>、<code>value</code>的数据，页面中存在的数据包括;</p>
+<ul>
+<li>
+<p><code>size_</code>：当前存储的<code>kv</code>数量。</p>
+</li>
+<li>
+<p><code>max_size_</code>：能存储最多的<code>kv</code>数量。</p>
+</li>
+<li>
+<p><code>array_</code>：保存<code>kv</code>的数组</p>
+</li>
+</ul>
+<p>该页面要实现的函数：</p>
+<ul>
+<li>
+<p><code>Lookup</code>：根据<code>key</code>查找<code>value</code>，及遍历<code>array_</code>数组</p>
+</li>
+<li>
+<p><code>Insert</code>：如果该<code>bucket</code>满了，直接报错。如果<code>key</code>已经存在，直接报错。插在数组的最后。</p>
+</li>
+<li>
+<p><code>Remove</code>：根据<code>key</code>查找数组中存储的位置，将后面的元素往前移动一个位置。</p>
+</li>
+</ul>
+<h2 id="可扩展哈希实现">
+  可扩展哈希实现
+  <a href="#%e5%8f%af%e6%89%a9%e5%b1%95%e5%93%88%e5%b8%8c%e5%ae%9e%e7%8e%b0" class="h-anchor" aria-hidden="true">#</a>
 </h2>
 
     </div>
@@ -295,7 +505,7 @@
 </a>
 
       <div class="copyright">
-        <span>© 2023 Powered by <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a></span>
+        <span>© 2024 Powered by <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a></span>
         <span><a href="https://github.com/panr/hugo-theme-hello-friend" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
       </div>
     
