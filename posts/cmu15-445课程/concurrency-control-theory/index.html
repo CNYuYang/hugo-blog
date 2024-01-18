@@ -175,8 +175,16 @@
           <h2>目录</h2>
           <aside class="table-of-contents"><nav id="TableOfContents">
   <ul>
-    <li><a href="#strawmansimple-system">Strawman/Simple System</a></li>
-    <li><a href="#定义">定义</a></li>
+    <li><a href="#事务">事务</a>
+      <ul>
+        <li><a href="#strawmansimple-system">Strawman/Simple System</a></li>
+        <li><a href="#定义">定义</a></li>
+      </ul>
+    </li>
+    <li><a href="#原子性atomicity">原子性（Atomicity）</a></li>
+    <li><a href="#一致性consistency">一致性（Consistency）</a></li>
+    <li><a href="#隔离性isolation">隔离性（Isolation）</a></li>
+    <li><a href="#持久性durability">持久性（Durability）</a></li>
   </ul>
 </nav></aside>
         </div>
@@ -236,10 +244,10 @@
 </li>
 </ul>
 <p>Concurrency Control 与 Recovery 都是 DBMSs 的重要特性，它们渗透在 DBMS 的每个主要模块中。而二者的基础都是具备 ACID 特性的 Transactions，因此本节的讨论从 Transactions 开始。</p>
-<h1 id="事务">
+<h2 id="事务">
   事务
   <a href="#%e4%ba%8b%e5%8a%a1" class="h-anchor" aria-hidden="true">#</a>
-</h1>
+</h2>
 <p>transaction 是在数据库上执行一个或多个操作 (例如 SQL 查询) 的序列，是 DBMS 状态变化的基本单位。</p>
 <p>一个 transaction 只能有执行和未执行两个状态，不存在部分执行的状态。</p>
 <blockquote>
@@ -250,10 +258,10 @@
 <li>往 B 账户中增加 100 元</li>
 </ul>
 </blockquote>
-<h2 id="strawmansimple-system">
+<h3 id="strawmansimple-system">
   Strawman/Simple System
   <a href="#strawmansimple-system" class="h-anchor" aria-hidden="true">#</a>
-</h2>
+</h3>
 <p>系统中只存在一个线程负责执行 transaction：</p>
 <ul>
 <li>任何时刻只能有一个 transaction 被执行且每个 transaction 开始执行就必须执行完毕才轮到下一个</li>
@@ -265,10 +273,10 @@
 </li>
 </ul>
 <p>Strawman System 的缺点很明显，无法利用多核计算能力并行地执行相互独立的多个 transactions，从而提高 CPU 利用率、吞吐量，减少用户的响应时间。但要利用 CPU 的多核计算能力，这难度也是显而易见的，获得种种好处的同时必须保证数据库的正确性和 transactions 之间的公平性。 显然我们无法让 transactions 的执行过程在时间线上任意重叠，因为这可能导致数据的永久不一致。于是我们需要一套标准来定义数据的正确性。</p>
-<h2 id="定义">
+<h3 id="定义">
   定义
   <a href="#%e5%ae%9a%e4%b9%89" class="h-anchor" aria-hidden="true">#</a>
-</h2>
+</h3>
 <p>Database: 一组固定的数据对象 (e.g., A, B, C, &hellip;)</p>
 <p>Transaction: 一序列读写操作 (e.g., R(A), W(B), &hellip;)</p>
 <p>事务的结果是 <code>COMMIT`` 或 </code>ABORT`。</p>
@@ -284,22 +292,22 @@
 <blockquote>
 <p>实际上各家数据库所实现的ACID并不尽相同。例如围绕着“隔离性”就存在很多含糊不清的争议。所以当听到一个系统声称自己“兼容ACID”时，其实你无法确信它究竟能提供了什么样的保证，现在的ACID更像是一个市场营销用语。</p>
 </blockquote>
-<h1 id="原子性atomicity">
+<h2 id="原子性atomicity">
   原子性（Atomicity）
   <a href="#%e5%8e%9f%e5%ad%90%e6%80%a7atomicity" class="h-anchor" aria-hidden="true">#</a>
-</h1>
-<h1 id="一致性consistency">
+</h2>
+<h2 id="一致性consistency">
   一致性（Consistency）
   <a href="#%e4%b8%80%e8%87%b4%e6%80%a7consistency" class="h-anchor" aria-hidden="true">#</a>
-</h1>
-<h1 id="隔离性isolation">
+</h2>
+<h2 id="隔离性isolation">
   隔离性（Isolation）
   <a href="#%e9%9a%94%e7%a6%bb%e6%80%a7isolation" class="h-anchor" aria-hidden="true">#</a>
-</h1>
-<h1 id="持久性durability">
+</h2>
+<h2 id="持久性durability">
   持久性（Durability）
   <a href="#%e6%8c%81%e4%b9%85%e6%80%a7durability" class="h-anchor" aria-hidden="true">#</a>
-</h1>
+</h2>
 
     </div>
     

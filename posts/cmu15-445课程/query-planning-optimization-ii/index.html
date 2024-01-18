@@ -173,7 +173,11 @@
     
         <div style="position: fixed; right:10px; overflow:auto; top: 100px; width: 22%; bottom:50px">
           <h2>目录</h2>
-          <aside class="table-of-contents"><nav id="TableOfContents"></nav></aside>
+          <aside class="table-of-contents"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#花销估算">花销估算</a></li>
+  </ul>
+</nav></aside>
         </div>
       
     
@@ -220,10 +224,10 @@
     <div class="post-content">
 
       <p>许多操作没有通用的规则，如 Join：Join 操作既符合交换律又符合结合律，等价关系代数表达式数量庞大，这时候就需要一些成本估算技术，将过滤性大的表作为 Outer Table，小的作为 Inner Table，从而达到查询优化的目的。</p>
-<h1 id="花销估算">
+<h2 id="花销估算">
   花销估算
   <a href="#%e8%8a%b1%e9%94%80%e4%bc%b0%e7%ae%97" class="h-anchor" aria-hidden="true">#</a>
-</h1>
+</h2>
 <p>一个查询需要花费多长时间，取决于许多因素：</p>
 <ul>
 <li>CPU: Small cost; tough to estimate</li>
@@ -239,7 +243,8 @@
 <li>SQL Server: <code>UPDATE STATISTICS</code></li>
 <li>DB2: <code>RUNSTATS</code></li>
 </ul>
-<p>// TODO <a href="https://www.cnblogs.com/angelia-wang/p/17328165.html">https://www.cnblogs.com/angelia-wang/p/17328165.html</a></p>
+<p>// TODO <a href="https://www.cnblogs.com/angelia-wang/p/17328165.html" target="_blank">https://www.cnblogs.com/angelia-wang/p/17328165.html</a>
+</p>
 
     </div>
     

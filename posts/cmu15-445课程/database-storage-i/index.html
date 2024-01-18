@@ -175,18 +175,21 @@
           <h2>目录</h2>
           <aside class="table-of-contents"><nav id="TableOfContents">
   <ul>
-    <li><a href="#linked-list--实现">Linked List  实现</a></li>
-    <li><a href="#page-directory--实现">Page Directory  实现</a></li>
-  </ul>
-
-  <ul>
-    <li><a href="#page-header">Page Header</a></li>
-    <li><a href="#tuple的存储">Tuple的存储</a>
+    <li><a href="#面向磁盘的dbms">面向磁盘的DBMS</a></li>
+    <li><a href="#dbms与os对文件移动的比较">DBMS与OS对文件移动的比较</a></li>
+    <li><a href="#文件存储">文件存储</a>
       <ul>
-        <li><a href="#方案1">方案1</a></li>
-        <li><a href="#方案2">方案2</a></li>
+        <li><a href="#linked-list--实现">Linked List  实现</a></li>
+        <li><a href="#page-directory--实现">Page Directory  实现</a></li>
       </ul>
     </li>
+    <li><a href="#page的布局">Page的布局</a>
+      <ul>
+        <li><a href="#page-header">Page Header</a></li>
+        <li><a href="#tuple的存储">Tuple的存储</a></li>
+      </ul>
+    </li>
+    <li><a href="#tuple的布局">Tuple的布局</a></li>
   </ul>
 </nav></aside>
         </div>
@@ -234,16 +237,16 @@
 
     <div class="post-content">
 
-      <h1 id="面向磁盘的dbms">
+      <h2 id="面向磁盘的dbms">
   面向磁盘的DBMS
   <a href="#%e9%9d%a2%e5%90%91%e7%a3%81%e7%9b%98%e7%9a%84dbms" class="h-anchor" aria-hidden="true">#</a>
-</h1>
+</h2>
 <p>数据库全部在磁盘上，数据库文件中的数据被组织成页面，第一页是目录页面。 为了对数据进行操作，DBMS需要将数据带入内存。它通过具有一个缓冲池来实现此目的，该缓冲池管理着磁盘和内存之间的来回移动。 DBMS还具有将执行查询的执行引擎。 执行引擎将向缓冲池询问特定的页面，并且缓冲池将负责将该页面带入内存并为执行引擎提供指向内存中页面的指针。 当执行引擎在该内存上运行时，缓冲池管理器将确保页面在那里。</p>
 <p><img src="/images/15445/03-01.png" alt="03-01.png"></p>
-<h1 id="dbms与os对文件移动的比较">
+<h2 id="dbms与os对文件移动的比较">
   DBMS与OS对文件移动的比较
   <a href="#dbms%e4%b8%8eos%e5%af%b9%e6%96%87%e4%bb%b6%e7%a7%bb%e5%8a%a8%e7%9a%84%e6%af%94%e8%be%83" class="h-anchor" aria-hidden="true">#</a>
-</h1>
+</h2>
 <p>DBMS的高级设计目标是支持超出可用内存量的数据库。由于对磁盘的读/写非常昂贵，因此必须仔细管理。 我们不希望由于从磁盘中获取某些东西而造成大的停滞，从而拖慢其他一切的速度。 因此，我们希望DBMS在等待从磁盘获取数据时能够处理其他查询。</p>
 <p>这种高级设计目标就像虚拟内存一样，那里有很大的地址空间，并且OS可以从磁盘引入页面。</p>
 <p>实现此虚拟内存的一种方法是使用mmap在进程地址空间中映射文件的内容，这使OS负责在磁盘和内存之间来回移动页面。 不幸的是，这意味着如果mmap遇到页面错误，这将阻止该过程 。</p>
@@ -260,10 +263,10 @@
 </ul>
 <p><strong>由于正确性和性能原因，我们不建议在DBMS中使用mmap。</strong></p>
 <p>即使系统将具有OS可以提供的功能，但让DBMS自己实施这些过程也可以使其具有更好的控制和性能。</p>
-<h1 id="文件存储">
+<h2 id="文件存储">
   文件存储
   <a href="#%e6%96%87%e4%bb%b6%e5%ad%98%e5%82%a8" class="h-anchor" aria-hidden="true">#</a>
-</h1>
+</h2>
 <p>DBMS将数据库存储为磁盘上的一个或多个文件。</p>
 <p>→操作系统对这些文件的内容一无所知。</p>
 <p>不同的DBMS以不同的方式管理磁盘上文件中的页面。</p>
@@ -273,31 +276,31 @@
 <p>堆文件是页面的无序集合，其中元组以随机顺序存储。</p>
 <p>→创建/获取/写入/删除页面</p>
 <p>→还必须支持遍历所有页面</p>
-<h2 id="linked-list--实现">
+<h3 id="linked-list--实现">
   Linked List  实现
   <a href="#linked-list--%e5%ae%9e%e7%8e%b0" class="h-anchor" aria-hidden="true">#</a>
-</h2>
+</h3>
 <p>在文件的开头维护一个头页面，该页面存储两个指针：</p>
 <p>→空闲页面列表的HEAD。</p>
 <p>→数据页列表的HEAD。</p>
 <p>每个页面都跟踪其自身的可用插槽数</p>
 <p><img src="/images/15445/03-02.png" alt="03-02.png"></p>
-<h2 id="page-directory--实现">
+<h3 id="page-directory--实现">
   Page Directory  实现
   <a href="#page-directory--%e5%ae%9e%e7%8e%b0" class="h-anchor" aria-hidden="true">#</a>
-</h2>
+</h3>
 <p>DBMS维护特殊页面，这些页面跟踪数据库文件中数据页面的位置。</p>
 <p>该目录还记录每页的可用插槽数。</p>
 <p>DBMS必须确保目录页面与数据页面同步。</p>
 <p><img src="/images/15445/03-03.png" alt="03-03.png"></p>
-<h1 id="page的布局">
+<h2 id="page的布局">
   Page的布局
   <a href="#page%e7%9a%84%e5%b8%83%e5%b1%80" class="h-anchor" aria-hidden="true">#</a>
-</h1>
-<h2 id="page-header">
+</h2>
+<h3 id="page-header">
   Page Header
   <a href="#page-header" class="h-anchor" aria-hidden="true">#</a>
-</h2>
+</h3>
 <p>每个页面都包含有关页面内容的元数据的标头。</p>
 <p>→页面大小</p>
 <p>→校验和</p>
@@ -307,30 +310,30 @@
 <p><img src="/images/15445/03-04.png" alt="03-04.png"></p>
 <p>对于任何页面存储体系结构，我们现在都需要了解如何组织存储在页面内部的数据。</p>
 <p>→我们仍然假设我们仅存储元组。</p>
-<h2 id="tuple的存储">
+<h3 id="tuple的存储">
   Tuple的存储
   <a href="#tuple%e7%9a%84%e5%ad%98%e5%82%a8" class="h-anchor" aria-hidden="true">#</a>
-</h2>
-<h3 id="方案1">
+</h3>
+<h4 id="方案1">
   方案1
   <a href="#%e6%96%b9%e6%a1%881" class="h-anchor" aria-hidden="true">#</a>
-</h3>
+</h4>
 <p>跟踪页面中元组的数量，然后在末尾附加一个新的元组。</p>
 <p><img src="/images/15445/03-05.png" alt="03-05.png"></p>
-<h3 id="方案2">
+<h4 id="方案2">
   方案2
   <a href="#%e6%96%b9%e6%a1%882" class="h-anchor" aria-hidden="true">#</a>
-</h3>
+</h4>
 <p>最常见的布局方案称为分页页面。</p>
 <p>插槽数组将“插槽”映射到元组的起始位置偏移量。</p>
 <p>标头跟踪：</p>
 <p>→已使用插槽的数量</p>
 <p>→最后使用的插槽起始位置的偏移量</p>
 <p><img src="/images/15445/03-06.png" alt="03-06.png"></p>
-<h1 id="tuple的布局">
+<h2 id="tuple的布局">
   Tuple的布局
   <a href="#tuple%e7%9a%84%e5%b8%83%e5%b1%80" class="h-anchor" aria-hidden="true">#</a>
-</h1>
+</h2>
 <p>每个元组均以包含有关元数据的标头为前缀。</p>
 <p>→可见性信息（并发控制）</p>
 <p>→NULL值的位图</p>

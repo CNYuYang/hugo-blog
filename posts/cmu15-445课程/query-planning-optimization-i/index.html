@@ -175,10 +175,14 @@
           <h2>目录</h2>
           <aside class="table-of-contents"><nav id="TableOfContents">
   <ul>
-    <li><a href="#谓词下推">谓词下推</a></li>
-    <li><a href="#投影下推">投影下推</a></li>
-    <li><a href="#优化-sub-queries">优化 sub-queries</a></li>
-    <li><a href="#其他规则">其他规则</a></li>
+    <li><a href="#关系代数等价">关系代数等价</a>
+      <ul>
+        <li><a href="#谓词下推">谓词下推</a></li>
+        <li><a href="#投影下推">投影下推</a></li>
+        <li><a href="#优化-sub-queries">优化 sub-queries</a></li>
+        <li><a href="#其他规则">其他规则</a></li>
+      </ul>
+    </li>
   </ul>
 </nav></aside>
         </div>
@@ -288,10 +292,10 @@
 <p>基于代价 (Cost-based)：使用成本模型来评估多种等价计划然后选择成本最小的。</p>
 </li>
 </ol>
-<h1 id="关系代数等价">
+<h2 id="关系代数等价">
   关系代数等价
   <a href="#%e5%85%b3%e7%b3%bb%e4%bb%a3%e6%95%b0%e7%ad%89%e4%bb%b7" class="h-anchor" aria-hidden="true">#</a>
-</h1>
+</h2>
 <p>如果两个关系代数表达式 (Relational Algebra Expressions) 如果能产生相同的 tuple 集合，我们就称二者 等价。DBMS 可以通过一些 Heuristics/Rules 来将关系几何表达式转化为成本更低的等价表达式，从而达到查询优化的目的。这些规则通常试用于所有查询，如：</p>
 <p><img src="/images/15445/14-03.png" alt=""></p>
 <ul>
@@ -302,10 +306,10 @@
 <p>投影下推 (Projection Pushdown)</p>
 </li>
 </ul>
-<h2 id="谓词下推">
+<h3 id="谓词下推">
   谓词下推
   <a href="#%e8%b0%93%e8%af%8d%e4%b8%8b%e6%8e%a8" class="h-anchor" aria-hidden="true">#</a>
-</h2>
+</h3>
 <p>Predicate 通常有很高的选择性，可以过滤掉许多无用的数据。将 Predicate 推到查询计划的底部，可以在查询开始时就更多地过滤数据，Predicate 通常有很高的选择性，可以过滤掉许多无用的数据。</p>
 <p><img src="/images/15445/14-04.png" alt=""></p>
 <p>核心思想：</p>
@@ -314,16 +318,16 @@
 <li>重排 predicates，使得选择性大的排前面</li>
 <li>将复杂的 predicate 拆分，然后往下压，如 <code>X=Y AND Y=3</code> 可以修改成 <code>X=3 AND Y=3</code></li>
 </ul>
-<h2 id="投影下推">
+<h3 id="投影下推">
   投影下推
   <a href="#%e6%8a%95%e5%bd%b1%e4%b8%8b%e6%8e%a8" class="h-anchor" aria-hidden="true">#</a>
-</h2>
+</h3>
 <p>投影下推方案对列存储数据库不适用。在行存储数据库中，越早过滤掉不用的字段越好，因此将 Projections 操作往查询计划底部推也能够缩小中间结果占用的空间大小。</p>
 <p><img src="/images/15445/14-05.png" alt=""></p>
-<h2 id="优化-sub-queries">
+<h3 id="优化-sub-queries">
   优化 sub-queries
   <a href="#%e4%bc%98%e5%8c%96-sub-queries" class="h-anchor" aria-hidden="true">#</a>
-</h2>
+</h3>
 <p>DBMS将where子句中的嵌套子查询 (nested sub-queries) 视为接受参数并返回单个值或一组值的函数。</p>
 <p>对于嵌套子查询，有两种优化方法：</p>
 <ol>
@@ -334,10 +338,10 @@
 <li>对于较难的查询，将查询分解为块，然后每次集中处理一个块。将子查询写入临时表，在查询完成后丢弃。</li>
 </ol>
 <p><img src="/images/15445/14-07.png" alt=""></p>
-<h2 id="其他规则">
+<h3 id="其他规则">
   其他规则
   <a href="#%e5%85%b6%e4%bb%96%e8%a7%84%e5%88%99" class="h-anchor" aria-hidden="true">#</a>
-</h2>
+</h3>
 <ol>
 <li>分割连接谓词、用 join 替代笛卡尔积。</li>
 </ol>

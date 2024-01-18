@@ -429,7 +429,7 @@ pre {
 
 blockquote {
   border-left: 4px solid #69b6e4;
-  margin: 40px;
+  margin: 40px 20px;
   padding: 10px 20px;
   background-color: #bedff361 !important; }
   @media (max-width: 684px) {

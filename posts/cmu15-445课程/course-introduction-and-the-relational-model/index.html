@@ -175,14 +175,19 @@
           <h2>目录</h2>
           <aside class="table-of-contents"><nav id="TableOfContents">
   <ul>
-    <li><a href="#select">SELECT</a></li>
-    <li><a href="#projection">PROJECTION</a></li>
-    <li><a href="#union">UNION</a></li>
-    <li><a href="#intersection">INTERSECTION</a></li>
-    <li><a href="#deffrence">DEFFRENCE</a></li>
-    <li><a href="#product">PRODUCT</a></li>
-    <li><a href="#join">JOIN</a></li>
-    <li><a href="#extra-operators">EXTRA OPERATORS</a></li>
+    <li><a href="#关系性数据库提出的背景">关系性数据库提出的背景</a></li>
+    <li><a href="#数据库中的关系代数">数据库中的关系代数</a>
+      <ul>
+        <li><a href="#select">SELECT</a></li>
+        <li><a href="#projection">PROJECTION</a></li>
+        <li><a href="#union">UNION</a></li>
+        <li><a href="#intersection">INTERSECTION</a></li>
+        <li><a href="#deffrence">DEFFRENCE</a></li>
+        <li><a href="#product">PRODUCT</a></li>
+        <li><a href="#join">JOIN</a></li>
+        <li><a href="#extra-operators">EXTRA OPERATORS</a></li>
+      </ul>
+    </li>
   </ul>
 </nav></aside>
         </div>
@@ -230,20 +235,20 @@
 
     <div class="post-content">
 
-      <h1 id="关系性数据库提出的背景">
+      <h2 id="关系性数据库提出的背景">
   关系性数据库提出的背景
   <a href="#%e5%85%b3%e7%b3%bb%e6%80%a7%e6%95%b0%e6%8d%ae%e5%ba%93%e6%8f%90%e5%87%ba%e7%9a%84%e8%83%8c%e6%99%af" class="h-anchor" aria-hidden="true">#</a>
-</h1>
+</h2>
 <p>刚开始是没有数据库这概念的.当数据量比较少时用一个啥txt文本文件就差不多就能搞定了.但数据量稍微多一点时,而且数据保存在不同的文件中.比如啥txt,doc,excel等文件.==此时要处理数据还是手动去查询更改就非常之麻烦==.可能得再整个简单应用程序帮你做些事了.只给你提供一些简单的用户界面.封装背后的一些复杂操作.此时数据的组织和保存还是主要依靠操作系统的文件系统.应用程序只是简化了下用户的操作.当数据量非常多的时候会发现应用程序加文件系统的方式会存在很多明显的缺陷。</p>
 <p>1970年，科德发表题为“大型共享数据库的关系模型”的论文，文中首次提出了数据库的关系模型。由于关系模型简单明了、具有坚实的数学理论基础，所以一经推出就受到了学术界和产业界的高度重视和广泛响应，并很快成为数据库市场的主流。20世纪80年代以来，计算机厂商推出的数据库管理系统几乎都支持关系模型，数据库领域当前的研究工作大都以关系模型为基础。</p>
-<h1 id="数据库中的关系代数">
+<h2 id="数据库中的关系代数">
   数据库中的关系代数
   <a href="#%e6%95%b0%e6%8d%ae%e5%ba%93%e4%b8%ad%e7%9a%84%e5%85%b3%e7%b3%bb%e4%bb%a3%e6%95%b0" class="h-anchor" aria-hidden="true">#</a>
-</h1>
-<h2 id="select">
+</h2>
+<h3 id="select">
   SELECT
   <a href="#select" class="h-anchor" aria-hidden="true">#</a>
-</h2>
+</h3>
 <p><img src="/images/15445/01-01.png" alt="σ.png"></p>
 <p>从满足选择条件的关系中选择一个元组(tuples)的子集。</p>
 <p>→ 充当过滤器，仅保留满足选择条件要求的元组。</p>
@@ -252,10 +257,10 @@
 </span></span></code></pre></div><p><img src="/images/15445/01-02.png" alt="s1.png"></p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-tex" data-lang="tex"><span style="display:flex;"><span>σ_{a<span style="color:#66d9ef">\_</span>id = &#39;a2&#39;}(R)
 </span></span></code></pre></div><p><img src="/images/15445/01-03.png" alt="s2.png"></p>
-<h2 id="projection">
+<h3 id="projection">
   PROJECTION
   <a href="#projection" class="h-anchor" aria-hidden="true">#</a>
-</h2>
+</h3>
 <p><img src="/images/15445/01-04.png" alt="pai.png"></p>
 <p>用仅包含指定属性的元组生成一个关系。</p>
 <p>→ 可以重新排列属性的顺序。</p>
@@ -264,60 +269,60 @@
 </span></span></code></pre></div><p><img src="/images/15445/01-02.png" alt="s1.png"></p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-tex" data-lang="tex"><span style="display:flex;"><span><span style="color:#66d9ef">\Pi</span>_{b<span style="color:#66d9ef">\_</span>id - 100 , a<span style="color:#66d9ef">\_</span>id}(<span style="color:#66d9ef">\sigma</span> _ {a<span style="color:#66d9ef">\_</span>id = &#39;a2&#39;}(R))
 </span></span></code></pre></div><p><img src="/images/15445/01-05.png" alt="s3.png"></p>
-<h2 id="union">
+<h3 id="union">
   UNION
   <a href="#union" class="h-anchor" aria-hidden="true">#</a>
-</h2>
+</h3>
 <p><img src="/images/15445/01-06.png" alt="U.png"></p>
 <p>生成一个包含只在一个或两个输入关系中出现过的关系。</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-tex" data-lang="tex"><span style="display:flex;"><span>R(a<span style="color:#66d9ef">\_</span>id , b<span style="color:#66d9ef">\_</span>id)  <span style="color:#66d9ef">\ \ \ \ \ \ \ \ \ \ \ \ \ </span> <span style="color:#66d9ef">\ \ \ </span>S(a<span style="color:#66d9ef">\_</span>id , b<span style="color:#66d9ef">\_</span>id)
 </span></span></code></pre></div><p><img src="/images/15445/01-07.png" alt="s4.png"></p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-tex" data-lang="tex"><span style="display:flex;"><span>(R<span style="color:#66d9ef">\ \cup</span> <span style="color:#66d9ef">\ </span>S)
 </span></span></code></pre></div><p><img src="/images/15445/01-08.png" alt="s5.png"></p>
-<h2 id="intersection">
+<h3 id="intersection">
   INTERSECTION
   <a href="#intersection" class="h-anchor" aria-hidden="true">#</a>
-</h2>
+</h3>
 <p><img src="/images/15445/01-09.png" alt="n.png"></p>
 <p>生成仅包含在两个关系中都出现的元组的关系。</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-tex" data-lang="tex"><span style="display:flex;"><span>R(a<span style="color:#66d9ef">\_</span>id , b<span style="color:#66d9ef">\_</span>id)  <span style="color:#66d9ef">\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ </span>S(a<span style="color:#66d9ef">\_</span>id , b<span style="color:#66d9ef">\_</span>id)
 </span></span></code></pre></div><p><img src="/images/15445/01-07.png" alt="s4.png"></p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-tex" data-lang="tex"><span style="display:flex;"><span>(R<span style="color:#66d9ef">\ \cap</span> <span style="color:#66d9ef">\ </span>S)
 </span></span></code></pre></div><p><img src="/images/15445/01-10.png" alt="s9.png"></p>
-<h2 id="deffrence">
+<h3 id="deffrence">
   DEFFRENCE
   <a href="#deffrence" class="h-anchor" aria-hidden="true">#</a>
-</h2>
+</h3>
 <p><img src="/images/15445/01-11.png" alt="-.png"></p>
 <p>生成一个由仅在第一个关系而未在第二个关系中出现的关系。</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-tex" data-lang="tex"><span style="display:flex;"><span>R(a<span style="color:#66d9ef">\_</span>id , b<span style="color:#66d9ef">\_</span>id)  <span style="color:#66d9ef">\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ </span>S(a<span style="color:#66d9ef">\_</span>id , b<span style="color:#66d9ef">\_</span>id)
 </span></span></code></pre></div><p><img src="/images/15445/01-07.png" alt="s4.png"></p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-tex" data-lang="tex"><span style="display:flex;"><span>(R<span style="color:#66d9ef">\ </span>- <span style="color:#66d9ef">\ </span>S)
 </span></span></code></pre></div><p><img src="/images/15445/01-12.png" alt="s7.png"></p>
-<h2 id="product">
+<h3 id="product">
   PRODUCT
   <a href="#product" class="h-anchor" aria-hidden="true">#</a>
-</h2>
+</h3>
 <p><img src="/images/15445/01-13.png" alt="×.png"></p>
 <p>笛卡尔积，生成所有可能的组合。</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-tex" data-lang="tex"><span style="display:flex;"><span>R(a<span style="color:#66d9ef">\_</span>id , b<span style="color:#66d9ef">\_</span>id)  <span style="color:#66d9ef">\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ </span>S(a<span style="color:#66d9ef">\_</span>id , b<span style="color:#66d9ef">\_</span>id)
 </span></span></code></pre></div><p><img src="/images/15445/01-07.png" alt="s4.png"></p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-tex" data-lang="tex"><span style="display:flex;"><span>(R<span style="color:#66d9ef">\ </span>× <span style="color:#66d9ef">\ </span>S)
 </span></span></code></pre></div><p><img src="/images/15445/01-14.png" alt="s8.png"></p>
-<h2 id="join">
+<h3 id="join">
   JOIN
   <a href="#join" class="h-anchor" aria-hidden="true">#</a>
-</h2>
+</h3>
 <p><img src="/images/15445/01-15.png" alt="自然连接.png"></p>
 <p>从两个关系的笛卡尔积中选取属性间都存在的元组。</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-tex" data-lang="tex"><span style="display:flex;"><span>R(a<span style="color:#66d9ef">\_</span>id , b<span style="color:#66d9ef">\_</span>id)  <span style="color:#66d9ef">\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ </span>S(a<span style="color:#66d9ef">\_</span>id , b<span style="color:#66d9ef">\_</span>id)
 </span></span></code></pre></div><p><img src="/images/15445/01-07.png" alt="s4.png"></p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-tex" data-lang="tex"><span style="display:flex;"><span>(R<span style="color:#66d9ef">\ \bowtie</span> <span style="color:#66d9ef">\ </span>S)
 </span></span></code></pre></div><p><img src="/images/15445/01-10.png" alt="s9.png"></p>
-<h2 id="extra-operators">
+<h3 id="extra-operators">
   EXTRA OPERATORS
   <a href="#extra-operators" class="h-anchor" aria-hidden="true">#</a>
-</h2>
+</h3>
 <ul>
 <li>Rename(ρ)</li>
 <li>Assignment(R←S)</li>

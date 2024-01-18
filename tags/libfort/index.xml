@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>libfort on 余为民同志|做一个优秀的普通人，在热爱中燃烧！</title>
+    
+    
+    
+    <link>https://yuyang.run/tags/libfort/</link>
+    <description>Recent content in libfort on 余为民同志|做一个优秀的普通人，在热爱中燃烧！</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <managingEditor>744727849@qq.com (YuYang)</managingEditor>
+    <webMaster>744727849@qq.com (YuYang)</webMaster>
+    <lastBuildDate>Thu, 18 Jan 2024 09:35:13 +0800</lastBuildDate>
+    
+	<atom:link href="https://yuyang.run/tags/libfort/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>libfort中文教程-翻译</title>
+      <link>https://yuyang.run/posts/%E5%B7%A5%E5%85%B7%E5%BA%93/libfort%E4%B8%AD%E6%96%87%E6%95%99%E7%A8%8B/</link>
+      <pubDate>Thu, 18 Jan 2024 09:35:13 +0800</pubDate>
+      <author>744727849@qq.com (YuYang)</author>
+      <guid>https://yuyang.run/posts/%E5%B7%A5%E5%85%B7%E5%BA%93/libfort%E4%B8%AD%E6%96%87%E6%95%99%E7%A8%8B/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          表格的生命周期 # libfort表生命周期： 创建一个表（使用默认构造函数、复制构造函数或移动构造函数）； 用数据填充它（运算符&amp;laquo;，运算符[],write_ln&amp;hellip;）； 修改基本表外观； 将表转换为字符串表示（to_string）并打印出来。 在表生存期中分配的所有资源将在析构函数中自动
+          
+        
+        </description>
+    </item>
+    
+  </channel>
+</rss>

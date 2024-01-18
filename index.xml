@@ -11,10 +11,49 @@
     <language>en</language>
     <managingEditor>744727849@qq.com (YuYang)</managingEditor>
     <webMaster>744727849@qq.com (YuYang)</webMaster>
-    <lastBuildDate>Wed, 27 Dec 2023 20:40:00 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 18 Jan 2024 09:35:13 +0800</lastBuildDate>
     
 	<atom:link href="https://yuyang.run/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>libfort中文教程-翻译</title>
+      <link>https://yuyang.run/posts/%E5%B7%A5%E5%85%B7%E5%BA%93/libfort%E4%B8%AD%E6%96%87%E6%95%99%E7%A8%8B/</link>
+      <pubDate>Thu, 18 Jan 2024 09:35:13 +0800</pubDate>
+      <author>744727849@qq.com (YuYang)</author>
+      <guid>https://yuyang.run/posts/%E5%B7%A5%E5%85%B7%E5%BA%93/libfort%E4%B8%AD%E6%96%87%E6%95%99%E7%A8%8B/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          表格的生命周期 # libfort表生命周期： 创建一个表（使用默认构造函数、复制构造函数或移动构造函数）； 用数据填充它（运算符&amp;laquo;，运算符[],write_ln&amp;hellip;）； 修改基本表外观； 将表转换为字符串表示（to_string）并打印出来。 在表生存期中分配的所有资源将在析构函数中自动
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>BusTub中使用的三方件-linenoise</title>
+      <link>https://yuyang.run/posts/cmu15-445%E5%AE%9E%E9%AA%8C/bustub%E4%B8%AD%E4%BD%BF%E7%94%A8%E7%9A%84%E4%B8%89%E6%96%B9%E4%BB%B6-linenoise/</link>
+      <pubDate>Wed, 17 Jan 2024 16:13:11 +0800</pubDate>
+      <author>744727849@qq.com (YuYang)</author>
+      <guid>https://yuyang.run/posts/cmu15-445%E5%AE%9E%E9%AA%8C/bustub%E4%B8%AD%E4%BD%BF%E7%94%A8%E7%9A%84%E4%B8%89%E6%96%B9%E4%BB%B6-linenoise/</guid>
+      <description>
+        
+          &lt;img src=&#34;https://yuyang.run/cover/database.png&#34;/&gt;
+          
+        
+        
+        
+          Linenoise是可以完全代替readline的，非常轻量级的命令行处理工具。Redis，MongoDB和Android都将Linenoise作为命令行解析工具。 🔗项目地址：https://github.com/antirez/linenoise 入手 # 一下就是一个简单的入门程序： #include &amp;lt;cstdio&amp;gt; #include &amp;lt;cstdlib&amp;gt; #include &amp;#34;linenoise/linenoise.h&amp;#34; int main() {
+          
+        
+        </description>
+    </item>
     
     <item>
       <title>Lab2 Hash Index</title>
@@ -29,7 +68,7 @@
         
         
         
-          在fall2019的版本中需要实现的hash table的测试代码(hash_table_page_test.cpp、hash_table_test.cpp)已经被注释掉了，所以这里实现的是fall2023版本中的可扩展哈希。 这里引用此前笔记中的内容，展示可扩展哈希的查询、新增、删除的过程： 结构： 查找
+          在fall2019的版本中需要实现的hash table的测试代码(hash_table_page_test.cpp、hash_table_test.cpp)已经被注释掉了，所以这里实现的是fall2023版本中的可扩展哈希。引用此前笔记中的内容，展示可扩展哈希的结构： 但是在该项目实现中，需要还有一个
           
         
         </description>
@@ -68,7 +107,7 @@
         
         
         
-          下载并安装CentOS7.6：https://mirrors.aliyun.com/centos-vault/7.6.1810。这里选择的是CentOS-7-x86_64-DVD-1810.iso，避免其他版本出现缺失软件的情况。 下载编译工具：https://gitee.com/opengauss/
+          下载并安装CentOS7.6：https://mirrors.aliyun.com/centos-vault/7.6.1810 。这里选择的是CentOS-7-x86_64-DVD-1810.iso，避免其他版本出现缺失软件的情况。 下载编译工具：https://gitee.com/opengauss/
           
         
         </description>
@@ -471,7 +510,7 @@
         
         
         
-          教育经历 # 2017.9-2021.6 武汉理工大学 信息工程学院 本科 工作经历 # 2020.7-2020.12 青藤云安全 青藤蜂巢·云原生安全平台 助理工程师 2021.7-2023.11 华为技术有限公司 通用软件开发工程师 2023.11-至今 华为云计算有限公司 数据库开发工程师 联系方式 # QQ：744727849 BiliBili：余为民同志
+          教育经历 # 2017.9-2021.6 武汉理工大学 信息工程学院 本科 担任2届电子科技协会会长 录制制作了STM32系列视频(CubeMX&amp;#43;MDK5&amp;#43;HAL库&amp;#43;库函数一站式学习) ，当前已有55万播放量。 工作经历 # 2020.7-2020.12 青藤云安全 青藤蜂巢·云原生安全平台 助理工程师 2021.7-2023.11 华为技术有限公司 通用软件开发工程师 2023.11
           
         
         </description>

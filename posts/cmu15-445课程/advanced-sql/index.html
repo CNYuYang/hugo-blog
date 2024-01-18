@@ -175,43 +175,51 @@
           <h2>目录</h2>
           <aside class="table-of-contents"><nav id="TableOfContents">
   <ul>
-    <li><a href="#聚合之外的其他列的输出未定义">聚合之外的其他列的输出未定义</a></li>
-  </ul>
-
-  <ul>
-    <li><a href="#错误">错误</a></li>
-    <li><a href="#正确">正确</a></li>
-  </ul>
-
-  <ul>
-    <li><a href="#字符串匹配">字符串匹配</a></li>
-    <li><a href="#字符串拼接">字符串拼接</a>
+    <li><a href="#sql的历史">SQL的历史</a></li>
+    <li><a href="#该笔记所用到的数据库模型">该笔记所用到的数据库模型</a></li>
+    <li><a href="#聚合函数">聚合函数</a>
       <ul>
-        <li><a href="#sql-92">SQL-92</a></li>
-        <li><a href="#mssql">MSSQL</a></li>
-        <li><a href="#mysql">MySQL</a></li>
+        <li><a href="#聚合之外的其他列的输出未定义">聚合之外的其他列的输出未定义</a></li>
       </ul>
     </li>
-  </ul>
-
-  <ul>
-    <li><a href="#sql-92-1">SQL-92</a></li>
-    <li><a href="#mysql-1">MYSQL</a></li>
-  </ul>
-
-  <ul>
-    <li><a href="#order-by-column-ascdesc">ORDER BY &lt;column*&gt; [ASC|DESC]</a></li>
-    <li><a href="#limit-count-offset">LIMIT &lt;count&gt; [offset]</a></li>
-  </ul>
-
-  <ul>
-    <li><a href="#操作符">操作符</a></li>
-  </ul>
-
-  <ul>
-    <li><a href="#汇总功能">汇总功能</a></li>
-    <li><a href="#特殊功能">特殊功能</a></li>
-    <li><a href="#over">OVER</a></li>
+    <li><a href="#group-by">GROUP BY</a></li>
+    <li><a href="#having">HAVING</a>
+      <ul>
+        <li><a href="#错误">错误</a></li>
+        <li><a href="#正确">正确</a></li>
+      </ul>
+    </li>
+    <li><a href="#字符串操作">字符串操作</a>
+      <ul>
+        <li><a href="#字符串匹配">字符串匹配</a></li>
+        <li><a href="#字符串拼接">字符串拼接</a></li>
+      </ul>
+    </li>
+    <li><a href="#输出重定向">输出重定向</a>
+      <ul>
+        <li><a href="#sql-92-1">SQL-92</a></li>
+        <li><a href="#mysql-1">MYSQL</a></li>
+      </ul>
+    </li>
+    <li><a href="#输出控制">输出控制</a>
+      <ul>
+        <li><a href="#order-by-column-ascdesc">ORDER BY &lt;column*&gt; [ASC|DESC]</a></li>
+        <li><a href="#limit-count-offset">LIMIT &lt;count&gt; [offset]</a></li>
+      </ul>
+    </li>
+    <li><a href="#嵌套查询">嵌套查询</a>
+      <ul>
+        <li><a href="#操作符">操作符</a></li>
+      </ul>
+    </li>
+    <li><a href="#窗口函数">窗口函数</a>
+      <ul>
+        <li><a href="#汇总功能">汇总功能</a></li>
+        <li><a href="#特殊功能">特殊功能</a></li>
+        <li><a href="#over">OVER</a></li>
+      </ul>
+    </li>
+    <li><a href="#common-table-expressions">COMMON TABLE EXPRESSIONS</a></li>
   </ul>
 </nav></aside>
         </div>
@@ -259,10 +267,10 @@
 
     <div class="post-content">
 
-      <h1 id="sql的历史">
+      <h2 id="sql的历史">
   SQL的历史
   <a href="#sql%e7%9a%84%e5%8e%86%e5%8f%b2" class="h-anchor" aria-hidden="true">#</a>
-</h1>
+</h2>
 <p>最新的SQL规范：2016</p>
 <p>→ SQL:2016 → JSON, Polymorphic tables</p>
 <p>→ SQL:2011 → Temporal DBs, Pipelined DML</p>
@@ -270,16 +278,17 @@
 <p>→ SQL:2003 → XML, windows, sequences, auto-gen IDs.</p>
 <p>→ SQL:1999 → Regex, triggers, OO</p>
 <p>大部分的DBMS都至少遵守<code>SQL-92</code>，因为制定SQL标准的人都来自各大SQL公司，都将自己公司产品的相关特性指定进去，慢慢的就没公司遵守。</p>
-<p>各大数据库的详细对比：<a href="http://troels.arvin.dk/db/rdbms/">http://troels.arvin.dk/db/rdbms/</a></p>
-<h1 id="该笔记所用到的数据库模型">
+<p>各大数据库的详细对比：<a href="http://troels.arvin.dk/db/rdbms/" target="_blank">http://troels.arvin.dk/db/rdbms/</a>
+</p>
+<h2 id="该笔记所用到的数据库模型">
   该笔记所用到的数据库模型
   <a href="#%e8%af%a5%e7%ac%94%e8%ae%b0%e6%89%80%e7%94%a8%e5%88%b0%e7%9a%84%e6%95%b0%e6%8d%ae%e5%ba%93%e6%a8%a1%e5%9e%8b" class="h-anchor" aria-hidden="true">#</a>
-</h1>
+</h2>
 <p><img src="/images/15445/02-01.png" alt="02-01.png"></p>
-<h1 id="聚合函数">
+<h2 id="聚合函数">
   聚合函数
   <a href="#%e8%81%9a%e5%90%88%e5%87%bd%e6%95%b0" class="h-anchor" aria-hidden="true">#</a>
-</h1>
+</h2>
 <p>从一堆元组返回单个值得函数：</p>
 <p>→ <code>AVG(col)</code>→ 返回所有值得平均值</p>
 <p>→ <code>MIN(col)</code>→ 返回最小得行值</p>
@@ -294,42 +303,42 @@
 <p>或</p>
 <p><code>SELECT COUNT(1) AS cnt FROM student WHERE login LIKE '%@cs'</code></p>
 <p>?&gt;<code>COUNT</code> ,<code>SUM</code>, <code>AVG</code>支持DISTINCT</p>
-<h2 id="聚合之外的其他列的输出未定义">
+<h3 id="聚合之外的其他列的输出未定义">
   聚合之外的其他列的输出未定义
   <a href="#%e8%81%9a%e5%90%88%e4%b9%8b%e5%a4%96%e7%9a%84%e5%85%b6%e4%bb%96%e5%88%97%e7%9a%84%e8%be%93%e5%87%ba%e6%9c%aa%e5%ae%9a%e4%b9%89" class="h-anchor" aria-hidden="true">#</a>
-</h2>
+</h3>
 <p>获取每门课的平均GPA:</p>
 <p>SELECT AVG(s.gpa), <code>e.cid</code> FROM enrolled AS e ,student AS s WHERE e.sid = s.sid</p>
 <p><img src="/images/15445/02-02.png" alt="02-02.png"></p>
-<h1 id="group-by">
+<h2 id="group-by">
   GROUP BY
   <a href="#group-by" class="h-anchor" aria-hidden="true">#</a>
-</h1>
+</h2>
 <p>将元组投影到子集中并针对每个子集计算聚合</p>
 <p>SELECT AVG(s.gpa), e.cid FROM enrolled AS e, student AS s WHERE e.sid = s.sid <code>GROUP BY</code> e.cid</p>
 <p><img src="/images/15445/02-03.png" alt="02-03.png"></p>
 <p>?&gt; SELECT输出子句中的非聚合值必须出现在GROUP BY子句中。
 SELECT AVG(s.gpa), e.cid, <code>s.name</code> FROM enrolled AS e, student AS s WHERE e.sid = s.sid GROUP BY e.cid 中s.name为出现在GROUP BY子句中,故错误。</p>
-<h1 id="having">
+<h2 id="having">
   HAVING
   <a href="#having" class="h-anchor" aria-hidden="true">#</a>
-</h1>
+</h2>
 <p>根据聚合计算过滤结果，就像GROUP BY的WHERE子句。</p>
-<h2 id="错误">
+<h3 id="错误">
   错误
   <a href="#%e9%94%99%e8%af%af" class="h-anchor" aria-hidden="true">#</a>
-</h2>
+</h3>
 <p>SELECT AVG(s.gpa) AS avg_gpa, e.cid FROM enrolled AS e, student AS s WHERE e.sid = s.sid AND <code>avg_gpa &gt; 3.9</code> GROUP BY e.cid</p>
-<h2 id="正确">
+<h3 id="正确">
   正确
   <a href="#%e6%ad%a3%e7%a1%ae" class="h-anchor" aria-hidden="true">#</a>
-</h2>
+</h3>
 <p>SELECT AVG(s.gpa) AS avg_gpa, e.cid FROM enrolled AS e, student AS s WHERE e.sid = s.sid GROUP BY e.cid <code>HAVING avg_gpa &gt; 3.9</code>;</p>
 <p><img src="/images/15445/02-04.png" alt="02-04.png"></p>
-<h1 id="字符串操作">
+<h2 id="字符串操作">
   字符串操作
   <a href="#%e5%ad%97%e7%ac%a6%e4%b8%b2%e6%93%8d%e4%bd%9c" class="h-anchor" aria-hidden="true">#</a>
-</h1>
+</h2>
 <table>
 <thead>
 <tr>
@@ -371,92 +380,92 @@ SELECT AVG(s.gpa), e.cid, <code>s.name</code> FROM enrolled AS e, student AS s W
 </tr>
 </tbody>
 </table>
-<h2 id="字符串匹配">
+<h3 id="字符串匹配">
   字符串匹配
   <a href="#%e5%ad%97%e7%ac%a6%e4%b8%b2%e5%8c%b9%e9%85%8d" class="h-anchor" aria-hidden="true">#</a>
-</h2>
+</h3>
 <p><code>LIKE</code>用于字符串匹配。</p>
 <p>字符串匹配运算符:</p>
 <p><code>→ '%'</code> 匹配任意长度的字符串（包括空字符串）</p>
 <p><code>→ '_'</code> 仅仅匹配一个字符</p>
-<h2 id="字符串拼接">
+<h3 id="字符串拼接">
   字符串拼接
   <a href="#%e5%ad%97%e7%ac%a6%e4%b8%b2%e6%8b%bc%e6%8e%a5" class="h-anchor" aria-hidden="true">#</a>
-</h2>
+</h3>
 <p>SQL标准说要使用 <code>||</code> 将两个或多个字符串连接在一起</p>
-<h3 id="sql-92">
+<h4 id="sql-92">
   SQL-92
   <a href="#sql-92" class="h-anchor" aria-hidden="true">#</a>
-</h3>
+</h4>
 <p>SELECT name FROM student WHERE login = LOWER(name) <code>||</code> &lsquo;@cs&rsquo;</p>
-<h3 id="mssql">
+<h4 id="mssql">
   MSSQL
   <a href="#mssql" class="h-anchor" aria-hidden="true">#</a>
-</h3>
+</h4>
 <p>SELECT name FROM student WHERE login = LOWER(name)  <code>+</code>  &lsquo;@cs&rsquo;</p>
-<h3 id="mysql">
+<h4 id="mysql">
   MySQL
   <a href="#mysql" class="h-anchor" aria-hidden="true">#</a>
-</h3>
+</h4>
 <p>SELECT name FROM student  WHERE login = <code>CONCAT</code>(LOWER(name), &lsquo;@cs&rsquo;)</p>
-<h1 id="输出重定向">
+<h2 id="输出重定向">
   输出重定向
   <a href="#%e8%be%93%e5%87%ba%e9%87%8d%e5%ae%9a%e5%90%91" class="h-anchor" aria-hidden="true">#</a>
-</h1>
+</h2>
 <p>将查询结果存储在另一个表中：</p>
 <p>→尚未定义表</p>
 <p>→已存在的表格，且具有相同的列数</p>
-<h2 id="sql-92-1">
+<h3 id="sql-92-1">
   SQL-92
   <a href="#sql-92-1" class="h-anchor" aria-hidden="true">#</a>
-</h2>
+</h3>
 <p>SELECT DISTINCT cid <code>INTO</code> CourseIds FROM enrolled;</p>
-<h2 id="mysql-1">
+<h3 id="mysql-1">
   MYSQL
   <a href="#mysql-1" class="h-anchor" aria-hidden="true">#</a>
-</h2>
+</h3>
 <p>CREATE TABLE CourseIds ( SELECT DISTINCT cid FROM enrolled);</p>
-<h1 id="输出控制">
+<h2 id="输出控制">
   输出控制
   <a href="#%e8%be%93%e5%87%ba%e6%8e%a7%e5%88%b6" class="h-anchor" aria-hidden="true">#</a>
-</h1>
-<h2 id="order-by-column-ascdesc">
+</h2>
+<h3 id="order-by-column-ascdesc">
   ORDER BY &lt;column*&gt; [ASC|DESC]
   <a href="#order-by-column-ascdesc" class="h-anchor" aria-hidden="true">#</a>
-</h2>
+</h3>
 <p>通过一个或多个列中的值对输出元组进行排序。</p>
 <p>SELECT sid, grade FROM enrolled WHERE cid = &lsquo;15-721&rsquo; <code>ORDER BY grade</code></p>
 <p>SELECT sid FROM enrolled WHERE cid = &lsquo;15-721&rsquo; <code>ORDER BY grade DESC, sid ASC</code></p>
-<h2 id="limit-count-offset">
+<h3 id="limit-count-offset">
   LIMIT &lt;count&gt; [offset]
   <a href="#limit-count-offset" class="h-anchor" aria-hidden="true">#</a>
-</h2>
+</h3>
 <p>→ 限制输出元组的数量
 → 可以设置一个偏移</p>
 <p>SELECT sid, name FROM student WHERE login LIKE &lsquo;%@cs&rsquo; <code>LIMIT 10  </code></p>
 <p>SELECT sid, name FROM student WHERE login LIKE &lsquo;%@cs&rsquo; <code>LIMIT 20 OFFSET 10  </code></p>
-<h1 id="嵌套查询">
+<h2 id="嵌套查询">
   嵌套查询
   <a href="#%e5%b5%8c%e5%a5%97%e6%9f%a5%e8%af%a2" class="h-anchor" aria-hidden="true">#</a>
-</h1>
+</h2>
 <p>包含其他查询的查询通常难以优化，内部查询可以（几乎）出现在查询中的任何位置。</p>
 <p><img src="/images/15445/02-05.png" alt="02-05.png"></p>
 <p>获取14-445中所有学生的名字：</p>
 <p><code>STEP1</code> SELECT name FROM student WHERE &hellip;  <em>&hellip;为选择14-445这门课学生的sid的集合</em></p>
 <p><code>STEP2</code> &hellip; → SELECT sid FROM enrolled WHERE cid = &lsquo;15-445&rsquo;</p>
 <p><code>STEP3</code> SELECT name FROM student WHERE <code>sid IN ( SELECT sid FROM enrolled WHERE cid )</code></p>
-<h2 id="操作符">
+<h3 id="操作符">
   操作符
   <a href="#%e6%93%8d%e4%bd%9c%e7%ac%a6" class="h-anchor" aria-hidden="true">#</a>
-</h2>
+</h3>
 <p><code>ALL</code>→ 必须满足子查询中所有行的表达式</p>
 <p><code>ANY</code>→ 在子查询中必须满足至少一行的表达式。</p>
 <p><code>IN</code>→ 类似于 &lsquo;=ANY()&rsquo; .</p>
 <p><code>EXISTS</code>→ 至少返回一行</p>
-<h1 id="窗口函数">
+<h2 id="窗口函数">
   窗口函数
   <a href="#%e7%aa%97%e5%8f%a3%e5%87%bd%e6%95%b0" class="h-anchor" aria-hidden="true">#</a>
-</h1>
+</h2>
 <p>对一组相关的元组执行“滑动”计算。</p>
 <p>像聚合一样，但元组不会分组为单个输出元组。</p>
 <blockquote>
@@ -464,28 +473,28 @@ SELECT AVG(s.gpa), e.cid, <code>s.name</code> FROM enrolled AS e, student AS s W
 <p><code>FUNC-NAME</code> : 汇总功能 、特殊功能</p>
 <p><code>OVER </code>: 切分数据</p>
 </blockquote>
-<h2 id="汇总功能">
+<h3 id="汇总功能">
   汇总功能
   <a href="#%e6%b1%87%e6%80%bb%e5%8a%9f%e8%83%bd" class="h-anchor" aria-hidden="true">#</a>
-</h2>
+</h3>
 <p>我们之前讨论的任何内容</p>
-<h2 id="特殊功能">
+<h3 id="特殊功能">
   特殊功能
   <a href="#%e7%89%b9%e6%ae%8a%e5%8a%9f%e8%83%bd" class="h-anchor" aria-hidden="true">#</a>
-</h2>
+</h3>
 <p><code>→ ROW_NUMBER()</code>→ ROW_NUMBER()函数作用就是将select查询到的数据进行排序，每一条数据加一个序号，它不能用做于学生成绩的排名，一般多用于分页查询， 比如查询前10个 查询10-100个学生。</p>
 <p><code>→ RANK()</code>→ RANK()函数，顾名思义排名函数，可以对某一个字段进行排名，这里为什么和ROW_NUMBER()不一样那，ROW_NUMBER()是排序，当存在相同成绩的学生时，ROW_NUMBER()会依次进行排序，他们序号不同，而Rank()则不一样出现相同的，他们的排名是一样的。</p>
-<h2 id="over">
+<h3 id="over">
   OVER
   <a href="#over" class="h-anchor" aria-hidden="true">#</a>
-</h2>
+</h3>
 <p>OVER关键字指定在计算窗口函数时如何将元组组合在一起。 使用PARTITION BY指定组</p>
 <p>SELECT cid, sid, <code>ROW_NUMBER() OVER (PARTITION BY cid) </code>FROM enrolled ORDER BY cid</p>
 <p><img src="/images/15445/02-06.png" alt="02-06.png"></p>
-<h1 id="common-table-expressions">
+<h2 id="common-table-expressions">
   COMMON TABLE EXPRESSIONS
   <a href="#common-table-expressions" class="h-anchor" aria-hidden="true">#</a>
-</h1>
+</h2>
 <p>提供一种编写用于较大查询的辅助语句的方法。</p>
 <p>→可以将其视为仅用于一个查询的临时表。 嵌套查询和视图的替代方法。</p>
 <p><code>WITH</code> cteName<code> AS</code> ( SELECT 1 ) SELECT * FROM cteName</p>

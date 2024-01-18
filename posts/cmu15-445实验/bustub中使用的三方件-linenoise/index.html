@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+      <title>
+        BusTub中使用的三方件-linenoise ::
+        余为民同志|做一个优秀的普通人，在热爱中燃烧！
+      </title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta
+  name="description"
+  content="Linenoise是可以完全代替readline的，非常轻量级的命令行处理工具。Redis，MongoDB和Android都将Linenoise作为命令行解析工具。 🔗项目地址：https://github.com/antirez/linenoise 入手 # 一下就是一个简单的入门程序： #include &amp;lt;cstdio&amp;gt; #include &amp;lt;cstdlib&amp;gt; #include &amp;#34;linenoise/linenoise.h&amp;#34; int main() {"
+/>
+<meta
+  name="keywords"
+  content=""
+/>
+<meta name="robots" content="noodp" />
+<link rel="canonical" href="https://yuyang.run/posts/cmu15-445%E5%AE%9E%E9%AA%8C/bustub%E4%B8%AD%E4%BD%BF%E7%94%A8%E7%9A%84%E4%B8%89%E6%96%B9%E4%BB%B6-linenoise/" />
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/style.css" />
+
+<link rel="stylesheet" href="https://yuyang.run/style.css" />
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://yuyang.run/img/apple-touch-icon-144-precomposed.png" />
+<link rel="shortcut icon" href="https://yuyang.run/img/favicon.png" />
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="BusTub中使用的三方件-linenoise"/>
+<meta name="twitter:description" content="Linenoise是可以完全代替readline的，非常轻量级的命令行处理工具。Redis，MongoDB和Android都将Linenoise作为命令行解析工具。 🔗项目地址：https://github.com/antirez/linenoise 入手 # 一下就是一个简单的入门程序： #include &lt;cstdio&gt; #include &lt;cstdlib&gt; #include &#34;linenoise/linenoise.h&#34; int main() {"/>
+
+
+
+<meta property="og:title" content="BusTub中使用的三方件-linenoise" />
+<meta property="og:description" content="Linenoise是可以完全代替readline的，非常轻量级的命令行处理工具。Redis，MongoDB和Android都将Linenoise作为命令行解析工具。 🔗项目地址：https://github.com/antirez/linenoise 入手 # 一下就是一个简单的入门程序： #include &lt;cstdio&gt; #include &lt;cstdlib&gt; #include &#34;linenoise/linenoise.h&#34; int main() {" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yuyang.run/posts/cmu15-445%E5%AE%9E%E9%AA%8C/bustub%E4%B8%AD%E4%BD%BF%E7%94%A8%E7%9A%84%E4%B8%89%E6%96%B9%E4%BB%B6-linenoise/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2024-01-17T16:13:11+08:00" />
+<meta property="article:modified_time" content="2024-01-17T16:13:11+08:00" />
+
+
+
+
+
+
+
+
+  </head>
+  <body class="light-theme">
+    <div class="container">
+      <header class="header">
+  <span class="header__inner">
+    <a
+  href="https://yuyang.run"
+  class="logo"
+  style="text-decoration: none;"
+>
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367" />
+</svg>
+</span>
+    <span class="logo__text"
+      >余为民同志</span
+    >
+    <span class="logo__cursor"></span>
+  
+</a>
+
+    <span class="header__right">
+      
+        <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/posts/">文章</a></li>
+        
+      
+        
+          <li><a href="/tags/">标签</a></li>
+        
+      
+        
+          <li><a href="/categories/">分类</a></li>
+        
+      
+        
+          <li><a href="https://geekbang.yuyang.run">极客帮</a></li>
+        
+      
+        
+          <li><a href="/about/">关于我</a></li>
+        
+      
+      
+      
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/posts/">文章</a></li>
+      
+    
+      
+        <li><a href="/tags/">标签</a></li>
+      
+    
+      
+        <li><a href="/categories/">分类</a></li>
+      
+    
+      
+        <li><a href="https://geekbang.yuyang.run">极客帮</a></li>
+      
+    
+      
+        <li><a href="/about/">关于我</a></li>
+      
+    
+  </ul>
+</nav>
+
+        <span class="menu-trigger">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none" />
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" />
+          </svg>
+        </span>
+      
+      <span class="theme-toggle">
+        <svg
+  class="theme-toggler"
+  width="24"
+  height="24"
+  viewBox="0 0 48 48"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <path
+    d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"
+  />
+</svg>
+
+      </span>
+    </span>
+  </span>
+</header>
+
+
+      <div class="content">
+        
+  
+  
+
+  <article class="post">
+    
+    
+        <div style="position: fixed; right:10px; overflow:auto; top: 100px; width: 22%; bottom:50px">
+          <h2>目录</h2>
+          <aside class="table-of-contents"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#入手">入手</a></li>
+    <li><a href="#彩色提示符">彩色提示符</a>
+      <ul>
+        <li><a href="#param可选配置">Param可选配置</a></li>
+        <li><a href="#linenoise中使用">linenoise中使用</a></li>
+      </ul>
+    </li>
+    <li><a href="#自动补全">自动补全</a></li>
+    <li><a href="#命令提示">命令提示</a></li>
+    <li><a href="#清屏">清屏</a></li>
+    <li><a href="#单行or多行编辑">单行or多行编辑</a></li>
+    <li><a href="#命令历史">命令历史</a></li>
+    <li><a href="#bustub中的使用">BusTub中的使用</a></li>
+  </ul>
+</nav></aside>
+        </div>
+      
+    
+    <div class="in-article">
+      
+        <figure class="post-cover">
+  
+    <img src="https://yuyang.run/cover/database.png" alt="BusTub中使用的三方件-linenoise"/>
+  
+
+  
+</figure>
+
+      
+    </div>
+    <h1 class="post-title">BusTub中使用的三方件-linenoise</h1>
+    <div class="post-meta">
+      
+        <time class="post-date">
+          2024-01-17 16:13:11
+        </time>
+
+        
+          
+        
+      
+
+      
+
+
+      
+    </div>
+
+    
+      <span class="post-tags">
+        
+          <a href="https://yuyang.run/tags/cmu15-445/">#CMU15-445</a>&nbsp;
+        
+          <a href="https://yuyang.run/tags/sql/">#SQL</a>&nbsp;
+        
+      </span>
+    
+
+    <div class="post-content">
+
+      <p>Linenoise是可以完全代替readline的，非常轻量级的命令行处理工具。Redis，MongoDB和Android都将Linenoise作为命令行解析工具。</p>
+<p>🔗项目地址：<a href="https://github.com/antirez/linenoise" target="_blank">https://github.com/antirez/linenoise</a>
+</p>
+<h2 id="入手">
+  入手
+  <a href="#%e5%85%a5%e6%89%8b" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p>一下就是一个简单的入门程序：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;cstdio&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;cstdlib&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&#34;linenoise/linenoise.h&#34;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>line <span style="color:#f92672">=</span> NULL;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">while</span> ((line <span style="color:#f92672">=</span> linenoise(<span style="color:#e6db74">&#34;hello&gt; &#34;</span>)) <span style="color:#f92672">!=</span> NULL) {
+</span></span><span style="display:flex;"><span>        printf(<span style="color:#e6db74">&#34;Your wrote: %s</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, line);
+</span></span><span style="display:flex;"><span>        free(line);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><blockquote>
+<p>不过Clion不支持直接运行，得使用cmake编译出二进制文件后运行。原因应该是Clion支持的是readline协议。</p>
+</blockquote>
+<p>效果：</p>
+<p><img src="/images/15445/lab0-00.png" alt=""></p>
+<h2 id="彩色提示符">
+  彩色提示符
+  <a href="#%e5%bd%a9%e8%89%b2%e6%8f%90%e7%a4%ba%e7%ac%a6" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p>转义序列以控制字<code>ESC</code>开头，该字符的ASCII码十进制表示为27，十六进制为0x1B，八进制表示为033，多数的转义序列超过两个字符，所以通常以<code>ESC</code>和左括号<code>[</code>开头。该起始序列称为控制序列引导符（CSI,Control Sequence Intro），通常由<code>\033[</code>或者<code>\e[</code>代替。</p>
+<p>通过转义序列设置终端显示属性时，可以采用下列格式：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>\033[ Param {;Param;...} m
+</span></span><span style="display:flex;"><span>或者
+</span></span><span style="display:flex;"><span>\e[ Param {;Param;...}m
+</span></span></code></pre></div><p>其中，<code>\033[</code>或者<code>\e[</code>引导转义序列，<code>m</code>表示设置属性并结束转义。<code>Param</code>为属性值，<code>{...}</code>表示参数是可以多选的，多个参数之间用分号隔开，不限制顺序。</p>
+<h3 id="param可选配置">
+  Param可选配置
+  <a href="#param%e5%8f%af%e9%80%89%e9%85%8d%e7%bd%ae" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<p><strong>显示方式</strong></p>
+<p>0：默认值</p>
+<p>1：粗体/高亮</p>
+<p>2：设置一半亮度</p>
+<p>4：下划线</p>
+<p>5：闪烁</p>
+<p>7：反显、翻转前景色和背景色</p>
+<p>22：非粗体</p>
+<p>24：无下滑线</p>
+<p>25：无闪烁</p>
+<p>27：关闭反显</p>
+<p><strong>前景色（字体颜色）</strong></p>
+<p>30：黑色前景色</p>
+<p>31：红色前景色</p>
+<p>32：绿色前景色</p>
+<p>33：黄色前景色</p>
+<p>34：蓝色前景色</p>
+<p>35：紫色前景色</p>
+<p>36：粉色前景色</p>
+<p>37：白色前景色</p>
+<p><strong>背景色</strong></p>
+<p>40：黑色背景色</p>
+<p>41：红色背景色</p>
+<p>42：绿色背景色</p>
+<p>43：黄色背景色</p>
+<p>44：蓝色背景色</p>
+<p>45：紫色背景色</p>
+<p>46：粉色背景色</p>
+<p>47：白色背景色</p>
+<h3 id="linenoise中使用">
+  linenoise中使用
+  <a href="#linenoise%e4%b8%ad%e4%bd%bf%e7%94%a8" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<p>在提示符前后加上，修改命令(<code>GREEN</code>，<strong>加粗绿色字体</strong>)与清空样式命令(<code>NONE</code>)：</p>
+<p><img src="/images/15445/lab0-01.png" alt=""></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;cstdio&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;cstdlib&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&#34;linenoise/linenoise.h&#34;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#define NONE &#34;\033[m&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#define GREEN &#34;\033[1;32m&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">char</span><span style="color:#f92672">*</span> line <span style="color:#f92672">=</span> NULL;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">while</span> ((line <span style="color:#f92672">=</span> linenoise(GREEN<span style="color:#e6db74">&#34;hello&gt; &#34;</span> NONE)) <span style="color:#f92672">!=</span> NULL)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        printf(<span style="color:#e6db74">&#34;Your wrote: %s</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, line);
+</span></span><span style="display:flex;"><span>        free(line);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>效果：</p>
+<p><img src="/images/15445/lab0-02.png" alt=""></p>
+<h2 id="自动补全">
+  自动补全
+  <a href="#%e8%87%aa%e5%8a%a8%e8%a1%a5%e5%85%a8" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p>Linenoise支持自动补全功能，即用户按下<code>&lt;TAB&gt;</code>键时会自动补全你的命令。</p>
+<p>为了实现这一功能，你可以注册并实现你的补全函数。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">// 注册自动补全函数completion
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>linenoiseSetCompletionCallback(completion);
+</span></span></code></pre></div><p>注册的补全必须是一个void返回值函数，需要传入一个const char指针（该指针是用户到目前为止已键入的命令字符）和一个linenoiseCompletions对象指针，该对象指针用作是linenoiseAddCompletion将回调添加到补全中的参数。一个例子将使其更加清楚：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">completion</span>(<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>buf, linenoiseCompletions <span style="color:#f92672">*</span>lc) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (buf[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;h&#39;</span>) {
+</span></span><span style="display:flex;"><span>        linenoiseAddCompletion(lc,<span style="color:#e6db74">&#34;hello&#34;</span>);
+</span></span><span style="display:flex;"><span>        linenoiseAddCompletion(lc,<span style="color:#e6db74">&#34;hello there&#34;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>用户输入&rsquo;h&rsquo;是会现实补全列表&quot;hello&quot;，在按一次tab则会补全至&quot;hello there&quot;。</p>
+<h2 id="命令提示">
+  命令提示
+  <a href="#%e5%91%bd%e4%bb%a4%e6%8f%90%e7%a4%ba" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p>Linenoise具有称为提示的功能，当你使用Linenoise实现REPL时，这个功能非常有用。当用户键入时，该功能会在光标的右侧显示可能有用的提示。提示可以使用与用户键入的颜色不同的颜色显示，也可以加粗。</p>
+<p>例如，当用户开始输入&quot;git remote add&quot;提示时，可以在提示的右侧显示字符串<code>&lt;name&gt; &lt;url&gt;</code>。</p>
+<p>改接口与自动补全功能类似：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>linenoiseSetHintsCallback(hints);
+</span></span></code></pre></div><p>回调函数实现如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">hints</span>(<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>buf, <span style="color:#66d9ef">int</span> <span style="color:#f92672">*</span>color, <span style="color:#66d9ef">int</span> <span style="color:#f92672">*</span>bold) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>strcasecmp(buf,<span style="color:#e6db74">&#34;git remote add&#34;</span>)) {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">*</span>color <span style="color:#f92672">=</span> <span style="color:#ae81ff">35</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">*</span>bold <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34; &lt;name&gt; &lt;url&gt;&#34;</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> NULL;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>效果：</p>
+<p><img src="/images/15445/lab0-03.png" alt=""></p>
+<p><strong>颜色编码：</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>red = 31
+</span></span><span style="display:flex;"><span>green = 32
+</span></span><span style="display:flex;"><span>yellow = 33
+</span></span><span style="display:flex;"><span>blue = 34
+</span></span><span style="display:flex;"><span>magenta = 35
+</span></span><span style="display:flex;"><span>cyan = 36
+</span></span><span style="display:flex;"><span>white = 37
+</span></span></code></pre></div><h2 id="清屏">
+  清屏
+  <a href="#%e6%b8%85%e5%b1%8f" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p>有时候你可能想通过输入某条命令来清屏，比如hello&gt; clear，那么可以使用下面的接口：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">linenoiseClearScreen</span>(<span style="color:#66d9ef">void</span>);
+</span></span></code></pre></div><h2 id="单行or多行编辑">
+  单行or多行编辑
+  <a href="#%e5%8d%95%e8%a1%8cor%e5%a4%9a%e8%a1%8c%e7%bc%96%e8%be%91" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p>默认情况下linenoise使用单行编辑，如果需要输入大量内容可以开启多行编辑模式。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>linenoiseSetMultiLine(<span style="color:#ae81ff">1</span>);
+</span></span></code></pre></div><p>开启后，可以输入的数据超过当前行：</p>
+<p><img src="/images/15445/lab0-04.png" alt=""></p>
+<p>关闭后，不能超过当前行：</p>
+<p><img src="/images/15445/lab0-05.png" alt=""></p>
+<h2 id="命令历史">
+  命令历史
+  <a href="#%e5%91%bd%e4%bb%a4%e5%8e%86%e5%8f%b2" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p>Linenoise支持历史记录，因此用户不必一次又一次地键入相同的内容，而是可以使用向下和向上箭头来搜索和重新编辑已经插入的命令。——个人觉得这个功能非常有用。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">// 将一条你执行的命令添加到历史，从而你可以通过上下键找到它
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">linenoiseHistoryAdd</span>(<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>line);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 要使用历史记录，您必须设置历史记录的长度（默认情况下为零，因此，如果未设置正确的长度，则将禁用历史记录）
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">linenoiseHistorySetMaxLen</span>(<span style="color:#66d9ef">int</span> len);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Linenoise直接支持将历史记录保存到历史记录文件中，通过下面两个接口可以存取历史文件内容
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">linenoiseHistorySave</span>(<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>filename);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">linenoiseHistoryLoad</span>(<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>filename);
+</span></span></code></pre></div><p>下面是一段范例代码</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">while</span>((line <span style="color:#f92672">=</span> linenoise(<span style="color:#e6db74">&#34;hello&gt; &#34;</span>)) <span style="color:#f92672">!=</span> NULL) {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/* Do something with the string. */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (line[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#39;\0&#39;</span> <span style="color:#f92672">&amp;&amp;</span> line[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#39;/&#39;</span>) {
+</span></span><span style="display:flex;"><span>        printf(<span style="color:#e6db74">&#34;echo: &#39;%s&#39;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, line);
+</span></span><span style="display:flex;"><span>        linenoiseHistoryAdd(line); <span style="color:#75715e">/* Add to the history. */</span>
+</span></span><span style="display:flex;"><span>        linenoiseHistorySave(<span style="color:#e6db74">&#34;history.txt&#34;</span>); <span style="color:#75715e">/* Save the history on disk. */</span>
+</span></span><span style="display:flex;"><span>    } <span style="color:#66d9ef">else</span> <span style="color:#a6e22e">if</span> (<span style="color:#f92672">!</span>strncmp(line,<span style="color:#e6db74">&#34;/historylen&#34;</span>,<span style="color:#ae81ff">11</span>)) {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/* The &#34;/historylen&#34; command will change the history len. */</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> len <span style="color:#f92672">=</span> atoi(line<span style="color:#f92672">+</span><span style="color:#ae81ff">11</span>);
+</span></span><span style="display:flex;"><span>        linenoiseHistorySetMaxLen(len);
+</span></span><span style="display:flex;"><span>    } <span style="color:#66d9ef">else</span> <span style="color:#a6e22e">if</span> (line[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;/&#39;</span>) {
+</span></span><span style="display:flex;"><span>        printf(<span style="color:#e6db74">&#34;Unreconized command: %s</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, line);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    free(line);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="bustub中的使用">
+  BusTub中的使用
+  <a href="#bustub%e4%b8%ad%e7%9a%84%e4%bd%bf%e7%94%a8" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p>BusTub只在<code>shell.cpp</code>中使用了该库：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>linenoiseHistorySetMaxLen(<span style="color:#ae81ff">1024</span>);
+</span></span><span style="display:flex;"><span>linenoiseSetMultiLine(<span style="color:#ae81ff">1</span>);
+</span></span></code></pre></div><p>设置命令历史记录最大1024，并开启多行输入。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>query_c_str <span style="color:#f92672">=</span> linenoise(line_prompt.c_str());
+</span></span></code></pre></div><p>获取输入字符串。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>query <span style="color:#f92672">+=</span> query_c_str
+</span></span><span style="display:flex;"><span>linenoiseFree(query_c_str);
+</span></span></code></pre></div><p>将收到的字符串加到<code>query</code>变量后，释放字符串。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>linenoiseHistoryAdd(query.c_str());
+</span></span></code></pre></div><p>将输入的命令记录历史。</p>
+<p>参考:</p>
+<p><a href="https://blog.csdn.net/whahu1989/article/details/125016151" target="_blank">https://blog.csdn.net/whahu1989/article/details/125016151</a>
+</p>
+<p><a href="https://segmentfault.com/a/1190000021643490" target="_blank">https://segmentfault.com/a/1190000021643490</a>
+</p>
+<p><a href="http://www.web-lovers.com/c-linenoise.html" target="_blank">http://www.web-lovers.com/c-linenoise.html</a>
+</p>
+
+    </div>
+    
+      
+        <div class="pagination">
+          <div class="pagination__title">
+            <span class="pagination__title-h"
+              >Read other posts</span
+            >
+            <hr />
+          </div>
+          <div class="pagination__buttons">
+            
+              <span class="button previous">
+                <a href="https://yuyang.run/posts/%E5%B7%A5%E5%85%B7%E5%BA%93/libfort%E4%B8%AD%E6%96%87%E6%95%99%E7%A8%8B/">
+                  <span class="button__icon">←</span>
+                  <span class="button__text">libfort中文教程-翻译</span>
+                </a>
+              </span>
+            
+            
+              <span class="button next">
+                <a href="https://yuyang.run/posts/cmu15-445%E5%AE%9E%E9%AA%8C/lab2-hash-index/">
+                  <span class="button__text">Lab2 Hash Index</span>
+                  <span class="button__icon">→</span>
+                </a>
+              </span>
+            
+          </div>
+        </div>
+      
+    
+
+    
+      
+        
+
+      
+    
+  </article>
+
+      </div>
+
+      
+        <footer class="footer">
+  <div class="footer__inner">
+    
+      <a
+  href="https://yuyang.run"
+  class="logo"
+  style="text-decoration: none;"
+>
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367" />
+</svg>
+</span>
+    <span class="logo__text"
+      >余为民同志</span
+    >
+    <span class="logo__cursor"></span>
+  
+</a>
+
+      <div class="copyright">
+        <span>© 2024 Powered by <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a></span>
+        <span><a href="https://github.com/panr/hugo-theme-hello-friend" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+    
+  </div>
+</footer>
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+
+      
+    </div>
+
+    
+  </body>
+</html>

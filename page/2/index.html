@@ -178,6 +178,90 @@
   <div class="posts">
     
     <article class="post on-list">
+      <h1 class="post-title"><a href="https://yuyang.run/posts/cmu15-445%E8%AF%BE%E7%A8%8B/query-execution-ii/">Lecture#13 Query Execution II</a></h1>
+      <div class="post-meta">
+        
+          <time class="post-date">
+            2023-11-23 15:29:13
+          </time>
+
+          
+        
+
+        
+
+        
+      </div>
+
+      
+        <span class="post-tags">
+          
+            <a href="https://yuyang.run/tags/cmu15-445/">#CMU15-445</a>&nbsp;
+          
+            <a href="https://yuyang.run/tags/sql/">#SQL</a>&nbsp;
+          
+        </span>
+      
+      <div class="post-content">
+        
+          
+          <img src="https://yuyang.run/cover/database.png" alt="Lecture#13 Query Execution II"/>
+          
+         
+        
+          
+            我们在 Lec12 中已经讨论了怎么将 operators 组织为一个 query plan。当时我们是假设 query 是由一个 worker (是 DBMS 的组件，负责代表客户机执行任务并返回结果，可能是一个线程或进程) 执行。然而在实践中，query 往往是由多个 workers 并发执行。并发执行为 DBMS 提供了很多好处： 提高吞吐量 (每秒能执行多少 query)，降低延迟 (执行一条 query 需要多久)。
+          
+        
+      </div>
+      
+        <div><a class="read-more button" href="/posts/cmu15-445%E8%AF%BE%E7%A8%8B/query-execution-ii/">阅读全文 →</a></div>
+      
+    </article>
+    
+    <article class="post on-list">
+      <h1 class="post-title"><a href="https://yuyang.run/posts/cmu15-445%E8%AF%BE%E7%A8%8B/query-execution-i/">Lecture#12 Query Execution I</a></h1>
+      <div class="post-meta">
+        
+          <time class="post-date">
+            2023-11-22 15:29:13
+          </time>
+
+          
+        
+
+        
+
+        
+      </div>
+
+      
+        <span class="post-tags">
+          
+            <a href="https://yuyang.run/tags/cmu15-445/">#CMU15-445</a>&nbsp;
+          
+            <a href="https://yuyang.run/tags/sql/">#SQL</a>&nbsp;
+          
+        </span>
+      
+      <div class="post-content">
+        
+          
+          <img src="https://yuyang.run/cover/database.png" alt="Lecture#12 Query Execution I"/>
+          
+         
+        
+          
+            通常一个 SQL 语句会被组织成如图的树状查询计划，数据从叶节点流到根节点，查询结果在根节点中得出。 通常，树上的操作符 operators 是二元的 (1~2个子运算符)。 处理模型 # DBMS 的 processing model 定义了系统如何执行一个 query plan。目前主要有三种模型： 迭代模型（Iterator Model） 物化模型（Materialization Mode
+          
+        
+      </div>
+      
+        <div><a class="read-more button" href="/posts/cmu15-445%E8%AF%BE%E7%A8%8B/query-execution-i/">阅读全文 →</a></div>
+      
+    </article>
+    
+    <article class="post on-list">
       <h1 class="post-title"><a href="https://yuyang.run/posts/cmu15-445%E8%AF%BE%E7%A8%8B/joins-algorithms/">Lecture#11 Joins Algorithms</a></h1>
       <div class="post-meta">
         
@@ -418,86 +502,6 @@
       </div>
       
         <div><a class="read-more button" href="/posts/%E4%B8%AD%E9%97%B4%E4%BB%B6/kafka%E5%8D%95%E6%9C%BA%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/">阅读全文 →</a></div>
-      
-    </article>
-    
-    <article class="post on-list">
-      <h1 class="post-title"><a href="https://yuyang.run/posts/%E4%B8%AD%E9%97%B4%E4%BB%B6/%E6%89%8B%E6%90%93zookeeper%E6%A0%B7%E4%BE%8B%E5%AE%9E%E7%8E%B0%E8%AE%B0%E5%BD%95/">手搓zookeeper样例实现记录</a></h1>
-      <div class="post-meta">
-        
-          <time class="post-date">
-            2023-06-02 15:29:13
-          </time>
-
-          
-        
-
-        
-
-        
-      </div>
-
-      
-        <span class="post-tags">
-          
-            <a href="https://yuyang.run/tags/zookeeper/">#zookeeper</a>&nbsp;
-          
-            <a href="https://yuyang.run/tags/%E4%B8%AD%E9%97%B4%E4%BB%B6/">#中间件</a>&nbsp;
-          
-        </span>
-      
-      <div class="post-content">
-        
-        
-          
-            在学习zookeeper过程中，学习了一个监听节点状态变化，而开始、停止计数的案例。看懂了不代表就会了，于是想自己实现一个简单的版本。在自己实现的过程中也遇到了一些问题，在这里记录一下。 实现代码内容 在zookeeper中创建/YuYang节点开始计数 在zookeeper中删除/YuYang节点停止计
-          
-        
-      </div>
-      
-        <div><a class="read-more button" href="/posts/%E4%B8%AD%E9%97%B4%E4%BB%B6/%E6%89%8B%E6%90%93zookeeper%E6%A0%B7%E4%BE%8B%E5%AE%9E%E7%8E%B0%E8%AE%B0%E5%BD%95/">阅读全文 →</a></div>
-      
-    </article>
-    
-    <article class="post on-list">
-      <h1 class="post-title"><a href="https://yuyang.run/posts/cmu15-445%E8%AF%BE%E7%A8%8B/tree-indexes-i/">Lecture#7 Tree Indexes I</a></h1>
-      <div class="post-meta">
-        
-          <time class="post-date">
-            2020-06-06 15:29:13
-          </time>
-
-          
-        
-
-        
-
-        
-      </div>
-
-      
-        <span class="post-tags">
-          
-            <a href="https://yuyang.run/tags/cmu15-445/">#CMU15-445</a>&nbsp;
-          
-            <a href="https://yuyang.run/tags/sql/">#SQL</a>&nbsp;
-          
-        </span>
-      
-      <div class="post-content">
-        
-          
-          <img src="https://yuyang.run/cover/database.png" alt="Lecture#7 Tree Indexes I"/>
-          
-         
-        
-          
-            构建索引的另一种方式就是通过Tree。 B+ Tree # 有一个称为B树的特定数据结构。 人们还使用该术语来泛指一类平衡树数据结构： → B-Tree (1971) → B+Tree (1973) → B*Tree (1977?) → B^link-Tree (1981) 相关资料 # 关于B树及B+树可以通过以下两篇文章了解： 漫画：什么是B-树？https://juejin.im/post/5c31f64c6fb9a049ac794
-          
-        
-      </div>
-      
-        <div><a class="read-more button" href="/posts/cmu15-445%E8%AF%BE%E7%A8%8B/tree-indexes-i/">阅读全文 →</a></div>
       
     </article>
     

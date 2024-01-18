@@ -11,10 +11,29 @@
     <language>en</language>
     <managingEditor>744727849@qq.com (YuYang)</managingEditor>
     <webMaster>744727849@qq.com (YuYang)</webMaster>
-    <lastBuildDate>Wed, 27 Dec 2023 20:40:00 +0800</lastBuildDate>
+    <lastBuildDate>Wed, 17 Jan 2024 16:13:11 +0800</lastBuildDate>
     
 	<atom:link href="https://yuyang.run/tags/sql/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>BusTub中使用的三方件-linenoise</title>
+      <link>https://yuyang.run/posts/cmu15-445%E5%AE%9E%E9%AA%8C/bustub%E4%B8%AD%E4%BD%BF%E7%94%A8%E7%9A%84%E4%B8%89%E6%96%B9%E4%BB%B6-linenoise/</link>
+      <pubDate>Wed, 17 Jan 2024 16:13:11 +0800</pubDate>
+      <author>744727849@qq.com (YuYang)</author>
+      <guid>https://yuyang.run/posts/cmu15-445%E5%AE%9E%E9%AA%8C/bustub%E4%B8%AD%E4%BD%BF%E7%94%A8%E7%9A%84%E4%B8%89%E6%96%B9%E4%BB%B6-linenoise/</guid>
+      <description>
+        
+          &lt;img src=&#34;https://yuyang.run/cover/database.png&#34;/&gt;
+          
+        
+        
+        
+          Linenoise是可以完全代替readline的，非常轻量级的命令行处理工具。Redis，MongoDB和Android都将Linenoise作为命令行解析工具。 🔗项目地址：https://github.com/antirez/linenoise 入手 # 一下就是一个简单的入门程序： #include &amp;lt;cstdio&amp;gt; #include &amp;lt;cstdlib&amp;gt; #include &amp;#34;linenoise/linenoise.h&amp;#34; int main() {
+          
+        
+        </description>
+    </item>
     
     <item>
       <title>Lab2 Hash Index</title>
@@ -29,7 +48,7 @@
         
         
         
-          在fall2019的版本中需要实现的hash table的测试代码(hash_table_page_test.cpp、hash_table_test.cpp)已经被注释掉了，所以这里实现的是fall2023版本中的可扩展哈希。 这里引用此前笔记中的内容，展示可扩展哈希的查询、新增、删除的过程： 结构： 查找
+          在fall2019的版本中需要实现的hash table的测试代码(hash_table_page_test.cpp、hash_table_test.cpp)已经被注释掉了，所以这里实现的是fall2023版本中的可扩展哈希。引用此前笔记中的内容，展示可扩展哈希的结构： 但是在该项目实现中，需要还有一个
           
         
         </description>
@@ -68,7 +87,7 @@
         
         
         
-          下载并安装CentOS7.6：https://mirrors.aliyun.com/centos-vault/7.6.1810。这里选择的是CentOS-7-x86_64-DVD-1810.iso，避免其他版本出现缺失软件的情况。 下载编译工具：https://gitee.com/opengauss/
+          下载并安装CentOS7.6：https://mirrors.aliyun.com/centos-vault/7.6.1810 。这里选择的是CentOS-7-x86_64-DVD-1810.iso，避免其他版本出现缺失软件的情况。 下载编译工具：https://gitee.com/opengauss/
           
         
         </description>

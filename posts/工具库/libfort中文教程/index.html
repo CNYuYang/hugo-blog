@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+      <title>
+        libfort中文教程-翻译 ::
+        余为民同志|做一个优秀的普通人，在热爱中燃烧！
+      </title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta
+  name="description"
+  content="表格的生命周期 # libfort表生命周期： 创建一个表（使用默认构造函数、复制构造函数或移动构造函数）； 用数据填充它（运算符&amp;laquo;，运算符[],write_ln&amp;hellip;）； 修改基本表外观； 将表转换为字符串表示（to_string）并打印出来。 在表生存期中分配的所有资源将在析构函数中自动"
+/>
+<meta
+  name="keywords"
+  content=""
+/>
+<meta name="robots" content="noodp" />
+<link rel="canonical" href="https://yuyang.run/posts/%E5%B7%A5%E5%85%B7%E5%BA%93/libfort%E4%B8%AD%E6%96%87%E6%95%99%E7%A8%8B/" />
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/style.css" />
+
+<link rel="stylesheet" href="https://yuyang.run/style.css" />
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://yuyang.run/img/apple-touch-icon-144-precomposed.png" />
+<link rel="shortcut icon" href="https://yuyang.run/img/favicon.png" />
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="libfort中文教程-翻译"/>
+<meta name="twitter:description" content="表格的生命周期 # libfort表生命周期： 创建一个表（使用默认构造函数、复制构造函数或移动构造函数）； 用数据填充它（运算符&laquo;，运算符[],write_ln&hellip;）； 修改基本表外观； 将表转换为字符串表示（to_string）并打印出来。 在表生存期中分配的所有资源将在析构函数中自动"/>
+
+
+
+<meta property="og:title" content="libfort中文教程-翻译" />
+<meta property="og:description" content="表格的生命周期 # libfort表生命周期： 创建一个表（使用默认构造函数、复制构造函数或移动构造函数）； 用数据填充它（运算符&laquo;，运算符[],write_ln&hellip;）； 修改基本表外观； 将表转换为字符串表示（to_string）并打印出来。 在表生存期中分配的所有资源将在析构函数中自动" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yuyang.run/posts/%E5%B7%A5%E5%85%B7%E5%BA%93/libfort%E4%B8%AD%E6%96%87%E6%95%99%E7%A8%8B/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2024-01-18T09:35:13+08:00" />
+<meta property="article:modified_time" content="2024-01-18T09:35:13+08:00" />
+
+
+
+
+
+
+
+
+  </head>
+  <body class="light-theme">
+    <div class="container">
+      <header class="header">
+  <span class="header__inner">
+    <a
+  href="https://yuyang.run"
+  class="logo"
+  style="text-decoration: none;"
+>
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367" />
+</svg>
+</span>
+    <span class="logo__text"
+      >余为民同志</span
+    >
+    <span class="logo__cursor"></span>
+  
+</a>
+
+    <span class="header__right">
+      
+        <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/posts/">文章</a></li>
+        
+      
+        
+          <li><a href="/tags/">标签</a></li>
+        
+      
+        
+          <li><a href="/categories/">分类</a></li>
+        
+      
+        
+          <li><a href="https://geekbang.yuyang.run">极客帮</a></li>
+        
+      
+        
+          <li><a href="/about/">关于我</a></li>
+        
+      
+      
+      
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/posts/">文章</a></li>
+      
+    
+      
+        <li><a href="/tags/">标签</a></li>
+      
+    
+      
+        <li><a href="/categories/">分类</a></li>
+      
+    
+      
+        <li><a href="https://geekbang.yuyang.run">极客帮</a></li>
+      
+    
+      
+        <li><a href="/about/">关于我</a></li>
+      
+    
+  </ul>
+</nav>
+
+        <span class="menu-trigger">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none" />
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" />
+          </svg>
+        </span>
+      
+      <span class="theme-toggle">
+        <svg
+  class="theme-toggler"
+  width="24"
+  height="24"
+  viewBox="0 0 48 48"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <path
+    d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"
+  />
+</svg>
+
+      </span>
+    </span>
+  </span>
+</header>
+
+
+      <div class="content">
+        
+  
+  
+
+  <article class="post">
+    
+    
+        <div style="position: fixed; right:10px; overflow:auto; top: 100px; width: 22%; bottom:50px">
+          <h2>目录</h2>
+          <aside class="table-of-contents"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#表格的生命周期">表格的生命周期</a></li>
+    <li><a href="#往表格中填充数据">往表格中填充数据</a>
+      <ul>
+        <li><a href="#操作符">&laquo;操作符</a></li>
+        <li><a href="#操作符-1">[]操作符</a></li>
+        <li><a href="#write-write_ln">write, write_ln</a></li>
+        <li><a href="#range_write-range_write_ln">range_write, range_write_ln</a></li>
+      </ul>
+    </li>
+    <li><a href="#单元格和表格的操作">单元格和表格的操作</a></li>
+    <li><a href="#边框的样式">边框的样式</a>
+      <ul>
+        <li><a href="#style可选值">style可选值</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></aside>
+        </div>
+      
+    
+    <div class="in-article">
+      
+    </div>
+    <h1 class="post-title">libfort中文教程-翻译</h1>
+    <div class="post-meta">
+      
+        <time class="post-date">
+          2024-01-18 09:35:13
+        </time>
+
+        
+          
+        
+      
+
+      
+
+
+      
+    </div>
+
+    
+      <span class="post-tags">
+        
+          <a href="https://yuyang.run/tags/libfort/">#libfort</a>&nbsp;
+        
+          <a href="https://yuyang.run/tags/%E5%B7%A5%E5%85%B7%E5%BA%93/">#工具库</a>&nbsp;
+        
+          <a href="https://yuyang.run/tags/cpp/">#cpp</a>&nbsp;
+        
+      </span>
+    
+
+    <div class="post-content">
+
+      <h2 id="表格的生命周期">
+  表格的生命周期
+  <a href="#%e8%a1%a8%e6%a0%bc%e7%9a%84%e7%94%9f%e5%91%bd%e5%91%a8%e6%9c%9f" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p>libfort表生命周期：</p>
+<ul>
+<li>创建一个表（使用默认构造函数、复制构造函数或移动构造函数）；</li>
+<li>用数据填充它（运算符&laquo;，运算符[],write_ln&hellip;）；</li>
+<li>修改基本表外观；</li>
+<li>将表转换为字符串表示（to_string）并打印出来。</li>
+</ul>
+<p>在表生存期中分配的所有资源将在析构函数中自动释放。</p>
+<p>案例：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>fort<span style="color:#f92672">::</span>char_table table;                                                
+</span></span><span style="display:flex;"><span>table <span style="color:#f92672">&lt;&lt;</span> fort<span style="color:#f92672">::</span>header                                             
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;N&#34;</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;Driver&#34;</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;Time&#34;</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;Avg Speed&#34;</span> <span style="color:#f92672">&lt;&lt;</span> fort<span style="color:#f92672">::</span>endr     
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;1&#34;</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;Ricciardo&#34;</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;1:25.945&#34;</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;47.362&#34;</span> <span style="color:#f92672">&lt;&lt;</span> fort<span style="color:#f92672">::</span>endr 
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;2&#34;</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;Hamilton&#34;</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;1:26.373&#34;</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;35.02&#34;</span> <span style="color:#f92672">&lt;&lt;</span> fort<span style="color:#f92672">::</span>endr   
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;3&#34;</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;Verstappen&#34;</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;1:26.469&#34;</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;29.78&#34;</span> <span style="color:#f92672">&lt;&lt;</span> fort<span style="color:#f92672">::</span>endr;
+</span></span><span style="display:flex;"><span>                                                                  
+</span></span><span style="display:flex;"><span>std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> table.to_string() <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;                      
+</span></span></code></pre></div><p>输出：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>+---+------------+----------+-----------+
+</span></span><span style="display:flex;"><span>| N | Driver     | Time     | Avg Speed |
+</span></span><span style="display:flex;"><span>+---+------------+----------+-----------+
+</span></span><span style="display:flex;"><span>| 1 | Ricciardo  | 1:25.945 | 47.362    |
+</span></span><span style="display:flex;"><span>| 2 | Hamilton   | 1:26.373 | 35.02     |
+</span></span><span style="display:flex;"><span>| 3 | Verstappen | 1:26.469 | 29.78     |
+</span></span><span style="display:flex;"><span>+---+------------+----------+-----------+
+</span></span></code></pre></div><h2 id="往表格中填充数据">
+  往表格中填充数据
+  <a href="#%e5%be%80%e8%a1%a8%e6%a0%bc%e4%b8%ad%e5%a1%ab%e5%85%85%e6%95%b0%e6%8d%ae" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p>在每个时刻，<code>libfort</code>表都有一个当前单元格——在下一次写操作中将向其写入数据。函数<code>set_cur_cell</code>和<code>&lt;&lt;(fort::endr)</code>操作可以用来改变当前单元格：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">/* 将当前单元格设置为具有坐标(row, col)的单元格 */</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">set_cur_cell</span>(size_t row, size_t col)
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/* 将当前单元格设置为下一行(line)第一个单元格  */</span>
+</span></span><span style="display:flex;"><span>table <span style="color:#f92672">&lt;&lt;</span> fort<span style="color:#f92672">::</span>endr;
+</span></span></code></pre></div><p>有很多函数可以用来将数据填充表格。所有用来写数据的函数都是成对的：(<code>function</code>,<code>function_ln</code>)，其中<code>function</code>向一组连续的单元格写入数据，<code>function_ln</code>做同样的事情，并将当前单元格指针移动到下一行(<code>line</code>)的第一个单元格。</p>
+<h3 id="操作符">
+  &laquo;操作符
+  <a href="#%e6%93%8d%e4%bd%9c%e7%ac%a6" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<p>应用于libfort表的操作符（<code>&lt;&lt;</code>）称为插入操作符。它将字符串插入到表格单元格中。libfort内部使用<code>std::stringstream</code>将参数转换为字符串。如果要在表中插入某些自定义类型的参数，则应重载<code>std::stringstream::operator&lt;&lt;</code>。</p>
+<p>案例：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>fort<span style="color:#f92672">::</span>char_table table;                                                
+</span></span><span style="display:flex;"><span>table <span style="color:#f92672">&lt;&lt;</span> fort<span style="color:#f92672">::</span>header                                             
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;N&#34;</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;Driver&#34;</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;Time&#34;</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;Avg Speed&#34;</span> <span style="color:#f92672">&lt;&lt;</span> fort<span style="color:#f92672">::</span>endr     
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;1&#34;</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;Ricciardo&#34;</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;1:25.945&#34;</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;47.362&#34;</span> <span style="color:#f92672">&lt;&lt;</span> fort<span style="color:#f92672">::</span>endr 
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;2&#34;</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;Hamilton&#34;</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;1:26.373&#34;</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;35.02&#34;</span> <span style="color:#f92672">&lt;&lt;</span> fort<span style="color:#f92672">::</span>endr   
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;3&#34;</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;Verstappen&#34;</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;1:26.469&#34;</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;29.78&#34;</span> <span style="color:#f92672">&lt;&lt;</span> fort<span style="color:#f92672">::</span>endr;
+</span></span><span style="display:flex;"><span>                                                                  
+</span></span><span style="display:flex;"><span>std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> table.to_string() <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;                      
+</span></span></code></pre></div><p>输出：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>+---+------------+----------+-----------+
+</span></span><span style="display:flex;"><span>| N | Driver     | Time     | Avg Speed |
+</span></span><span style="display:flex;"><span>+---+------------+----------+-----------+
+</span></span><span style="display:flex;"><span>| 1 | Ricciardo  | 1:25.945 | 222.128   |
+</span></span><span style="display:flex;"><span>| 2 | Hamilton   | 1:26.373 | 221.027   |
+</span></span><span style="display:flex;"><span>| 3 | Verstappen | 1:26.469 | 220.782   |
+</span></span><span style="display:flex;"><span>+---+------------+----------+-----------+
+</span></span></code></pre></div><h3 id="操作符-1">
+  []操作符
+  <a href="#%e6%93%8d%e4%bd%9c%e7%ac%a6-1" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<p>此运算符（<code>[]</code>）提供了直接更改特定单元格内容的功能。</p>
+<p>案例：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>fort<span style="color:#f92672">::</span>char_table table;                                                                                   
+</span></span><span style="display:flex;"><span>table <span style="color:#f92672">&lt;&lt;</span> fort<span style="color:#f92672">::</span>header;                                                                               
+</span></span><span style="display:flex;"><span>table[<span style="color:#ae81ff">0</span>][<span style="color:#ae81ff">0</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;N&#34;</span>; table[<span style="color:#ae81ff">0</span>][<span style="color:#ae81ff">1</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Driver&#34;</span>;     table[<span style="color:#ae81ff">0</span>][<span style="color:#ae81ff">2</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Time&#34;</span>;     table[<span style="color:#ae81ff">0</span>][<span style="color:#ae81ff">3</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Avg Speed&#34;</span>;  
+</span></span><span style="display:flex;"><span>                                                                                                     
+</span></span><span style="display:flex;"><span>table[<span style="color:#ae81ff">1</span>][<span style="color:#ae81ff">0</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;1&#34;</span>; table[<span style="color:#ae81ff">1</span>][<span style="color:#ae81ff">1</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Ricciardo&#34;</span>;  table[<span style="color:#ae81ff">1</span>][<span style="color:#ae81ff">2</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;1:25.945&#34;</span>; table[<span style="color:#ae81ff">1</span>][<span style="color:#ae81ff">3</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;47.362&#34;</span>;     
+</span></span><span style="display:flex;"><span>table[<span style="color:#ae81ff">2</span>][<span style="color:#ae81ff">0</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;2&#34;</span>; table[<span style="color:#ae81ff">2</span>][<span style="color:#ae81ff">1</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Hamilton&#34;</span>;   table[<span style="color:#ae81ff">2</span>][<span style="color:#ae81ff">2</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;1:26.373&#34;</span>; table[<span style="color:#ae81ff">2</span>][<span style="color:#ae81ff">3</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;35.02&#34;</span>;      
+</span></span><span style="display:flex;"><span>table[<span style="color:#ae81ff">3</span>][<span style="color:#ae81ff">0</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;3&#34;</span>; table[<span style="color:#ae81ff">3</span>][<span style="color:#ae81ff">1</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Verstappen&#34;</span>; table[<span style="color:#ae81ff">3</span>][<span style="color:#ae81ff">2</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;1:26.469&#34;</span>; table[<span style="color:#ae81ff">3</span>][<span style="color:#ae81ff">3</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;29.78&#34;</span>;      
+</span></span><span style="display:flex;"><span>                                                                                                     
+</span></span><span style="display:flex;"><span>std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> table.to_string() <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;                                                                            
+</span></span></code></pre></div><p>输出：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>+---+------------+----------+-----------+
+</span></span><span style="display:flex;"><span>| N | Driver     | Time     | Avg Speed |
+</span></span><span style="display:flex;"><span>+---+------------+----------+-----------+
+</span></span><span style="display:flex;"><span>| 1 | Ricciardo  | 1:25.945 | 222.128   |
+</span></span><span style="display:flex;"><span>| 2 | Hamilton   | 1:26.373 | 221.027   |
+</span></span><span style="display:flex;"><span>| 3 | Verstappen | 1:26.469 | 220.782   |
+</span></span><span style="display:flex;"><span>+---+------------+----------+-----------+
+</span></span></code></pre></div><h3 id="write-write_ln">
+  write, write_ln
+  <a href="#write-write_ln" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<p><code>write</code>,<code>write_ln</code>可以向表单元写入任意数量的字符串参数。</p>
+<p>案例：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>fort<span style="color:#f92672">::</span>char_table table;                                       
+</span></span><span style="display:flex;"><span>table <span style="color:#f92672">&lt;&lt;</span> fort<span style="color:#f92672">::</span>header;                                   
+</span></span><span style="display:flex;"><span>table.write_ln(<span style="color:#e6db74">&#34;N&#34;</span>, <span style="color:#e6db74">&#34;Driver&#34;</span>, <span style="color:#e6db74">&#34;Time&#34;</span>, <span style="color:#e6db74">&#34;Avg Speed&#34;</span>);      
+</span></span><span style="display:flex;"><span>table.write_ln(<span style="color:#e6db74">&#34;1&#34;</span>, <span style="color:#e6db74">&#34;Ricciardo&#34;</span>, <span style="color:#e6db74">&#34;1:25.945&#34;</span>, <span style="color:#e6db74">&#34;47.362&#34;</span>);  
+</span></span><span style="display:flex;"><span>table.write_ln(<span style="color:#e6db74">&#34;2&#34;</span>, <span style="color:#e6db74">&#34;Hamilton&#34;</span>, <span style="color:#e6db74">&#34;1:26.373&#34;</span>, <span style="color:#e6db74">&#34;35.02&#34;</span>);    
+</span></span><span style="display:flex;"><span>table.write_ln(<span style="color:#e6db74">&#34;3&#34;</span>, <span style="color:#e6db74">&#34;Verstappen&#34;</span>, <span style="color:#e6db74">&#34;1:26.469&#34;</span>, <span style="color:#e6db74">&#34;29.78&#34;</span>);  
+</span></span><span style="display:flex;"><span>                                                         
+</span></span><span style="display:flex;"><span>std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> table.to_string() <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;    
+</span></span></code></pre></div><p>输出：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>+---+------------+----------+-----------+
+</span></span><span style="display:flex;"><span>| N | Driver     | Time     | Avg Speed |
+</span></span><span style="display:flex;"><span>+---+------------+----------+-----------+
+</span></span><span style="display:flex;"><span>| 1 | Ricciardo  | 1:25.945 | 222.128   |
+</span></span><span style="display:flex;"><span>| 2 | Hamilton   | 1:26.373 | 221.027   |
+</span></span><span style="display:flex;"><span>| 3 | Verstappen | 1:26.469 | 220.782   |
+</span></span><span style="display:flex;"><span>+---+------------+----------+-----------+
+</span></span></code></pre></div><h3 id="range_write-range_write_ln">
+  range_write, range_write_ln
+  <a href="#range_write-range_write_ln" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<p><code>range_write</code>,<code>range_write_ln</code>从由一对迭代器确定的容器中写入数据。</p>
+<p>案例：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">template</span> <span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span> InputIt<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">bool</span> range_write(InputIt first, InputIt last);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">template</span> <span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span> InputIt<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">bool</span> range_write_ln(InputIt first, InputIt last);
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>fort<span style="color:#f92672">::</span>char_table table;                                                                  
+</span></span><span style="display:flex;"><span>table <span style="color:#f92672">&lt;&lt;</span> fort<span style="color:#f92672">::</span>header;                                                              
+</span></span><span style="display:flex;"><span>std<span style="color:#f92672">::</span>vector<span style="color:#f92672">&lt;</span>std<span style="color:#f92672">::</span>string<span style="color:#f92672">&gt;</span> header <span style="color:#f92672">=</span> {<span style="color:#e6db74">&#34;N&#34;</span>, <span style="color:#e6db74">&#34;Driver&#34;</span>, <span style="color:#e6db74">&#34;Time&#34;</span>, <span style="color:#e6db74">&#34;Avg Speed&#34;</span>};             
+</span></span><span style="display:flex;"><span>std<span style="color:#f92672">::</span>list<span style="color:#f92672">&lt;</span>std<span style="color:#f92672">::</span>string<span style="color:#f92672">&gt;</span> line_1 <span style="color:#f92672">=</span> {<span style="color:#e6db74">&#34;1&#34;</span>, <span style="color:#e6db74">&#34;Ricciardo&#34;</span>, <span style="color:#e6db74">&#34;1:25.945&#34;</span>, <span style="color:#e6db74">&#34;47.362&#34;</span>};           
+</span></span><span style="display:flex;"><span>std<span style="color:#f92672">::</span>initializer_list<span style="color:#f92672">&lt;</span>std<span style="color:#f92672">::</span>string<span style="color:#f92672">&gt;</span> line_2 <span style="color:#f92672">=</span> {<span style="color:#e6db74">&#34;2&#34;</span>, <span style="color:#e6db74">&#34;Hamilton&#34;</span>, <span style="color:#e6db74">&#34;1:26.373&#34;</span>, <span style="color:#e6db74">&#34;35.02&#34;</span>}; 
+</span></span><span style="display:flex;"><span>std<span style="color:#f92672">::</span>deque<span style="color:#f92672">&lt;</span>std<span style="color:#f92672">::</span>string<span style="color:#f92672">&gt;</span> line_3 <span style="color:#f92672">=</span> {<span style="color:#e6db74">&#34;3&#34;</span>, <span style="color:#e6db74">&#34;Verstappen&#34;</span>, <span style="color:#e6db74">&#34;1:26.469&#34;</span>, <span style="color:#e6db74">&#34;29.78&#34;</span>};          
+</span></span><span style="display:flex;"><span>                                                                                    
+</span></span><span style="display:flex;"><span>table.range_write_ln(header.begin(), header.end());                                   
+</span></span><span style="display:flex;"><span>table.range_write_ln(line_1.begin(), line_1.end());                                   
+</span></span><span style="display:flex;"><span>table.range_write_ln(line_2.begin(), line_2.end());                                   
+</span></span><span style="display:flex;"><span>table.range_write_ln(line_3.begin(), line_3.end());                                   
+</span></span><span style="display:flex;"><span>                                                                                    
+</span></span><span style="display:flex;"><span>std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> table.to_string() <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;                                        
+</span></span></code></pre></div><p>输出：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>+---+------------+----------+-----------+
+</span></span><span style="display:flex;"><span>| N | Driver     | Time     | Avg Speed |
+</span></span><span style="display:flex;"><span>+---+------------+----------+-----------+
+</span></span><span style="display:flex;"><span>| 1 | Ricciardo  | 1:25.945 | 222.128   |
+</span></span><span style="display:flex;"><span>| 2 | Hamilton   | 1:26.373 | 221.027   |
+</span></span><span style="display:flex;"><span>| 3 | Verstappen | 1:26.469 | 220.782   |
+</span></span><span style="display:flex;"><span>+---+------------+----------+-----------+
+</span></span></code></pre></div><h2 id="单元格和表格的操作">
+  单元格和表格的操作
+  <a href="#%e5%8d%95%e5%85%83%e6%a0%bc%e5%92%8c%e8%a1%a8%e6%a0%bc%e7%9a%84%e6%93%8d%e4%bd%9c" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p>默认情况下，在libfort表中创建的所有单元格都将具有相同的属性。</p>
+<p>要更改单元格属性，应使用函数<code>set_cell_{property_name}</code>：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">bool</span> <span style="color:#a6e22e">set_cell_min_width</span>(<span style="color:#66d9ef">unsigned</span> value);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">bool</span> <span style="color:#a6e22e">set_cell_text_align</span>(<span style="color:#66d9ef">enum</span> <span style="color:#a6e22e">fort</span><span style="color:#f92672">::</span>text_align value);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">bool</span> <span style="color:#a6e22e">set_cell_top_padding</span>(<span style="color:#66d9ef">unsigned</span> value);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">bool</span> <span style="color:#a6e22e">set_cell_bottom_padding</span>(<span style="color:#66d9ef">unsigned</span> value);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">bool</span> <span style="color:#a6e22e">set_cell_left_padding</span>(<span style="color:#66d9ef">unsigned</span> value);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">bool</span> <span style="color:#a6e22e">set_cell_right_padding</span>(<span style="color:#66d9ef">unsigned</span> value);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">bool</span> <span style="color:#a6e22e">set_cell_empty_str_height</span>(<span style="color:#66d9ef">unsigned</span> value);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">bool</span> <span style="color:#a6e22e">set_cell_row_type</span>(<span style="color:#66d9ef">enum</span> <span style="color:#a6e22e">fort</span><span style="color:#f92672">::</span>row_type value);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">bool</span> <span style="color:#a6e22e">set_cell_content_fg_color</span>(<span style="color:#66d9ef">enum</span> <span style="color:#a6e22e">fort</span><span style="color:#f92672">::</span>color value);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">bool</span> <span style="color:#a6e22e">set_cell_bg_color</span>(<span style="color:#66d9ef">enum</span> <span style="color:#a6e22e">fort</span><span style="color:#f92672">::</span>color value);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">bool</span> <span style="color:#a6e22e">set_cell_content_bg_color</span>(<span style="color:#66d9ef">enum</span> <span style="color:#a6e22e">fort</span><span style="color:#f92672">::</span>color value);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">bool</span> <span style="color:#a6e22e">set_cell_text_style</span>(<span style="color:#66d9ef">enum</span> <span style="color:#a6e22e">fort</span><span style="color:#f92672">::</span>text_style value);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">bool</span> <span style="color:#a6e22e">set_cell_content_text_style</span>(<span style="color:#66d9ef">enum</span> <span style="color:#a6e22e">fort</span><span style="color:#f92672">::</span>text_style value);
+</span></span></code></pre></div><p>属性可以设置为默认值（用于将来创建的表中的所有单元格）、用于指定表的所有单元格、用于指定某一行的单元格、用于指定某一列中的单元格以及用于指定表的特定单元格。</p>
+<p>以下示例说明了这一点：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">// 为以后创建的所有表格中的所有单元格设置top padding = 2
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>fort<span style="color:#f92672">::</span>table<span style="color:#f92672">::</span>default_props().set_cell_top_padding(<span style="color:#ae81ff">2</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 为第2行中的所有单元格设置行类型
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>table.row(<span style="color:#ae81ff">2</span>).set_cell_row_type(fort<span style="color:#f92672">::</span>row_type<span style="color:#f92672">::</span>header);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 为第1列中的所有单元格设置文本对齐方式
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>table.column(<span style="color:#ae81ff">1</span>).set_cell_text_align(fort<span style="color:#f92672">::</span>text_align<span style="color:#f92672">::</span>center);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 为单元格(0,0)，设置最小宽度
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>table[<span style="color:#ae81ff">0</span>][<span style="color:#ae81ff">0</span>].set_cell_min_width(<span style="color:#ae81ff">20</span>);
+</span></span></code></pre></div><p>下面是一个简单的完整示例：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>fort<span style="color:#f92672">::</span>char_table table;                                                        
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Fill table with data                                                   
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>table <span style="color:#f92672">&lt;&lt;</span> fort<span style="color:#f92672">::</span>header                                                     
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;Rank&#34;</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;Title&#34;</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;Year&#34;</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;Rating&#34;</span> <span style="color:#f92672">&lt;&lt;</span> fort<span style="color:#f92672">::</span>endr              
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;1&#34;</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;The Shawshank Redemption&#34;</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;1994&#34;</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;9.5&#34;</span> <span style="color:#f92672">&lt;&lt;</span> fort<span style="color:#f92672">::</span>endr 
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;2&#34;</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;12 Angry Men&#34;</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;1957&#34;</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;8.8&#34;</span> <span style="color:#f92672">&lt;&lt;</span> fort<span style="color:#f92672">::</span>endr             
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;3&#34;</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;It&#39;s a Wonderful Life&#34;</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;1946&#34;</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;8.6&#34;</span> <span style="color:#f92672">&lt;&lt;</span> fort<span style="color:#f92672">::</span>endr    
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;&lt;</span> fort<span style="color:#f92672">::</span>endr;                                                        
+</span></span><span style="display:flex;"><span>                                                                          
+</span></span><span style="display:flex;"><span>table[<span style="color:#ae81ff">0</span>][<span style="color:#ae81ff">0</span>].set_cell_min_width(<span style="color:#ae81ff">20</span>);                                      
+</span></span><span style="display:flex;"><span>table.column(<span style="color:#ae81ff">1</span>).set_cell_text_align(fort<span style="color:#f92672">::</span>text_align<span style="color:#f92672">::</span>center);        
+</span></span><span style="display:flex;"><span>table[<span style="color:#ae81ff">3</span>][<span style="color:#ae81ff">3</span>].set_cell_left_padding(<span style="color:#ae81ff">15</span>);                                   
+</span></span><span style="display:flex;"><span>                                                                          
+</span></span><span style="display:flex;"><span>std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> table.to_string() <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;                              
+</span></span></code></pre></div><p>输出：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>+--------------------+--------------------------+------+-------------------+
+</span></span><span style="display:flex;"><span>| Rank               |          Title           | Year | Rating            |
+</span></span><span style="display:flex;"><span>+--------------------+--------------------------+------+-------------------+
+</span></span><span style="display:flex;"><span>| 1                  | The Shawshank Redemption | 1994 | 9.5               |
+</span></span><span style="display:flex;"><span>| 2                  |       12 Angry Men       | 1957 | 8.8               |
+</span></span><span style="display:flex;"><span>| 3                  |  It&#39;s a Wonderful Life   | 1946 |               8.6 |
+</span></span><span style="display:flex;"><span>+--------------------+--------------------------+------+-------------------+
+</span></span></code></pre></div><h2 id="边框的样式">
+  边框的样式
+  <a href="#%e8%be%b9%e6%a1%86%e7%9a%84%e6%a0%b7%e5%bc%8f" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p>libfort有许多内置的边框样式。要更改libfort表的边框样式，可以使用<code>set_default_bound_style</code>、<code>set_bound_style</code>函数：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">/* 更改将创建的所有libfort表的边框样式 */</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">bool</span> <span style="color:#a6e22e">set_default_border_style</span>(<span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">ft_border_style</span> <span style="color:#f92672">*</span>style);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/* 更改当前表格的边框样式 */</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">bool</span> <span style="color:#a6e22e">set_border_style</span>(<span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">ft_border_style</span> <span style="color:#f92672">*</span>style);
+</span></span></code></pre></div><p>下面是一个创建表格和设置边框样式的简单示例：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>fort<span style="color:#f92672">::</span>char_table table;                                                       
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/* Set table border style */</span>                                             
+</span></span><span style="display:flex;"><span>table.set_border_style(FT_BASIC_STYLE);                                  
+</span></span><span style="display:flex;"><span>                                                                         
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Fill table with data                                                  
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>table <span style="color:#f92672">&lt;&lt;</span> fort<span style="color:#f92672">::</span>header                                                    
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;Rank&#34;</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;Title&#34;</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;Year&#34;</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;Rating&#34;</span> <span style="color:#f92672">&lt;&lt;</span> fort<span style="color:#f92672">::</span>endr             
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;1&#34;</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;The Shawshank Redemption&#34;</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;1994&#34;</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;9.5&#34;</span> <span style="color:#f92672">&lt;&lt;</span> fort<span style="color:#f92672">::</span>endr
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;2&#34;</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;12 Angry Men&#34;</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;1957&#34;</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;8.8&#34;</span> <span style="color:#f92672">&lt;&lt;</span> fort<span style="color:#f92672">::</span>endr            
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;3&#34;</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;It&#39;s a Wonderful Life&#34;</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;1946&#34;</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;8.6&#34;</span> <span style="color:#f92672">&lt;&lt;</span> fort<span style="color:#f92672">::</span>endr   
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;&lt;</span> fort<span style="color:#f92672">::</span>separator                                                   
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;4&#34;</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;2001: A Space Odyssey&#34;</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;1968&#34;</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;8.5&#34;</span> <span style="color:#f92672">&lt;&lt;</span> fort<span style="color:#f92672">::</span>endr   
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;5&#34;</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;Blade Runner&#34;</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;1982&#34;</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;8.1&#34;</span> <span style="color:#f92672">&lt;&lt;</span> fort<span style="color:#f92672">::</span>endr            
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;&lt;</span> fort<span style="color:#f92672">::</span>endr;                                                       
+</span></span><span style="display:flex;"><span>                                                                         
+</span></span><span style="display:flex;"><span>table.column(<span style="color:#ae81ff">0</span>).set_cell_text_align(fort<span style="color:#f92672">::</span>text_align<span style="color:#f92672">::</span>center);
+</span></span><span style="display:flex;"><span>table.column(<span style="color:#ae81ff">1</span>).set_cell_text_align(fort<span style="color:#f92672">::</span>text_align<span style="color:#f92672">::</span>left);   
+</span></span><span style="display:flex;"><span>                                                                         
+</span></span><span style="display:flex;"><span>std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> table.to_string() <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;                                      
+</span></span></code></pre></div><p>输出：</p>
+<pre tabindex="0"><code>+------+--------------------------+------+--------+
+| Rank | Title                    | Year | Rating |
++------+--------------------------+------+--------+
+|  1   | The Shawshank Redemption | 1994 | 9.5    |
+|  2   | 12 Angry Men             | 1957 | 8.8    |
+|  3   | It&#39;s a Wonderful Life    | 1946 | 8.6    |
++------+--------------------------+------+--------+
+|  4   | 2001: A Space Odyssey    | 1968 | 8.5    |
+|  5   | Blade Runner             | 1982 | 8.1    |
++------+--------------------------+------+--------+
+</code></pre><h3 id="style可选值">
+  style可选值
+  <a href="#style%e5%8f%af%e9%80%89%e5%80%bc" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<p><strong>FT_BASIC_STYLE</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>+------+--------------------------+------+--------+
+</span></span><span style="display:flex;"><span>| Rank | Title                    | Year | Rating |
+</span></span><span style="display:flex;"><span>+------+--------------------------+------+--------+
+</span></span><span style="display:flex;"><span>|  1   | The Shawshank Redemption | 1994 | 9.5    |
+</span></span><span style="display:flex;"><span>|  2   | 12 Angry Men             | 1957 | 8.8    |
+</span></span><span style="display:flex;"><span>|  3   | It&#39;s a Wonderful Life    | 1946 | 8.6    |
+</span></span><span style="display:flex;"><span>+------+--------------------------+------+--------+
+</span></span><span style="display:flex;"><span>|  4   | 2001: A Space Odyssey    | 1968 | 8.5    |
+</span></span><span style="display:flex;"><span>|  5   | Blade Runner             | 1982 | 8.1    |
+</span></span><span style="display:flex;"><span>+------+--------------------------+------+--------+
+</span></span></code></pre></div><p><strong>FT_BASIC2_STYLE</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>+------+--------------------------+------+--------+
+</span></span><span style="display:flex;"><span>| Rank | Title                    | Year | Rating |
+</span></span><span style="display:flex;"><span>+------+--------------------------+------+--------+
+</span></span><span style="display:flex;"><span>|  1   | The Shawshank Redemption | 1994 | 9.5    |
+</span></span><span style="display:flex;"><span>+------+--------------------------+------+--------+
+</span></span><span style="display:flex;"><span>|  2   | 12 Angry Men             | 1957 | 8.8    |
+</span></span><span style="display:flex;"><span>+------+--------------------------+------+--------+
+</span></span><span style="display:flex;"><span>|  3   | It&#39;s a Wonderful Life    | 1946 | 8.6    |
+</span></span><span style="display:flex;"><span>+------+--------------------------+------+--------+
+</span></span><span style="display:flex;"><span>|  4   | 2001: A Space Odyssey    | 1968 | 8.5    |
+</span></span><span style="display:flex;"><span>+------+--------------------------+------+--------+
+</span></span><span style="display:flex;"><span>|  5   | Blade Runner             | 1982 | 8.1    |
+</span></span><span style="display:flex;"><span>+------+--------------------------+------+--------+
+</span></span></code></pre></div><p><strong>FT_SIMPLE_STYLE</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>  Rank   Title                      Year   Rating  
+</span></span><span style="display:flex;"><span> ------ -------------------------- ------ -------- 
+</span></span><span style="display:flex;"><span>   1     The Shawshank Redemption   1994   9.5     
+</span></span><span style="display:flex;"><span>   2     12 Angry Men               1957   8.8     
+</span></span><span style="display:flex;"><span>   3     It&#39;s a Wonderful Life      1946   8.6     
+</span></span><span style="display:flex;"><span> ------ -------------------------- ------ -------- 
+</span></span><span style="display:flex;"><span>   4     2001: A Space Odyssey      1968   8.5     
+</span></span><span style="display:flex;"><span>   5     Blade Runner               1982   8.1     
+</span></span></code></pre></div><p><strong>FT_PLAIN_STYLE</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span> ------------------------------------------------- 
+</span></span><span style="display:flex;"><span>  Rank   Title                      Year   Rating  
+</span></span><span style="display:flex;"><span> ------------------------------------------------- 
+</span></span><span style="display:flex;"><span>   1     The Shawshank Redemption   1994   9.5     
+</span></span><span style="display:flex;"><span>   2     12 Angry Men               1957   8.8     
+</span></span><span style="display:flex;"><span>   3     It&#39;s a Wonderful Life      1946   8.6     
+</span></span><span style="display:flex;"><span> ------------------------------------------------- 
+</span></span><span style="display:flex;"><span>   4     2001: A Space Odyssey      1968   8.5     
+</span></span><span style="display:flex;"><span>   5     Blade Runner               1982   8.1      
+</span></span></code></pre></div><p><strong>FT_DOT_STYLE</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>...................................................
+</span></span><span style="display:flex;"><span>: Rank : Title                    : Year : Rating :
+</span></span><span style="display:flex;"><span>:......:..........................:......:........:
+</span></span><span style="display:flex;"><span>:  1   : The Shawshank Redemption : 1994 : 9.5    :
+</span></span><span style="display:flex;"><span>:  2   : 12 Angry Men             : 1957 : 8.8    :
+</span></span><span style="display:flex;"><span>:  3   : It&#39;s a Wonderful Life    : 1946 : 8.6    :
+</span></span><span style="display:flex;"><span>:......:..........................:......:........:
+</span></span><span style="display:flex;"><span>:  4   : 2001: A Space Odyssey    : 1968 : 8.5    :
+</span></span><span style="display:flex;"><span>:  5   : Blade Runner             : 1982 : 8.1    :
+</span></span><span style="display:flex;"><span>:......:..........................:......:........:
+</span></span></code></pre></div><p><strong>FT_EMPTY_STYLE</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span> Rank  Title                     Year  Rating 
+</span></span><span style="display:flex;"><span>  1    The Shawshank Redemption  1994  9.5    
+</span></span><span style="display:flex;"><span>  2    12 Angry Men              1957  8.8    
+</span></span><span style="display:flex;"><span>  3    It&#39;s a Wonderful Life     1946  8.6    
+</span></span><span style="display:flex;"><span>                                              
+</span></span><span style="display:flex;"><span>  4    2001: A Space Odyssey     1968  8.5    
+</span></span><span style="display:flex;"><span>  5    Blade Runner              1982  8.1    
+</span></span></code></pre></div><p><strong>FT_EMPTY2_STYLE</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>  Rank   Title                      Year   Rating  
+</span></span><span style="display:flex;"><span>   1     The Shawshank Redemption   1994   9.5     
+</span></span><span style="display:flex;"><span>   2     12 Angry Men               1957   8.8     
+</span></span><span style="display:flex;"><span>   3     It&#39;s a Wonderful Life      1946   8.6     
+</span></span><span style="display:flex;"><span>                                                   
+</span></span><span style="display:flex;"><span>   4     2001: A Space Odyssey      1968   8.5     
+</span></span><span style="display:flex;"><span>   5     Blade Runner               1982   8.1     
+</span></span></code></pre></div><p><strong>FT_SOLID_STYLE</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>┌──────┬──────────────────────────┬──────┬────────┐
+</span></span><span style="display:flex;"><span>│ Rank │ Title                    │ Year │ Rating │
+</span></span><span style="display:flex;"><span>├──────┼──────────────────────────┼──────┼────────┤
+</span></span><span style="display:flex;"><span>│  1   │ The Shawshank Redemption │ 1994 │ 9.5    │
+</span></span><span style="display:flex;"><span>│  2   │ 12 Angry Men             │ 1957 │ 8.8    │
+</span></span><span style="display:flex;"><span>│  3   │ It&#39;s a Wonderful Life    │ 1946 │ 8.6    │
+</span></span><span style="display:flex;"><span>├──────┼──────────────────────────┼──────┼────────┤
+</span></span><span style="display:flex;"><span>│  4   │ 2001: A Space Odyssey    │ 1968 │ 8.5    │
+</span></span><span style="display:flex;"><span>│  5   │ Blade Runner             │ 1982 │ 8.1    │
+</span></span><span style="display:flex;"><span>└──────┴──────────────────────────┴──────┴────────╯ 
+</span></span></code></pre></div><p><strong>FT_SOLID_ROUND_STYLE</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>╭──────┬──────────────────────────┬──────┬────────╮
+</span></span><span style="display:flex;"><span>│ Rank │ Title                    │ Year │ Rating │
+</span></span><span style="display:flex;"><span>├──────┼──────────────────────────┼──────┼────────┤
+</span></span><span style="display:flex;"><span>│  1   │ The Shawshank Redemption │ 1994 │ 9.5    │
+</span></span><span style="display:flex;"><span>│  2   │ 12 Angry Men             │ 1957 │ 8.8    │
+</span></span><span style="display:flex;"><span>│  3   │ It&#39;s a Wonderful Life    │ 1946 │ 8.6    │
+</span></span><span style="display:flex;"><span>├──────┼──────────────────────────┼──────┼────────┤
+</span></span><span style="display:flex;"><span>│  4   │ 2001: A Space Odyssey    │ 1968 │ 8.5    │
+</span></span><span style="display:flex;"><span>│  5   │ Blade Runner             │ 1982 │ 8.1    │
+</span></span><span style="display:flex;"><span>╰──────┴──────────────────────────┴──────┴────────╯
+</span></span></code></pre></div><p><strong>FT_DOUBLE_STYLE</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>╔══════╦══════════════════════════╦══════╦════════╗
+</span></span><span style="display:flex;"><span>║ Rank ║ Title                    ║ Year ║ Rating ║
+</span></span><span style="display:flex;"><span>╠══════╬══════════════════════════╬══════╬════════╣
+</span></span><span style="display:flex;"><span>║  1   ║ The Shawshank Redemption ║ 1994 ║ 9.5    ║
+</span></span><span style="display:flex;"><span>║  2   ║ 12 Angry Men             ║ 1957 ║ 8.8    ║
+</span></span><span style="display:flex;"><span>║  3   ║ It&#39;s a Wonderful Life    ║ 1946 ║ 8.6    ║
+</span></span><span style="display:flex;"><span>╠══════╬══════════════════════════╬══════╬════════╣
+</span></span><span style="display:flex;"><span>║  4   ║ 2001: A Space Odyssey    ║ 1968 ║ 8.5    ║
+</span></span><span style="display:flex;"><span>║  5   ║ Blade Runner             ║ 1982 ║ 8.1    ║
+</span></span><span style="display:flex;"><span>╚══════╩══════════════════════════╩══════╩════════╝
+</span></span></code></pre></div><p><strong>FT_DOUBLE2_STYLE</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>╔══════╤══════════════════════════╤══════╤════════╗
+</span></span><span style="display:flex;"><span>║ Rank │ Title                    │ Year │ Rating ║
+</span></span><span style="display:flex;"><span>╠══════╪══════════════════════════╪══════╪════════╣
+</span></span><span style="display:flex;"><span>║  1   │ The Shawshank Redemption │ 1994 │ 9.5    ║
+</span></span><span style="display:flex;"><span>╟──────┼──────────────────────────┼──────┼────────╢
+</span></span><span style="display:flex;"><span>║  2   │ 12 Angry Men             │ 1957 │ 8.8    ║
+</span></span><span style="display:flex;"><span>╟──────┼──────────────────────────┼──────┼────────╢
+</span></span><span style="display:flex;"><span>║  3   │ It&#39;s a Wonderful Life    │ 1946 │ 8.6    ║
+</span></span><span style="display:flex;"><span>╠══════╪══════════════════════════╪══════╪════════╣
+</span></span><span style="display:flex;"><span>║  4   │ 2001: A Space Odyssey    │ 1968 │ 8.5    ║
+</span></span><span style="display:flex;"><span>╟──────┼──────────────────────────┼──────┼────────╢
+</span></span><span style="display:flex;"><span>║  5   │ Blade Runner             │ 1982 │ 8.1    ║
+</span></span><span style="display:flex;"><span>╚══════╧══════════════════════════╧══════╧════════╝
+</span></span></code></pre></div><p><strong>FT_BOLD_STYLE</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>┏━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━┳━━━━━━━━┓
+</span></span><span style="display:flex;"><span>┃ Rank ┃ Title                    ┃ Year ┃ Rating ┃
+</span></span><span style="display:flex;"><span>┣━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━╋━━━━━━━━┫
+</span></span><span style="display:flex;"><span>┃  1   ┃ The Shawshank Redemption ┃ 1994 ┃ 9.5    ┃
+</span></span><span style="display:flex;"><span>┃  2   ┃ 12 Angry Men             ┃ 1957 ┃ 8.8    ┃
+</span></span><span style="display:flex;"><span>┃  3   ┃ It&#39;s a Wonderful Life    ┃ 1946 ┃ 8.6    ┃
+</span></span><span style="display:flex;"><span>┣━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━╋━━━━━━━━┫
+</span></span><span style="display:flex;"><span>┃  4   ┃ 2001: A Space Odyssey    ┃ 1968 ┃ 8.5    ┃
+</span></span><span style="display:flex;"><span>┃  5   ┃ Blade Runner             ┃ 1982 ┃ 8.1    ┃
+</span></span><span style="display:flex;"><span>┗━━━━━━┻━━━━━━━━━━━━━━━━━━━━━━━━━━┻━━━━━━┻━━━━━━━━┛
+</span></span></code></pre></div><p><strong>FT_BOLD2_STYLE</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>┏━━━━━━┯━━━━━━━━━━━━━━━━━━━━━━━━━━┯━━━━━━┯━━━━━━━━┓
+</span></span><span style="display:flex;"><span>┃ Rank │ Title                    │ Year │ Rating ┃
+</span></span><span style="display:flex;"><span>┣━━━━━━┿━━━━━━━━━━━━━━━━━━━━━━━━━━┿━━━━━━┿━━━━━━━━┫
+</span></span><span style="display:flex;"><span>┃  1   │ The Shawshank Redemption │ 1994 │ 9.5    ┃
+</span></span><span style="display:flex;"><span>┠──────┼──────────────────────────┼──────┼────────┨
+</span></span><span style="display:flex;"><span>┃  2   │ 12 Angry Men             │ 1957 │ 8.8    ┃
+</span></span><span style="display:flex;"><span>┠──────┼──────────────────────────┼──────┼────────┨
+</span></span><span style="display:flex;"><span>┃  3   │ It&#39;s a Wonderful Life    │ 1946 │ 8.6    ┃
+</span></span><span style="display:flex;"><span>┣━━━━━━┿━━━━━━━━━━━━━━━━━━━━━━━━━━┿━━━━━━┿━━━━━━━━┫
+</span></span><span style="display:flex;"><span>┃  4   │ 2001: A Space Odyssey    │ 1968 │ 8.5    ┃
+</span></span><span style="display:flex;"><span>┠──────┼──────────────────────────┼──────┼────────┨
+</span></span><span style="display:flex;"><span>┃  5   │ Blade Runner             │ 1982 │ 8.1    ┃
+</span></span><span style="display:flex;"><span>┗━━━━━━┷━━━━━━━━━━━━━━━━━━━━━━━━━━┷━━━━━━┷━━━━━━━━┛
+</span></span></code></pre></div><p><strong>FT_FRAME_STYLE</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>▛▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▜
+</span></span><span style="display:flex;"><span>▌ Rank ┃ Title                    ┃ Year ┃ Rating ▐
+</span></span><span style="display:flex;"><span>▌━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━╋━━━━━━━━▐
+</span></span><span style="display:flex;"><span>▌  1   ┃ The Shawshank Redemption ┃ 1994 ┃ 9.5    ▐
+</span></span><span style="display:flex;"><span>▌  2   ┃ 12 Angry Men             ┃ 1957 ┃ 8.8    ▐
+</span></span><span style="display:flex;"><span>▌  3   ┃ It&#39;s a Wonderful Life    ┃ 1946 ┃ 8.6    ▐
+</span></span><span style="display:flex;"><span>▌━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━╋━━━━━━━━▐
+</span></span><span style="display:flex;"><span>▌  4   ┃ 2001: A Space Odyssey    ┃ 1968 ┃ 8.5    ▐
+</span></span><span style="display:flex;"><span>▌  5   ┃ Blade Runner             ┃ 1982 ┃ 8.1    ▐
+</span></span><span style="display:flex;"><span>▙▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▟
+</span></span></code></pre></div>
+    </div>
+    
+      
+        <div class="pagination">
+          <div class="pagination__title">
+            <span class="pagination__title-h"
+              >Read other posts</span
+            >
+            <hr />
+          </div>
+          <div class="pagination__buttons">
+            
+            
+              <span class="button next">
+                <a href="https://yuyang.run/posts/cmu15-445%E5%AE%9E%E9%AA%8C/bustub%E4%B8%AD%E4%BD%BF%E7%94%A8%E7%9A%84%E4%B8%89%E6%96%B9%E4%BB%B6-linenoise/">
+                  <span class="button__text">BusTub中使用的三方件-linenoise</span>
+                  <span class="button__icon">→</span>
+                </a>
+              </span>
+            
+          </div>
+        </div>
+      
+    
+
+    
+      
+        
+
+      
+    
+  </article>
+
+      </div>
+
+      
+        <footer class="footer">
+  <div class="footer__inner">
+    
+      <a
+  href="https://yuyang.run"
+  class="logo"
+  style="text-decoration: none;"
+>
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367" />
+</svg>
+</span>
+    <span class="logo__text"
+      >余为民同志</span
+    >
+    <span class="logo__cursor"></span>
+  
+</a>
+
+      <div class="copyright">
+        <span>© 2024 Powered by <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a></span>
+        <span><a href="https://github.com/panr/hugo-theme-hello-friend" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+    
+  </div>
+</footer>
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+
+      
+    </div>
+
+    
+  </body>
+</html>

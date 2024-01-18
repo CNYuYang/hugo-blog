@@ -175,30 +175,27 @@
           <h2>目录</h2>
           <aside class="table-of-contents"><nav id="TableOfContents">
   <ul>
-    <li><a href="#locks和latches对比">LOCKS和LATCHES对比</a></li>
-    <li><a href="#latch的模式">latch的模式</a></li>
-    <li><a href="#latch的实现">latch的实现</a>
+    <li><a href="#latches介绍">Latches介绍</a>
       <ul>
-        <li><a href="#操作系统提供的阻塞锁">操作系统提供的阻塞锁</a></li>
-        <li><a href="#test-and-set-spin-latchtas">Test-and-Set Spin Latch（TAS）</a></li>
-        <li><a href="#读写锁">读写锁</a></li>
+        <li><a href="#locks和latches对比">LOCKS和LATCHES对比</a></li>
+        <li><a href="#latch的模式">latch的模式</a></li>
+        <li><a href="#latch的实现">latch的实现</a></li>
       </ul>
     </li>
-  </ul>
-
-  <ul>
-    <li><a href="#方案一对page页加锁">方案一：对page页加锁</a></li>
-    <li><a href="#方案二对solt槽位加锁">方案二：对solt槽位加锁</a></li>
-  </ul>
-
-  <ul>
-    <li><a href="#基础实现">基础实现</a>
+    <li><a href="#哈希表的锁保护">哈希表的锁保护</a>
       <ul>
-        <li><a href="#查找id为38的节点">查找id为38的节点</a></li>
-        <li><a href="#删除id为38的节点">删除id为38的节点</a></li>
+        <li><a href="#方案一对page页加锁">方案一：对page页加锁</a></li>
+        <li><a href="#方案二对solt槽位加锁">方案二：对solt槽位加锁</a></li>
       </ul>
     </li>
-    <li><a href="#优化实现">优化实现</a></li>
+    <li><a href="#b树的锁保护">B+树的锁保护</a>
+      <ul>
+        <li><a href="#基础实现">基础实现</a></li>
+        <li><a href="#优化实现">优化实现</a></li>
+      </ul>
+    </li>
+    <li><a href="#叶子节点的扫描">叶子节点的扫描</a></li>
+    <li><a href="#延迟父节点刷新">延迟父节点刷新</a></li>
   </ul>
 </nav></aside>
         </div>
@@ -247,81 +244,81 @@
     <div class="post-content">
 
       <p>我们假设迄今为止讨论过的所有数据结构都是单线程的。但我们需要允许多线程安全地访问我们的数据结构，以利用额外的 CPU 内核。</p>
-<h1 id="latches介绍">
+<h2 id="latches介绍">
   Latches介绍
   <a href="#latches%e4%bb%8b%e7%bb%8d" class="h-anchor" aria-hidden="true">#</a>
-</h1>
-<h2 id="locks和latches对比">
+</h2>
+<h3 id="locks和latches对比">
   LOCKS和LATCHES对比
   <a href="#locks%e5%92%8clatches%e5%af%b9%e6%af%94" class="h-anchor" aria-hidden="true">#</a>
-</h2>
+</h3>
 <p>讨论DBMS如何保护其内部元素的时候，lock和latch之间有重要区别。</p>
 <p><strong>Locks</strong></p>
 <p>Lock是一个更高层次的逻辑基元(logical primitive)， 它用来保护数据库的内容（如tuples、tables、databases）不受其他事务（transactions）的影响。事务将在整个持续时间内持有一个lock。数据库系统可以在运行查询的过程中向用户暴露正在持有的lock。lock需要能够回滚（rollback changes）</p>
 <p><strong>Latches</strong></p>
 <p>Latch是用于DBMSD内部数据结构（例如：数据结构、内存区域）的关键部分的低级保护基元，不受其他线程影响。Latch只在正在进行的操作的持续时间内保持。Latch不需要回滚变化（rollback change）。</p>
-<h2 id="latch的模式">
+<h3 id="latch的模式">
   latch的模式
   <a href="#latch%e7%9a%84%e6%a8%a1%e5%bc%8f" class="h-anchor" aria-hidden="true">#</a>
-</h2>
+</h3>
 <p>有两种模式的latch：</p>
 <p>READ：</p>
 <p>多个线程可以允许读同一项。一个线程可以获取read latch，即使另一个线程已经持有。</p>
 <p>WRITE:</p>
 <p>只有一个线程才能允许访问该项。如果另一个线程已经持有write latch，则另一个不能获得。</p>
-<h2 id="latch的实现">
+<h3 id="latch的实现">
   latch的实现
   <a href="#latch%e7%9a%84%e5%ae%9e%e7%8e%b0" class="h-anchor" aria-hidden="true">#</a>
-</h2>
+</h3>
 <p>用来实现latch的基本原理是通过现代CPU提供的atomic compare-and-swap (CAS)指令。借此，一个线程可以检查一个内存位置的内容，看它是否用某个值。如果有，则CPU将用一个新的值来交换旧的值，否则，该内存位置将保持不被修改。</p>
 <p>在DBMS实现latch用几种方法：每种都有不同的权衡。工程复杂性和运行时性能都有不同权衡。这些test-and-set是以原子方式进行的。</p>
-<h3 id="操作系统提供的阻塞锁">
+<h4 id="操作系统提供的阻塞锁">
   操作系统提供的阻塞锁
   <a href="#%e6%93%8d%e4%bd%9c%e7%b3%bb%e7%bb%9f%e6%8f%90%e4%be%9b%e7%9a%84%e9%98%bb%e5%a1%9e%e9%94%81" class="h-anchor" aria-hidden="true">#</a>
-</h3>
+</h4>
 <p>Latch的一个可能的实现是OS的内置互斥机制。Linux提供了Futex（快速用户控件互斥）。由(1) 用户空间的自旋latch和(2) OS级互斥组成。如果DBMS能够获得用户空间的latch，那么latch就会被设置。在DBMS看来，它是一个单一的latch，尽管内部其实有2个。如果DBMS不能获取用户空间的latch，则会进入内核并试图获取更加昂贵的mutex。如果又不能获得，则线程会通知OS它在mutex被阻塞，然后取消调度。
 OS mutex在DBMS中，一般是不好的决定。因为它有OS控制，而且开销大。</p>
 <p>例子：std::mutex</p>
 <p>优点：使用简单</p>
 <p>缺点：消耗大。不可扩展。因为OS的调度。</p>
-<h3 id="test-and-set-spin-latchtas">
+<h4 id="test-and-set-spin-latchtas">
   Test-and-Set Spin Latch（TAS）
   <a href="#test-and-set-spin-latchtas" class="h-anchor" aria-hidden="true">#</a>
-</h3>
+</h4>
 <p>自旋锁比OS mutex更有效。因为它被DBMS控制。自旋锁基本上是线程试图更新的内存位置（比如将一个bool设为true）。一个线程执行CAS来尝试更新内存位置。DBMS可以控制如果不能获得latch会发生什么。比如可以选择尝试再次尝试（while循环）或允许操作系统取消调度。所以这种方式给了DBMS更多控制权。</p>
 <p>例子：std::atomic<!-- raw HTML omitted --></p>
 <p>优点：上锁解锁更高效。单一指令即可。</p>
 <p>缺点：不具有扩展性，也不适合缓存。因为在多线程中，CAS指令将在不同指令多次执行。浪费的指令会在高竞争环境中堆积起来。比较浪费CPU。（一直停在while循环上）</p>
-<h3 id="读写锁">
+<h4 id="读写锁">
   读写锁
   <a href="#%e8%af%bb%e5%86%99%e9%94%81" class="h-anchor" aria-hidden="true">#</a>
-</h3>
+</h4>
 <p>Mutex和自旋锁不区分读写。DBMS需要一种允许并发读取的方法，所以如果用程序大量读取，就会有更好的性能。因为读可以共享，而不是等待。</p>
 <p>读写锁允许latch以读或者写的模式保持。可以跟踪有多少线程持有该latch，并在每种模式下等待获取latch。读写锁使用前两种latch实现的一种作为基础，并用额外的逻辑来处理读写队列。不同的DBMS可以有不同的策略来处理。</p>
 <p>例子：std::shared_mutex</p>
 <p>优点：并发读取</p>
 <p>缺点：必须维护读写队列。以防饥饿。所以内存开销更大。</p>
-<h1 id="哈希表的锁保护">
+<h2 id="哈希表的锁保护">
   哈希表的锁保护
   <a href="#%e5%93%88%e5%b8%8c%e8%a1%a8%e7%9a%84%e9%94%81%e4%bf%9d%e6%8a%a4" class="h-anchor" aria-hidden="true">#</a>
-</h1>
+</h2>
 <p>由于线程访问的数据结构优先，因此在静态哈希表中支持并发访问很简单。例如：所有线程从槽中移动到下一个槽的时候，都自上而下移动。线程每次也只访问一个页面/槽。这种情况下死锁是不可能的，因为没有两个线程可以争夺对方的latch。当需要调整表的大小的时候，我们可以直接对整个表进行全局锁存。</p>
-<h2 id="方案一对page页加锁">
+<h3 id="方案一对page页加锁">
   方案一：对page页加锁
   <a href="#%e6%96%b9%e6%a1%88%e4%b8%80%e5%af%b9page%e9%a1%b5%e5%8a%a0%e9%94%81" class="h-anchor" aria-hidden="true">#</a>
-</h2>
+</h3>
 <p>如下图所示，如果锁的粒度是针对page页进行的。那么线程1获取了整个page页的读锁，线程2获取线程1所在槽位下方的槽位的写锁时候也需要进行等待。</p>
 <p><img src="/images/15445/09-01.png" alt=""></p>
-<h2 id="方案二对solt槽位加锁">
+<h3 id="方案二对solt槽位加锁">
   方案二：对solt槽位加锁
   <a href="#%e6%96%b9%e6%a1%88%e4%ba%8c%e5%af%b9solt%e6%a7%bd%e4%bd%8d%e5%8a%a0%e9%94%81" class="h-anchor" aria-hidden="true">#</a>
-</h2>
+</h3>
 <p>如下图所示，线程1只获取A所在槽位的读锁，不会影响线程2获取C所在槽位的写锁。</p>
 <p><img src="/images/15445/09-02.png" alt=""></p>
-<h1 id="b树的锁保护">
+<h2 id="b树的锁保护">
   B+树的锁保护
   <a href="#b%e6%a0%91%e7%9a%84%e9%94%81%e4%bf%9d%e6%8a%a4" class="h-anchor" aria-hidden="true">#</a>
-</h1>
+</h2>
 <p>B+树的锁存主要用于防止以下问题：</p>
 <ul>
 <li>不同线程试图同时修改同一个结点的内容</li>
@@ -343,31 +340,33 @@ OS mutex在DBMS中，一般是不好的决定。因为它有OS控制，而且开
 <p>若子结点被认为是安全的，则释放父节点的latch。一个安全的节点是在更新的时候不会分裂、合并或者重新分配的结点。</p>
 </li>
 </ol>
+<blockquote>
 <p>注意：安全的概念取决于操作是插入还是删除。一个完整的结点对于删除是安全的，因为不需要合并，但对于插入就不安全了，因为可能需要分割结点！注意：读锁不需要担心安全条件！</p>
-<h2 id="基础实现">
+</blockquote>
+<h3 id="基础实现">
   基础实现
   <a href="#%e5%9f%ba%e7%a1%80%e5%ae%9e%e7%8e%b0" class="h-anchor" aria-hidden="true">#</a>
-</h2>
+</h3>
 <p>查找：从root节点开始，向下查找；</p>
 <p>→在子节点获得读锁</p>
 <p>→然后释放父节点的读锁</p>
 <p>插入/删除：从根节点开始向下，根据需要获取写锁。一旦获取到子节点的写锁，请检查是否安全：</p>
 <p>→如果孩子是安全的，释放祖先上的所有获取的锁。</p>
-<h3 id="查找id为38的节点">
+<h4 id="查找id为38的节点">
   查找id为38的节点
   <a href="#%e6%9f%a5%e6%89%beid%e4%b8%ba38%e7%9a%84%e8%8a%82%e7%82%b9" class="h-anchor" aria-hidden="true">#</a>
-</h3>
+</h4>
 <p><img src="/images/15445/09-05.png" alt=""></p>
-<h3 id="删除id为38的节点">
+<h4 id="删除id为38的节点">
   删除id为38的节点
   <a href="#%e5%88%a0%e9%99%a4id%e4%b8%ba38%e7%9a%84%e8%8a%82%e7%82%b9" class="h-anchor" aria-hidden="true">#</a>
-</h3>
+</h4>
 <p>在到达最后两个节点时，判断为安全节点，便会释放掉此前所有获取的节点：</p>
 <p><img src="/images/15445/09-06.png" alt=""></p>
-<h2 id="优化实现">
+<h3 id="优化实现">
   优化实现
   <a href="#%e4%bc%98%e5%8c%96%e5%ae%9e%e7%8e%b0" class="h-anchor" aria-hidden="true">#</a>
-</h2>
+</h3>
 <p>基本的Latch Crabbing算法的问题是：事务在每次插入/删除操作的时候总是获得根上的独占锁存器，这限制了并行性。</p>
 <p>相反，我们可以假设必须调整大小（分割、合并结点）的情况很少，因此事务可以获得共享锁存器，直到叶结点。每个事务都会假设通往目标叶子结点的路径是安全的，并使用READ锁存器来抓取（Crabbing）来到达，并进行检验（是否安全）。如果不安全，则我们终止操作，并重新操作，这次用WRITE锁存器来进行。</p>
 <p>查找:</p>
@@ -377,10 +376,10 @@ OS mutex在DBMS中，一般是不好的决定。因为它有OS控制，而且开
 <blockquote>
 <p>这就是乐观锁的实现。认为需要拆分、合并的重平衡的几率很小。所以一路上获取读锁，最后发现需要叶子节点的操作是不安全的，再从头获取写锁。</p>
 </blockquote>
-<h1 id="叶子节点的扫描">
+<h2 id="叶子节点的扫描">
   叶子节点的扫描
   <a href="#%e5%8f%b6%e5%ad%90%e8%8a%82%e7%82%b9%e7%9a%84%e6%89%ab%e6%8f%8f" class="h-anchor" aria-hidden="true">#</a>
-</h1>
+</h2>
 <ul>
 <li>
 <p>之前两个算法都是从上到下的。这意味着线程只能从低于当前结点中获取锁存器。如果想要的锁存器不能用，则线程必须等待，直到它变得可用。鉴于此，永远不可能出现死锁</p>
@@ -392,10 +391,10 @@ OS mutex在DBMS中，一般是不好的决定。因为它有OS控制，而且开
 <p>因此，程序员唯一处理这个问题的方法就是通过code discipline。叶子结点的兄弟结点的锁存器获取协议必须支持“无等待”模式。也就是说，B+树的代码必须应对锁存器获取失败的问题。由于锁存器旨在被（相对）短暂的持有，如果一个线程试图在叶子结点上获取锁存器，但该锁存器不可用，那么它应该迅速中止其操作（释放它所持有的任何锁存器），并重新启动操作。</p>
 </li>
 </ul>
-<h1 id="延迟父节点刷新">
+<h2 id="延迟父节点刷新">
   延迟父节点刷新
   <a href="#%e5%bb%b6%e8%bf%9f%e7%88%b6%e8%8a%82%e7%82%b9%e5%88%b7%e6%96%b0" class="h-anchor" aria-hidden="true">#</a>
-</h1>
+</h2>
 <p>这是一个优化的思路，就是当知道需要重平衡时，先再全局进行标记。再下一次插入时再进行更新操作：</p>
 <p><img src="/images/15445/09-07.png" alt=""></p>
 

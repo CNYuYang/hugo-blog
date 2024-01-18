@@ -175,23 +175,16 @@
           <h2>目录</h2>
           <aside class="table-of-contents"><nav id="TableOfContents">
   <ul>
-    <li><a href="#2路外排序">2路外排序</a>
+    <li><a href="#外排序算法">外排序算法</a>
       <ul>
-        <li><a href="#第0步">第0步</a></li>
-        <li><a href="#第123步">第1、2、3&hellip;步</a></li>
-        <li><a href="#两份缓存优化">两份缓存优化</a></li>
-        <li><a href="#通用k路外排序">通用K路外排序</a></li>
+        <li><a href="#2路外排序">2路外排序</a></li>
+        <li><a href="#b树排序">B+树排序</a></li>
       </ul>
     </li>
-    <li><a href="#b树排序">B+树排序</a></li>
-  </ul>
-
-  <ul>
-    <li><a href="#排序">排序</a></li>
-    <li><a href="#哈希">哈希</a>
+    <li><a href="#聚合操作">聚合操作</a>
       <ul>
-        <li><a href="#外部哈希聚合">外部哈希聚合</a></li>
-        <li><a href="#哈希聚合">哈希聚合</a></li>
+        <li><a href="#排序">排序</a></li>
+        <li><a href="#哈希">哈希</a></li>
       </ul>
     </li>
   </ul>
@@ -241,10 +234,10 @@
 
     <div class="post-content">
 
-      <h1 id="外排序算法">
+      <h2 id="外排序算法">
   外排序算法
   <a href="#%e5%a4%96%e6%8e%92%e5%ba%8f%e7%ae%97%e6%b3%95" class="h-anchor" aria-hidden="true">#</a>
-</h1>
+</h2>
 <p>DBMS需要对数据进行排序，因为在关系模型下，表中的tuple没有特定的顺序，排序在ORDER BY、GROUP BY、JOIN和DISTINCT操作符中可能使用。如果需要排序的数据在内存中可以放下，那么DBMS可以使用标准的排序算法（qsort）。如果放不下，则需要使用external sorting，能够根据需要溢出到磁盘，并且倾向于顺序而不是随机I/O。</p>
 <p>如果一个查询包含一个带有LIMIT的ORDER BY，则DBMS只需要扫描一次数据就可以找到前N个元素。这就是所谓的 Top-N Heap Sort。堆排序的理想情况是前N个元素可以放在内存中，这样DBMS只需要维护一个内存中的堆排序优先队列即可。</p>
 <p>对太大而无法装入内存的数据进行排序的标准算法是外部合并排序（external merge sort）。是一个分治排序算法，将数据集分成独立的运行，然后对它们进行单独排序。它们可以根据需要将runs溢出到磁盘中，然后一次读回它们。该算法分两个阶段：</p>
@@ -252,15 +245,15 @@
 <p>首先该算法对适合主内存的小块数据进行排序，然后将排序后的页面写入磁盘。</p>
 <p>Phase #2 - Merge:</p>
 <p>然后，将排序后的子文件合并为一个更大的单一文件。</p>
-<h2 id="2路外排序">
+<h3 id="2路外排序">
   2路外排序
   <a href="#2%e8%b7%af%e5%a4%96%e6%8e%92%e5%ba%8f" class="h-anchor" aria-hidden="true">#</a>
-</h2>
+</h3>
 <p>数据一共被分配在N个page页中，在我们的数据库管理系统中，有一个B大小的缓存池。</p>
-<h3 id="第0步">
+<h4 id="第0步">
   第0步
   <a href="#%e7%ac%ac0%e6%ad%a5" class="h-anchor" aria-hidden="true">#</a>
-</h3>
+</h4>
 <ul>
 <li>
 <p>读取B页大小的数据进内存</p>
@@ -269,10 +262,10 @@
 <p>将他们排序，并写回磁盘</p>
 </li>
 </ul>
-<h3 id="第123步">
+<h4 id="第123步">
   第1、2、3&hellip;步
   <a href="#%e7%ac%ac123%e6%ad%a5" class="h-anchor" aria-hidden="true">#</a>
-</h3>
+</h4>
 <ul>
 <li>
 <p>两两读取上一步排好序的数据，进行归并操作</p>
@@ -283,34 +276,34 @@
 </ul>
 <p><img src="/images/15445/10-01.png" alt=""></p>
 <p>需要合并的次数：1+log2N</p>
-<p>总的IO次数：2N*(# of passes</p>
+<p>总的IO次数：2N*(## of passes</p>
 <p><img src="/images/15445/10-02.png" alt=""></p>
-<h3 id="两份缓存优化">
+<h4 id="两份缓存优化">
   两份缓存优化
   <a href="#%e4%b8%a4%e4%bb%bd%e7%bc%93%e5%ad%98%e4%bc%98%e5%8c%96" class="h-anchor" aria-hidden="true">#</a>
-</h3>
+</h4>
 <p>在处理第一页数据时，可以在后台将第二页的数据加载进内存</p>
-<h3 id="通用k路外排序">
+<h4 id="通用k路外排序">
   通用K路外排序
   <a href="#%e9%80%9a%e7%94%a8k%e8%b7%af%e5%a4%96%e6%8e%92%e5%ba%8f" class="h-anchor" aria-hidden="true">#</a>
-</h3>
+</h4>
 <p>该算法的一般版本允许DBMS使用3个以上的缓冲页。</p>
 <p>B表示缓冲页的总数，在排序阶段，该算法可以一次读取B页，并将N/B个排序好了的runs写回磁盘。合并阶段，可以在每个通道中合并最多B - 1个runs，同样为合并后的数据使用一个缓冲页，并根据需要写回磁盘。</p>
-<p>在一般的版本中，该算法要经历1+log(B-1)[N/B]个passes（1个是排序阶段，剩下是归并阶段）。然后，总共的IO花费是2N*(# of passes)因为这个算法每一个pass对每一个page都需要一次读和写。</p>
-<h2 id="b树排序">
+<p>在一般的版本中，该算法要经历1+log(B-1)[N/B]个passes（1个是排序阶段，剩下是归并阶段）。然后，总共的IO花费是2N*(## of passes)因为这个算法每一个pass对每一个page都需要一次读和写。</p>
+<h3 id="b树排序">
   B+树排序
   <a href="#b%e6%a0%91%e6%8e%92%e5%ba%8f" class="h-anchor" aria-hidden="true">#</a>
-</h2>
+</h3>
 <p>对于DBMS，使用现有的B+Tree索引来帮助排序，而不是使用外部的合并排序算法，有时候是很有利的。特别是如果该索引是一个聚类索引，DBMS可以直接遍历B+树直接获取数据。（因为是聚类，所以数据将以正确的形式存储，IO访问是连续的）。所以会总比外部合并排序好，因为不需要计算。另一方面，如果索引是非聚类的，则遍历树几乎总是更坏的，因为数据不连续！几乎所有的记录访问都需要磁盘读取。</p>
-<h1 id="聚合操作">
+<h2 id="聚合操作">
   聚合操作
   <a href="#%e8%81%9a%e5%90%88%e6%93%8d%e4%bd%9c" class="h-anchor" aria-hidden="true">#</a>
-</h1>
+</h2>
 <p>查询计划 聚合运算符将一个或多个tuple的值折叠成一个标量值。有两种实现聚合的方法：（1）排序（2）哈希</p>
-<h2 id="排序">
+<h3 id="排序">
   排序
   <a href="#%e6%8e%92%e5%ba%8f" class="h-anchor" aria-hidden="true">#</a>
-</h2>
+</h3>
 <p>DBMS首先根据GROUP BY对tuples进行排序。如果所有数据都在缓冲池中，它可以使用内存中的排序算法（qsort）。如果数据大小比内存大，则可以使用外部合并排序算法。然后DBMS对排序后的数据进行顺序扫描来计算聚合。操作符的输出将在key上进行排序。</p>
 <p>在执行排序聚合，重要是要对查询操作进行排序，以效率最大化。例如：如果查询需要一个过滤器，最好先执行过滤器，然后对过滤后的数据进行排序，以减少数据量</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">DISTINCT</span> cid
@@ -332,14 +325,14 @@
 <p>移除重复数据</p>
 </li>
 </ol>
-<h2 id="哈希">
+<h3 id="哈希">
   哈希
   <a href="#%e5%93%88%e5%b8%8c" class="h-anchor" aria-hidden="true">#</a>
-</h2>
-<h3 id="外部哈希聚合">
+</h3>
+<h4 id="外部哈希聚合">
   外部哈希聚合
   <a href="#%e5%a4%96%e9%83%a8%e5%93%88%e5%b8%8c%e8%81%9a%e5%90%88" class="h-anchor" aria-hidden="true">#</a>
-</h3>
+</h4>
 <p>在计算聚合时，散列的计算成本比排序低。DBMS在扫描表的时候会填充一个暂时的哈希表（ephemeral hash table）。对每一条记录，检查哈希表中是否已经有一个条目，并进行适当的修改。如果哈希表过大，无法容纳在内存，则DBMS可以将其溢出到磁盘上。有两个阶段来完成这个任务：</p>
 <p>Phase #1 – Partition:</p>
 <p>使用哈希函数h1，根据目标的hash key将tuple分割到磁盘中的不同分区。这可以将所有匹配的tuple放在同一个分区中。DBMS通过输出缓冲区将分区溢出（spill）到磁盘上。</p>
@@ -347,10 +340,10 @@
 <p>Phase #2 – ReHash:</p>
 <p>对磁盘上的每一个区，将其页面读入内存，并根据第二个哈希函数h2, 建立一个内存哈希表。通过这个哈希表的每一个桶，把匹配的tuple汇聚在一起。计算聚合。这假设每个分区都可以被内存容纳。</p>
 <p><img src="/images/15445/10-05.png" alt=""></p>
-<h3 id="哈希聚合">
+<h4 id="哈希聚合">
   哈希聚合
   <a href="#%e5%93%88%e5%b8%8c%e8%81%9a%e5%90%88" class="h-anchor" aria-hidden="true">#</a>
-</h3>
+</h4>
 <p>在ReHash阶段，DBMS可以存储形式为（GroupByKey -&gt; RunningValue）的配对，以计算聚合。RunningValue的内容取决于聚合函数。要在哈希表中插入一个新tuple。</p>
 <p>如果它找到一个匹配的GroupByKey，那么就适当地更新RunningValue。</p>
 <p>否则就插入一个新的（GroupByKey→RunningValue）对。</p>

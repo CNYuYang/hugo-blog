@@ -175,21 +175,21 @@
           <h2>目录</h2>
           <aside class="table-of-contents"><nav id="TableOfContents">
   <ul>
-    <li><a href="#迭代模型">迭代模型</a></li>
-    <li><a href="#物化模型">物化模型</a></li>
-    <li><a href="#向量化批处理模型">向量化/批处理模型</a></li>
-  </ul>
-
-  <ul>
-    <li><a href="#顺序扫描">顺序扫描</a>
+    <li><a href="#处理模型">处理模型</a>
       <ul>
-        <li><a href="#区域地图">区域地图</a></li>
-        <li><a href="#推迟物化">推迟物化</a></li>
-        <li><a href="#堆聚簇">堆聚簇</a></li>
+        <li><a href="#迭代模型">迭代模型</a></li>
+        <li><a href="#物化模型">物化模型</a></li>
+        <li><a href="#向量化批处理模型">向量化/批处理模型</a></li>
       </ul>
     </li>
-    <li><a href="#索引扫描">索引扫描</a></li>
-    <li><a href="#多索引">多索引</a></li>
+    <li><a href="#访问方式">访问方式</a>
+      <ul>
+        <li><a href="#顺序扫描">顺序扫描</a></li>
+        <li><a href="#索引扫描">索引扫描</a></li>
+        <li><a href="#多索引">多索引</a></li>
+      </ul>
+    </li>
+    <li><a href="#表达式计算">表达式计算</a></li>
   </ul>
 </nav></aside>
         </div>
@@ -240,10 +240,10 @@
       <p>通常一个 SQL 语句会被组织成如图的树状查询计划，数据从叶节点流到根节点，查询结果在根节点中得出。</p>
 <p>通常，树上的操作符 operators 是二元的 (1~2个子运算符)。</p>
 <p><img src="/images/15445/12-01.png" alt=""></p>
-<h1 id="处理模型">
+<h2 id="处理模型">
   处理模型
   <a href="#%e5%a4%84%e7%90%86%e6%a8%a1%e5%9e%8b" class="h-anchor" aria-hidden="true">#</a>
-</h1>
+</h2>
 <p>DBMS 的 processing model 定义了系统如何执行一个 query plan。目前主要有三种模型：</p>
 <ul>
 <li>迭代模型（Iterator Model）</li>
@@ -251,10 +251,10 @@
 <li>向量化/批处理模型（Vectorized/Batch Model）</li>
 </ul>
 <p>不同模型适用于不同的 workload。</p>
-<h2 id="迭代模型">
+<h3 id="迭代模型">
   迭代模型
   <a href="#%e8%bf%ad%e4%bb%a3%e6%a8%a1%e5%9e%8b" class="h-anchor" aria-hidden="true">#</a>
-</h2>
+</h3>
 <p>最常见的 processing model，也称为 Volcano/Pipeline Model。</p>
 <p>query plan 中的每步 operator 都实现一个<code>next</code>函数，<code>每次调用时，operator 返回一个 tuple 或者 null</code>，后者表示数据已经遍历完毕。operator 本身实现一个循环，每次调用其 child operators 的 next 函数，从它们那边获取下一条数据供自己操作，这样整个 query plan 就被从上至下地串联起来：</p>
 <p><img src="/images/15445/12-05.png" alt=""></p>
@@ -263,10 +263,10 @@
 <li>有些 operators 一直阻塞，直到 children 返回所有 tuples，这些 operators 被成为 pipeline breakers。如 Joins, Subqueries 和 Order By。</li>
 <li>在该模型中实现 Output Control 比较容易，如 Limit，只用按需调用 next 即可 (一旦获取了所需的足够 tuples 就停止对 child operator 调用 next)。</li>
 </ul>
-<h2 id="物化模型">
+<h3 id="物化模型">
   物化模型
   <a href="#%e7%89%a9%e5%8c%96%e6%a8%a1%e5%9e%8b" class="h-anchor" aria-hidden="true">#</a>
-</h2>
+</h3>
 <p>每个 operator <code>一次处理其所有输入</code>，然后<code>将所有结果一次性输出</code>。DBMS 会将一些参数传递到 operator 中防止处理过多的数据，这是一种 bottom-to-top 的思路。</p>
 <p>每个查询计划操作符都实现一个 <code>Output</code> 函数：</p>
 <ul>
@@ -279,10 +279,10 @@
 <li>更适合 OLTP 场景，因为后者通常指需要处理少量的 tuples，这样能减少不必要的执行、调度成本。</li>
 <li>不太适合会产生大量中间结果的 OLAP 查询，因为DBMS可能不得不在 operators 之间将这些结果溢出到磁盘。</li>
 </ul>
-<h2 id="向量化批处理模型">
+<h3 id="向量化批处理模型">
   向量化/批处理模型
   <a href="#%e5%90%91%e9%87%8f%e5%8c%96%e6%89%b9%e5%a4%84%e7%90%86%e6%a8%a1%e5%9e%8b" class="h-anchor" aria-hidden="true">#</a>
-</h2>
+</h3>
 <p>Vectorization Model 是 Iterator 与 Materialization Model 折衷的一种模型：</p>
 <p>每个 operator 实现一个 <code>next</code> 函数，但<code>每次 next 调用返回一批 tuples</code>，而不是单个 tuple</p>
 <ul>
@@ -295,25 +295,25 @@
 <li>允许 operators 使用 vectorized instructions (SIMD) 来批量处理 tuples</li>
 </ul>
 <p>目前在使用这种模型的 DBMS 有 VectorWise, Peloton, Preston, SQL Server, ORACLE, DB2 等。</p>
-<h1 id="访问方式">
+<h2 id="访问方式">
   访问方式
   <a href="#%e8%ae%bf%e9%97%ae%e6%96%b9%e5%bc%8f" class="h-anchor" aria-hidden="true">#</a>
-</h1>
+</h2>
 <p>access method 指的是 DBMS 从数据表中获取数据的方式，它并没有在 relational algebra 中定义。主要有三种方法：</p>
 <ul>
 <li>顺序扫描(Sequential Scan)</li>
 <li>索引扫描(Index Scan)</li>
 <li>多索引(Multi-Index/&ldquo;Bitmap&rdquo; Scan)</li>
 </ul>
-<h2 id="顺序扫描">
+<h3 id="顺序扫描">
   顺序扫描
   <a href="#%e9%a1%ba%e5%ba%8f%e6%89%ab%e6%8f%8f" class="h-anchor" aria-hidden="true">#</a>
-</h2>
+</h3>
 <p>sequential scan 就是按顺序从 table 所在的 pages 中取出 tuple，这种方式是 DBMS 能做的最坏的打算。</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">for</span> page <span style="color:#f92672">in</span> table<span style="color:#f92672">.</span>pages:
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> t <span style="color:#f92672">in</span> page<span style="color:#f92672">.</span>tuples:
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> evalPred(t):
-</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># do something</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">## do something</span>
 </span></span></code></pre></div><p>DBMS 内部需要维护一个 cursor 来追踪之前访问到的位置 (page/slot)。</p>
 <p>Sequential Scan 是最差的方案，因此也针对地有许多优化方案：</p>
 <ul>
@@ -324,27 +324,27 @@
 <li>(本节) Late Materialization</li>
 <li>(本节) Heap Clustering</li>
 </ul>
-<h3 id="区域地图">
+<h4 id="区域地图">
   区域地图
   <a href="#%e5%8c%ba%e5%9f%9f%e5%9c%b0%e5%9b%be" class="h-anchor" aria-hidden="true">#</a>
-</h3>
+</h4>
 <p>预先为每个 page 计算好 attribute values 的一些统计值 (最大值，最小值，平均值)，并存入 zone map 中。DBMS 在访问 page 之前先检查 zone map，确认一下是否要继续访问，如下图所示：</p>
 <p><img src="/images/15445/12-02.png" alt=""></p>
 <p>当 DBMS 发现 page 的 Zone Map 中记录 val 的最大值为 400 时，就没有必要访问这个 page。</p>
-<h3 id="推迟物化">
+<h4 id="推迟物化">
   推迟物化
   <a href="#%e6%8e%a8%e8%bf%9f%e7%89%a9%e5%8c%96" class="h-anchor" aria-hidden="true">#</a>
-</h3>
+</h4>
 <p>对于列存储的 DBMS，我们可以延迟将数据从一个 operator 传递到另一个 operator 的时间。若某列数据在查询树上方并不需要，那我们只需要向上传递 offset 或者将 column id 即可。该方法允许稍后才去获取所需的数据。</p>
-<h3 id="堆聚簇">
+<h4 id="堆聚簇">
   堆聚簇
   <a href="#%e5%a0%86%e8%81%9a%e7%b0%87" class="h-anchor" aria-hidden="true">#</a>
-</h3>
+</h4>
 <p>使用 clustering index 时，tuples 在 page 中按照相应的顺序排列，如果查询访问的是被索引的 attributes，DBMS 就可以直接跳跃访问目标 tuples。</p>
-<h2 id="索引扫描">
+<h3 id="索引扫描">
   索引扫描
   <a href="#%e7%b4%a2%e5%bc%95%e6%89%ab%e6%8f%8f" class="h-anchor" aria-hidden="true">#</a>
-</h2>
+</h3>
 <p>DBMS 选择一个 index 来找到查询需要的 tuples。使用哪个 index 取决于以下几个因素：</p>
 <ul>
 <li>index 包含哪些 attributes</li>
@@ -363,10 +363,10 @@
 <p>Scenario #1：30 岁以下的人有 99 人，但 CS 部门只有 2 人。</p>
 <p>Scenario #2：CS 部门有 99 人，但 30 岁以下的只有 2 人。</p>
 <p>对于 Scenario1，使用 dept 的 index 能过滤掉更多的 tuples；对于 Scenario 2，使用 country 的 index 能过滤掉更多的 tuples。</p>
-<h2 id="多索引">
+<h3 id="多索引">
   多索引
   <a href="#%e5%a4%9a%e7%b4%a2%e5%bc%95" class="h-anchor" aria-hidden="true">#</a>
-</h2>
+</h3>
 <p>如果有多个 indexes 同时可以供 DBMS 使用，就可以做这样的事情：</p>
 <ul>
 <li>计算出符合每个 index 的 tuple id sets</li>
@@ -377,10 +377,10 @@
 <p><img src="/images/15445/12-03.png" alt=""></p>
 <p>其中取集合交集可以使用 bitmaps, hash tables 或者 bloom filters。</p>
 <p>Postgres 称 multi-index scan 为 Bitmap Scan。</p>
-<h1 id="表达式计算">
+<h2 id="表达式计算">
   表达式计算
   <a href="#%e8%a1%a8%e8%be%be%e5%bc%8f%e8%ae%a1%e7%ae%97" class="h-anchor" aria-hidden="true">#</a>
-</h1>
+</h2>
 <p>DBMS 使用 expression tree 来表示一个 WHERE 语句。</p>
 <p>树中的节点代表不同的表达式类型。</p>
 <ul>

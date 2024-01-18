@@ -175,23 +175,26 @@
           <h2>目录</h2>
           <aside class="table-of-contents"><nav id="TableOfContents">
   <ul>
-    <li><a href="#join操作输出">Join操作输出</a></li>
-    <li><a href="#io开销分析">IO开销分析</a></li>
-  </ul>
-
-  <ul>
-    <li><a href="#简单嵌套循环join">简单嵌套循环Join</a></li>
-    <li><a href="#块式嵌套循环join">块式嵌套循环Join</a></li>
-    <li><a href="#索引嵌套循环join">索引嵌套循环Join</a></li>
-  </ul>
-
-  <ul>
-    <li><a href="#基础哈希join">基础哈希Join</a>
+    <li><a href="#joins">Joins</a>
       <ul>
-        <li><a href="#布隆过滤器">布隆过滤器</a></li>
+        <li><a href="#join操作输出">Join操作输出</a></li>
+        <li><a href="#io开销分析">IO开销分析</a></li>
       </ul>
     </li>
-    <li><a href="#分区哈希joingrace-hash-join">分区哈希Join(GRACE hash join)</a></li>
+    <li><a href="#嵌套循环join">嵌套循环Join</a>
+      <ul>
+        <li><a href="#简单嵌套循环join">简单嵌套循环Join</a></li>
+        <li><a href="#块式嵌套循环join">块式嵌套循环Join</a></li>
+        <li><a href="#索引嵌套循环join">索引嵌套循环Join</a></li>
+      </ul>
+    </li>
+    <li><a href="#排序归并join">排序归并Join</a></li>
+    <li><a href="#哈希join">哈希Join</a>
+      <ul>
+        <li><a href="#基础哈希join">基础哈希Join</a></li>
+        <li><a href="#分区哈希joingrace-hash-join">分区哈希Join(GRACE hash join)</a></li>
+      </ul>
+    </li>
   </ul>
 </nav></aside>
         </div>
@@ -239,17 +242,17 @@
 
     <div class="post-content">
 
-      <h1 id="joins">
+      <h2 id="joins">
   Joins
   <a href="#joins" class="h-anchor" aria-hidden="true">#</a>
-</h1>
+</h2>
 <p>在关系型数据库中，我们常常通过规范化 (Normalization) 设计避免信息冗余；因此查询时，就需要通过 Join 将不同 table 中的数据合并来重建数据。</p>
 <p>本课关注双表的内等值连接。原则上我们希望，连接时将小表放到左侧 (作为外表)。</p>
 <p>首先要讨论的是：Join 的输出和成本分析。</p>
-<h2 id="join操作输出">
+<h3 id="join操作输出">
   Join操作输出
   <a href="#join%e6%93%8d%e4%bd%9c%e8%be%93%e5%87%ba" class="h-anchor" aria-hidden="true">#</a>
-</h2>
+</h3>
 <p>逻辑上 Join 的操作的结果是：对任意一个 tuple r ∈ R 和任意一个在 Join Attributes 上对应的 tuple s ∈ S，将 r 和 s 串联成一个新的 tuple。</p>
 <p><img src="/images/15445/11-01.png" alt=""></p>
 <p>现实中，Join 操作输出元组内容还取决于 <code>processing model</code>, <code>storage model</code> 和 <code>query</code> 本身。下面列举了几种输出元组的内容：</p>
@@ -259,10 +262,10 @@
 <p>2、Record Ids：Join 时，只将内外表的 Join Attributes 及 record id 复制到输出元组，后续操作自行根据 record id 去原表中获取相关数据。</p>
 <p>又称<code>推迟物化(Late Materialization)</code>。适用于列存储数据库，因为这样 DBMS 不需要复制对于查询没用的属性。</p>
 <p><img src="/images/15445/11-03.png" alt=""></p>
-<h2 id="io开销分析">
+<h3 id="io开销分析">
   IO开销分析
   <a href="#io%e5%bc%80%e9%94%80%e5%88%86%e6%9e%90" class="h-anchor" aria-hidden="true">#</a>
-</h2>
+</h3>
 <p>由于数据库中的数据量通常较大，无法一次性载入内存，因此 Join Algorithm 的设计目的，在于减少磁盘 I/O，因此我们衡量 Join Algorithm 好坏的标准，就是 I/O 的数量。此外我们不需要考虑 Join 结果的大小，因为不论使用怎样的 Join Algorithm，结果集的大小都一样。</p>
 <p>之后的讨论都建立在这样的情景：</p>
 <ul>
@@ -271,28 +274,28 @@
 <li>S中有N个pages，n个tuples</li>
 </ul>
 <p>下面介绍的连接算法都有各自的适用场景，没有一个算法可以在所有场景下表现良好，需要具体问题具体分析。</p>
-<h1 id="嵌套循环join">
+<h2 id="嵌套循环join">
   嵌套循环Join
   <a href="#%e5%b5%8c%e5%a5%97%e5%be%aa%e7%8e%afjoin" class="h-anchor" aria-hidden="true">#</a>
-</h1>
+</h2>
 <p>也就是暴力循环算法。</p>
 <p>总体上来看，这个嵌套循环算法主要由 2 个 for 嵌套，每个 for 分别迭代一个表，如果两个元组符合连接谓词，就输出它们。</p>
 <p>在外循环的表叫做<code>外表</code>，在内循环的表叫做<code>内表</code>。以下的讨论中<code>R</code>表是外表，<code>S</code>表是内表。</p>
 <p>DBMS总是希望小表当做外表，这里的“小”是指占用的页数或者元组个数。DBMS 希望在内存中缓存尽量多的外表，在遍历内表时也可以使用索引加速。</p>
-<h2 id="简单嵌套循环join">
+<h3 id="简单嵌套循环join">
   简单嵌套循环Join
   <a href="#%e7%ae%80%e5%8d%95%e5%b5%8c%e5%a5%97%e5%be%aa%e7%8e%afjoin" class="h-anchor" aria-hidden="true">#</a>
-</h2>
+</h3>
 <p>傻瓜式暴力两层大循环嵌套。</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>foreach tuple r <span style="color:#960050;background-color:#1e0010">∈</span> R:
 </span></span><span style="display:flex;"><span>  foreach tuple s <span style="color:#960050;background-color:#1e0010">∈</span> S:
 </span></span><span style="display:flex;"><span>    emit, <span style="color:#66d9ef">if</span> r <span style="color:#f92672">and</span> s <span style="color:#66d9ef">match</span>
 </span></span></code></pre></div><p>对于外表R的每一个元组，都遍历一遍S表，没有任何缓存机制，没有利用任何局部性。</p>
 <p>磁盘 I/O Cost：<code>M+(m×N)</code></p>
-<h2 id="块式嵌套循环join">
+<h3 id="块式嵌套循环join">
   块式嵌套循环Join
   <a href="#%e5%9d%97%e5%bc%8f%e5%b5%8c%e5%a5%97%e5%be%aa%e7%8e%afjoin" class="h-anchor" aria-hidden="true">#</a>
-</h2>
+</h3>
 <p>将外表和内表分块，能更好得利用缓存和局部性原理。对于外表的每一个块，获取内表的每一个块，然后将两个块内部进行连接操作。</p>
 <p>这样每一个外表的块扫描一次内表，而不是每一个外表元组扫描一次内表，减少了磁盘I/O。</p>
 <p>这里的外表要选择页数少的，而不是元组个数少的。</p>
@@ -313,19 +316,19 @@
 </span></span><span style="display:flex;"><span>        emit, <span style="color:#66d9ef">if</span> r <span style="color:#f92672">and</span> s <span style="color:#66d9ef">match</span>
 </span></span></code></pre></div><p>则磁盘 I/O Cost：<code>M+(M/(B-2)*N)</code></p>
 <p>假如外表能完全放入内存中，则磁盘 I/O Cost：<code>M+N</code></p>
-<h2 id="索引嵌套循环join">
+<h3 id="索引嵌套循环join">
   索引嵌套循环Join
   <a href="#%e7%b4%a2%e5%bc%95%e5%b5%8c%e5%a5%97%e5%be%aa%e7%8e%afjoin" class="h-anchor" aria-hidden="true">#</a>
-</h2>
+</h3>
 <p>之前的两种 嵌套循环 Join 速度慢的原因在于，需要线性扫描一遍内表，如果内表在 Join Attributes 上有索引的话，就不用每次都线性扫描了。DBMS 可以在 Join Attributes 上临时构建一个索引，或者利用已有的索引。</p>
 <pre tabindex="0"><code class="language-pthon" data-lang="pthon">foreach tuple r ∈ R:
   foreach tuple s ∈ Index(ri = sj): 
     emit, if r and s match
 </code></pre><p>假设每次索引查询都需要 C  的花费，那么磁盘 I/O Cost：<code>M+(m*C)</code></p>
-<h1 id="排序归并join">
+<h2 id="排序归并join">
   排序归并Join
   <a href="#%e6%8e%92%e5%ba%8f%e5%bd%92%e5%b9%b6join" class="h-anchor" aria-hidden="true">#</a>
-</h1>
+</h2>
 <p>Phase #1 - Sort：根据 Join Keys 对两个表进行排序（可使用外部排序）</p>
 <p><img src="/images/15445/11-04.png" alt=""></p>
 <p>Phase #2 - Merge：用双指针遍历两个表，输出匹配的元组（如果 Join Keys 并不唯一，则可能需要指针的回退）</p>
@@ -342,15 +345,15 @@
 </span></span></code></pre></div><p><img src="/images/15445/11-05.png" alt=""></p>
 <p>需要回退场景：</p>
 <p><img src="/images/15445/11-06.png" alt=""></p>
-<h1 id="哈希join">
+<h2 id="哈希join">
   哈希Join
   <a href="#%e5%93%88%e5%b8%8cjoin" class="h-anchor" aria-hidden="true">#</a>
-</h1>
+</h2>
 <p>核心思想：如果分别来自 R 和 S 中的两个 tuples 满足 Join 的条件，它们的 Join Attributes 必然相等，那么它们的 Join Attributes 经过某个 hash function 得到的值也必然相等，因此 Join 时，我们只需对两个 tables 中 hash 到同样值的 tuples 分别执行 Join 操作即可。</p>
-<h2 id="基础哈希join">
+<h3 id="基础哈希join">
   基础哈希Join
   <a href="#%e5%9f%ba%e7%a1%80%e5%93%88%e5%b8%8cjoin" class="h-anchor" aria-hidden="true">#</a>
-</h2>
+</h3>
 <p>Phase #1: Build：扫描外表，使用哈希函数h1对 Join Attributes 建立哈希表T</p>
 <p>若提前已知外表的大小，则可用静态哈希表 (线性探查哈希表现最好)；若不知道，应用动态哈希表，且支持溢出页。</p>
 <p><img src="/images/15445/11-07.png" alt=""></p>
@@ -360,20 +363,20 @@
 </span></span><span style="display:flex;"><span>  output, <span style="color:#66d9ef">if</span> h1(s) <span style="color:#960050;background-color:#1e0010">∈</span> HTR
 </span></span></code></pre></div><p><img src="/images/15445/11-08.png" alt=""></p>
 <p>但 Basic Hash Join Algorithm 有一个弱点，就是有可能 T 无法被放进内存中，由于 hash table 的查询一般都是随机查询，因此在 Probe 阶段，T 可能在 memory 与 disk 中来回移动。</p>
-<h3 id="布隆过滤器">
+<h4 id="布隆过滤器">
   布隆过滤器
   <a href="#%e5%b8%83%e9%9a%86%e8%bf%87%e6%bb%a4%e5%99%a8" class="h-anchor" aria-hidden="true">#</a>
-</h3>
+</h4>
 <p>可以使用 Bloom Filter 来优化查询，因为当键值不在哈希表中的时候，可以不用去查。</p>
 <p>于是在哈希表中找之前，先使用 Bloom Filter (一个概率数据结构，可放入 CPU cache，通过它可得知一个元素在不在，不会出现假阴性，但会出现假阳性)，若 Bloom Filter 结果是不存在，那么就不用去哈希表中找。</p>
 <p>Bloom Filter 插入阶段，使用 k 个哈希函数，将过滤器对应位设为1；查询阶段，查看过滤器 k 个哈希函数值对应的位是否都是1。</p>
 <p><img src="/images/15445/11-09.png" alt=""></p>
 <p>假阳性：</p>
 <p><img src="/images/15445/11-10.png" alt=""></p>
-<h2 id="分区哈希joingrace-hash-join">
+<h3 id="分区哈希joingrace-hash-join">
   分区哈希Join(GRACE hash join)
   <a href="#%e5%88%86%e5%8c%ba%e5%93%88%e5%b8%8cjoingrace-hash-join" class="h-anchor" aria-hidden="true">#</a>
-</h2>
+</h3>
 <p>当内存不足以放下表时，你不希望 buffer pool manager 不断将表换入换出内存，导致低性能。</p>
 <p>Grace hash join是基础哈希连接的一个扩展，将内表也制作成可以写入磁盘的哈希表。</p>
 <p>Phase #1: Build：对两个表都使用哈希函数 h1，分别对 Join Attributes 建立哈希表</p>
